@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "K": {
+      "item": "techminions:core_elite"
+    },
+    "I": {
+      "item": "minecraft:gold_block"
+    },
+    "P": {
+      "item": "minecraft:diamond_pickaxe"
+    },
+    "R": {
+      "tag": "c:ingots/tungsten"
+    }
+  },
+  "pattern": [
+    "RRR",
+    "RKR",
+    "IPI"
+  ],
+  "result": {
+    "id": "techminions:minion_tungsten",
+    "count": 1
+  },
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/tungsten"
+      }
+    }
+  ]
+}

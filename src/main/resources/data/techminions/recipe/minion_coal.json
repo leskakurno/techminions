@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "K": {
+      "item": "techminions:core_basic"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "P": {
+      "item": "minecraft:iron_pickaxe"
+    },
+    "R": {
+      "item": "minecraft:coal"
+    }
+  },
+  "pattern": [
+    "RRR",
+    "RKR",
+    "IPI"
+  ],
+  "result": {
+    "id": "techminions:minion_coal",
+    "count": 1
+  }
+}

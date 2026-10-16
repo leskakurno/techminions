@@ -1,0 +1,121 @@
+{
+  "variants": {
+    "type=stone": {
+      "model": "techminions:block/temp_ore_stone"
+    },
+    "type=coal": {
+      "model": "techminions:block/temp_ore_coal"
+    },
+    "type=copper": {
+      "model": "techminions:block/temp_ore_copper"
+    },
+    "type=iron": {
+      "model": "techminions:block/temp_ore_iron"
+    },
+    "type=gold": {
+      "model": "techminions:block/temp_ore_gold"
+    },
+    "type=redstone": {
+      "model": "techminions:block/temp_ore_redstone"
+    },
+    "type=lapis": {
+      "model": "techminions:block/temp_ore_lapis"
+    },
+    "type=diamond": {
+      "model": "techminions:block/temp_ore_diamond"
+    },
+    "type=emerald": {
+      "model": "techminions:block/temp_ore_emerald"
+    },
+    "type=osmium": {
+      "model": "techminions:block/temp_ore_osmium"
+    },
+    "type=tin": {
+      "model": "techminions:block/temp_ore_tin"
+    },
+    "type=lead": {
+      "model": "techminions:block/temp_ore_lead"
+    },
+    "type=uranium": {
+      "model": "techminions:block/temp_ore_uranium"
+    },
+    "type=fluorite": {
+      "model": "techminions:block/temp_ore_fluorite"
+    },
+    "type=zinc": {
+      "model": "techminions:block/temp_ore_zinc"
+    },
+    "type=uraninite": {
+      "model": "techminions:block/temp_ore_uraninite"
+    },
+    "type=draconium": {
+      "model": "techminions:block/temp_ore_draconium"
+    },
+    "type=thorium": {
+      "model": "techminions:block/temp_ore_thorium"
+    },
+    "type=silver": {
+      "model": "techminions:block/temp_ore_silver"
+    },
+    "type=nickel": {
+      "model": "techminions:block/temp_ore_nickel"
+    },
+    "type=aluminum": {
+      "model": "techminions:block/temp_ore_aluminum"
+    },
+    "type=titanium": {
+      "model": "techminions:block/temp_ore_titanium"
+    },
+    "type=tungsten": {
+      "model": "techminions:block/temp_ore_tungsten"
+    },
+    "type=platinum": {
+      "model": "techminions:block/temp_ore_platinum"
+    },
+    "type=certus": {
+      "model": "techminions:block/temp_ore_certus"
+    },
+    "type=cinnabar": {
+      "model": "techminions:block/temp_ore_cinnabar"
+    },
+    "type=sulfur": {
+      "model": "techminions:block/temp_ore_sulfur"
+    },
+    "type=niter": {
+      "model": "techminions:block/temp_ore_niter"
+    },
+    "type=quartz": {
+      "model": "techminions:block/temp_ore_quartz"
+    },
+    "type=obsidian": {
+      "model": "techminions:block/temp_ore_obsidian"
+    },
+    "type=glowstone": {
+      "model": "techminions:block/temp_ore_glowstone"
+    },
+    "type=minionite": {
+      "model": "techminions:block/temp_ore_minionite"
+    },
+    "type=hunt_zombie": {
+      "model": "techminions:block/temp_ore_hunt_zombie"
+    },
+    "type=hunt_skeleton": {
+      "model": "techminions:block/temp_ore_hunt_skeleton"
+    },
+    "type=hunt_blaze": {
+      "model": "techminions:block/temp_ore_hunt_blaze"
+    },
+    "type=hunt_enderman": {
+      "model": "techminions:block/temp_ore_hunt_enderman"
+    },
+    "type=hunt_guardian": {
+      "model": "techminions:block/temp_ore_hunt_guardian"
+    },
+    "type=hunt_naga": {
+      "model": "techminions:block/temp_ore_hunt_naga"
+    },
+    "type=hunt_hydra": {
+      "model": "techminions:block/temp_ore_hunt_hydra"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "techminions:minionite_shard"
+    },
+    {
+      "item": "techminions:minionite_shard"
+    },
+    {
+      "item": "techminions:minionite_shard"
+    },
+    {
+      "item": "techminions:minionite_shard"
+    },
+    {
+      "item": "minecraft:netherite_scrap"
+    }
+  ],
+  "result": {
+    "id": "techminions:minionite_ingot",
+    "count": 1
+  }
+}

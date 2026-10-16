@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "K": {
+      "item": "techminions:core_reinforced"
+    },
+    "I": {
+      "item": "minecraft:gold_ingot"
+    },
+    "P": {
+      "item": "minecraft:diamond_sword"
+    },
+    "R": {
+      "item": "minecraft:ender_pearl"
+    }
+  },
+  "pattern": [
+    "RRR",
+    "RKR",
+    "IPI"
+  ],
+  "result": {
+    "id": "techminions:minion_hunt_enderman",
+    "count": 1
+  }
+}

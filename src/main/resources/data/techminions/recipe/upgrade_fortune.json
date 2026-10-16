@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "L": {
+      "item": "minecraft:lapis_block"
+    },
+    "K": {
+      "item": "techminions:core_basic"
+    }
+  },
+  "pattern": [
+    "DLD",
+    "LKL",
+    "DLD"
+  ],
+  "result": {
+    "id": "techminions:upgrade_fortune",
+    "count": 1
+  }
+}

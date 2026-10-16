@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "K": {
+      "item": "techminions:core_elite"
+    },
+    "I": {
+      "item": "minecraft:gold_block"
+    },
+    "P": {
+      "item": "techminions:minionite_sword"
+    },
+    "R": {
+      "item": "minecraft:prismarine_crystals"
+    }
+  },
+  "pattern": [
+    "RRR",
+    "RKR",
+    "IPI"
+  ],
+  "result": {
+    "id": "techminions:minion_hunt_guardian",
+    "count": 1
+  }
+}
