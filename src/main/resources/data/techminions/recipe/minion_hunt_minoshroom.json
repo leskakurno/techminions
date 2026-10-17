@@ -1,0 +1,40 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "K": {
+      "item": "techminions:core_elite"
+    },
+    "I": {
+      "item": "minecraft:gold_block"
+    },
+    "P": {
+      "item": "techminions:minionite_sword"
+    },
+    "M": {
+      "item": "techminions:minionite_ingot"
+    },
+    "T": {
+      "item": "twilightforest:minoshroom_trophy"
+    }
+  },
+  "pattern": [
+    "MTM",
+    "MKM",
+    "IPI"
+  ],
+  "result": {
+    "id": "techminions:minion_hunt_minoshroom",
+    "count": 1
+  },
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "twilightforest"
+    },
+    {
+      "type": "neoforge:item_exists",
+      "item": "twilightforest:minoshroom_trophy"
+    }
+  ]
+}

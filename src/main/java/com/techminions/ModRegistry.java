@@ -16,16 +16,19 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.EnumMap;
@@ -38,6 +41,8 @@ public class ModRegistry {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(TechMinions.MOD_ID);
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES =
             DeferredRegister.create(Registries.ENTITY_TYPE, TechMinions.MOD_ID);
+    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES =
+            DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, TechMinions.MOD_ID);
     public static final DeferredRegister<MenuType<?>> MENUS =
             DeferredRegister.create(Registries.MENU, TechMinions.MOD_ID);
     public static final DeferredRegister<ArmorMaterial> ARMOR_MATERIALS =
@@ -55,6 +60,29 @@ public class ModRegistry {
                     .sound(SoundType.STONE)
                     .pushReaction(PushReaction.BLOCK)
                     .noLootTable());
+
+    // ---------- Сундуки миньонов: три размера, крафтятся отдельно (не улучшаются друг в друга) ----------
+    public static final DeferredBlock<MinionChestBlock> MINION_CHEST_SMALL = BLOCKS.registerBlock(
+            "minion_chest_small",
+            props -> new MinionChestBlock(props, MinionChestTier.SMALL),
+            BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).strength(2.5F).sound(SoundType.WOOD));
+    public static final DeferredBlock<MinionChestBlock> MINION_CHEST_MEDIUM = BLOCKS.registerBlock(
+            "minion_chest_medium",
+            props -> new MinionChestBlock(props, MinionChestTier.MEDIUM),
+            BlockBehaviour.Properties.of().mapColor(MapColor.GOLD).strength(3.0F).sound(SoundType.WOOD));
+    public static final DeferredBlock<MinionChestBlock> MINION_CHEST_LARGE = BLOCKS.registerBlock(
+            "minion_chest_large",
+            props -> new MinionChestBlock(props, MinionChestTier.LARGE),
+            BlockBehaviour.Properties.of().mapColor(MapColor.DIAMOND).strength(4.0F).sound(SoundType.WOOD));
+
+    public static final DeferredItem<BlockItem> MINION_CHEST_SMALL_ITEM = ITEMS.registerSimpleBlockItem(MINION_CHEST_SMALL);
+    public static final DeferredItem<BlockItem> MINION_CHEST_MEDIUM_ITEM = ITEMS.registerSimpleBlockItem(MINION_CHEST_MEDIUM);
+    public static final DeferredItem<BlockItem> MINION_CHEST_LARGE_ITEM = ITEMS.registerSimpleBlockItem(MINION_CHEST_LARGE);
+
+    public static final Supplier<BlockEntityType<MinionChestBlockEntity>> MINION_CHEST_BE = BLOCK_ENTITIES.register(
+            "minion_chest",
+            () -> BlockEntityType.Builder.of(MinionChestBlockEntity::new,
+                    MINION_CHEST_SMALL.get(), MINION_CHEST_MEDIUM.get(), MINION_CHEST_LARGE.get()).build(null));
 
     public static final Map<MinionType, DeferredHolder<Item, MinionItem>> MINION_ITEMS = new EnumMap<>(MinionType.class);
     public static final Map<UpgradeType, DeferredHolder<Item, UpgradeItem>> UPGRADE_ITEMS = new EnumMap<>(UpgradeType.class);
@@ -144,6 +172,10 @@ public class ModRegistry {
             "minion",
             () -> IMenuTypeExtension.create(MinionMenu::new));
 
+    public static final Supplier<MenuType<MinionChestMenu>> MINION_CHEST_MENU = MENUS.register(
+            "minion_chest",
+            () -> IMenuTypeExtension.create(MinionChestMenu::new));
+
     public static final Supplier<CreativeModeTab> MAIN_TAB = CREATIVE_TABS.register(
             "main",
             () -> CreativeModeTab.builder()
@@ -163,6 +195,9 @@ public class ModRegistry {
                                 output.accept(HuntEggItem.create(type.getHuntEntity().get()));
                             }
                         }
+                        output.accept(MINION_CHEST_SMALL_ITEM.get());
+                        output.accept(MINION_CHEST_MEDIUM_ITEM.get());
+                        output.accept(MINION_CHEST_LARGE_ITEM.get());
                         output.accept(MINIONITE_SHARD.get());
                         output.accept(MINIONITE_INGOT.get());
                         output.accept(MINIONITE_HELMET.get());

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "C": {
+      "item": "minecraft:chest"
+    },
+    "N": {
+      "item": "minecraft:netherite_ingot"
+    },
+    "K": {
+      "item": "techminions:core_elite"
+    }
+  },
+  "pattern": [
+    "DKD",
+    "CNC",
+    "DDD"
+  ],
+  "result": {
+    "id": "techminions:minion_chest_large",
+    "count": 1
+  }
+}

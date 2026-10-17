@@ -7,6 +7,8 @@ import com.mojang.logging.LogUtils;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.neoforged.fml.config.ModConfig;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 
@@ -19,13 +21,21 @@ public class TechMinions {
         ModRegistry.ARMOR_MATERIALS.register(modEventBus);
         ModRegistry.ITEMS.register(modEventBus);
         ModRegistry.ENTITY_TYPES.register(modEventBus);
+        ModRegistry.BLOCK_ENTITIES.register(modEventBus);
         ModRegistry.MENUS.register(modEventBus);
         ModRegistry.CREATIVE_TABS.register(modEventBus);
 
         NeoForge.EVENT_BUS.addListener(EggDropHandler::onDrops);
         modEventBus.addListener(this::registerAttributes);
+        modEventBus.addListener(this::registerCapabilities);
         modEventBus.addListener(this::onLoadComplete);
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+    }
+
+    /** Сундук миньонов виден воронкам, трубам и самим миньонам как обычный ItemHandler. */
+    private void registerCapabilities(RegisterCapabilitiesEvent event) {
+        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ModRegistry.MINION_CHEST_BE.get(),
+                (chest, side) -> chest.getItemHandler());
     }
 
     private void registerAttributes(EntityAttributeCreationEvent event) {

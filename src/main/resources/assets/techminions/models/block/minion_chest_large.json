@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "top": "techminions:block/minion_chest_large_top",
+    "bottom": "techminions:block/minion_chest_large_top",
+    "side": "techminions:block/minion_chest_large_side"
+  }
+}

@@ -4,7 +4,7 @@ license = "All Rights Reserved"
 
 [[mods]]
 modId = "techminions"
-version = "2.9.0"
+version = "2.10.0"
 displayName = "Tech Minions"
 authors = "pave4403, leskakurnosenko"
 logoFile = "logo.png"
@@ -18,7 +18,10 @@ MINING MINIONS
 Place a minion and it builds a temporary 5x5 ore platform one block at a time, then mines it back block by block into its own storage. Build and mine speed is the same and depends on the minion's level (I to XI). Over 30 resource types: vanilla ores, gems and materials, plus Minionite.
 
 HUNTER MINIONS
-Put a Hunt Egg into a hunter minion and it "spawns" and "kills" that mob over and over, collecting the real loot table drops - zombies, skeletons, blazes, endermen, elder guardians and Twilight Forest bosses. The universal Mob Hunter and Boss Hunter accept the egg of ANY mob or boss from any mod (Twilight Forest and its add-ons, Mowzie's Mobs, Cataclysm, Alex's Caves, Alex's Mobs, The Graveyard, boss packs and more). Hunt Eggs drop rarely from mobs killed with the Egg Collector enchantment (swords and axes, levels I-III).
+Put a Hunt Egg into a hunter minion and it "spawns" and "kills" that mob over and over, collecting the real loot table drops - zombies, skeletons, blazes, endermen, elder guardians and all Twilight Forest bosses (Naga, Hydra, Lich, Minoshroom, Knight Phantom, Ur-Ghast, Alpha Yeti, Snow Queen). The universal Mob Hunter and Boss Hunter accept the egg of ANY mob or boss from any mod (Twilight Forest and its add-ons, Mowzie's Mobs, Cataclysm, Alex's Caves, Alex's Mobs, The Graveyard, boss packs and more). Hunt Eggs drop rarely from mobs killed with the Egg Collector enchantment (swords and axes, levels I-III).
+
+MINION CHESTS
+Small (27 slots), Medium (54) and Large (108) Minion Chests are crafted separately - no upgrade chain. A minion standing on a Minion Chest (or next to one) stores its loot there automatically, no Output upgrade needed.
 
 UPGRADES AND PROGRESSION
 Speed, Storage, Fortune, Output and Smelter upgrades (raw ores are smelted into ingots automatically). Minions and upgrades are crafted through a tiered chain of Basic, Reinforced and Elite Minion Cores. Minionite gear (armor, sword, pickaxe, axe, shovel, hoe) can be crafted from Minionite Ingots.

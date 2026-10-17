@@ -263,7 +263,7 @@ public class MinionEntity extends Mob {
         if (level().isClientSide || !isAlive()) {
             return;
         }
-        if (tickCount % 40 == 0 && upgradeCount(UpgradeType.OUTPUT) > 0) {
+        if (tickCount % 40 == 0) {
             pushOutput();
         }
         if (cooldown > 0) {
@@ -611,10 +611,42 @@ public class MinionEntity extends Mob {
         return remaining;
     }
 
-    /** Апгрейд OUTPUT: перекладывает добычу в контейнер (сундук, бочка), на котором стоит миньон. */
+    /**
+     * Выгрузка добычи. Сундук миньонов (под миньоном или рядом с ним) принимает добычу сам, без улучшений.
+     * Улучшение OUTPUT по-прежнему перекладывает добычу в любой контейнер (сундук, бочка), на котором стоит миньон.
+     */
     private void pushOutput() {
-        BlockPos below = blockPosition().below();
-        IItemHandler handler = level().getCapability(Capabilities.ItemHandler.BLOCK, below, Direction.UP);
+        if (storageIsEmpty()) {
+            return;
+        }
+        BlockPos pos = blockPosition();
+        BlockPos below = pos.below();
+        if (upgradeCount(UpgradeType.OUTPUT) > 0 || isMinionChest(below)) {
+            pushInto(below, Direction.UP);
+        }
+        for (Direction dir : Direction.Plane.HORIZONTAL) {
+            BlockPos side = pos.relative(dir);
+            if (isMinionChest(side)) {
+                pushInto(side, dir.getOpposite());
+            }
+        }
+    }
+
+    private boolean isMinionChest(BlockPos pos) {
+        return level().hasChunkAt(pos) && level().getBlockState(pos).getBlock() instanceof MinionChestBlock;
+    }
+
+    private boolean storageIsEmpty() {
+        for (int i = 0; i < storage.getContainerSize(); i++) {
+            if (!storage.getItem(i).isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void pushInto(BlockPos target, Direction side) {
+        IItemHandler handler = level().getCapability(Capabilities.ItemHandler.BLOCK, target, side);
         if (handler == null) {
             return;
         }

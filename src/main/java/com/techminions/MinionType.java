@@ -96,7 +96,14 @@ public enum MinionType implements StringRepresentable {
     // --- Новые (v2.9): универсальные охотники. Цель берётся из Яйца охоты, поэтому работают с мобами и боссами
     //     ЛЮБЫХ модов (Twilight Forest, Mowzie's Mobs, Cataclysm, Alex's Caves/Mobs, The Graveyard и т.д.) ---
     HUNT_ANY_MOB(2, 6, mods("minecraft")),
-    HUNT_ANY_BOSS(3, 1, mods("minecraft"));
+    HUNT_ANY_BOSS(3, 1, mods("minecraft")),
+    // --- Новые (v2.10): остальные боссы Twilight Forest (Нага и Гидра уже есть выше) ---
+    HUNT_LICH(3, 1, mods("twilightforest")),
+    HUNT_MINOSHROOM(3, 1, mods("twilightforest")),
+    HUNT_KNIGHT_PHANTOM(3, 1, mods("twilightforest")),
+    HUNT_UR_GHAST(3, 1, mods("twilightforest")),
+    HUNT_ALPHA_YETI(3, 1, mods("twilightforest")),
+    HUNT_SNOW_QUEEN(3, 1, mods("twilightforest"));
 
     private final int tier;
     private final int upgradeBase;
@@ -213,6 +220,12 @@ public enum MinionType implements StringRepresentable {
             MAP.put(HUNT_HYDRA, new String[]{"techminions:minionite_ingot"});
             MAP.put(HUNT_ANY_MOB, new String[]{"minecraft:gold_ingot"});
             MAP.put(HUNT_ANY_BOSS, new String[]{"techminions:minionite_ingot"});
+            MAP.put(HUNT_LICH, new String[]{"techminions:minionite_ingot"});
+            MAP.put(HUNT_MINOSHROOM, new String[]{"techminions:minionite_ingot"});
+            MAP.put(HUNT_KNIGHT_PHANTOM, new String[]{"techminions:minionite_ingot"});
+            MAP.put(HUNT_UR_GHAST, new String[]{"techminions:minionite_ingot"});
+            MAP.put(HUNT_ALPHA_YETI, new String[]{"techminions:minionite_ingot"});
+            MAP.put(HUNT_SNOW_QUEEN, new String[]{"techminions:minionite_ingot"});
         }
     }
 
@@ -318,6 +331,12 @@ public enum MinionType implements StringRepresentable {
             MAP.put(HUNT_GUARDIAN, new Hunt("minecraft:elder_guardian", true));
             MAP.put(HUNT_NAGA, new Hunt("twilightforest:naga", true));
             MAP.put(HUNT_HYDRA, new Hunt("twilightforest:hydra", true));
+            MAP.put(HUNT_LICH, new Hunt("twilightforest:lich", true));
+            MAP.put(HUNT_MINOSHROOM, new Hunt("twilightforest:minoshroom", true));
+            MAP.put(HUNT_KNIGHT_PHANTOM, new Hunt("twilightforest:knight_phantom", true));
+            MAP.put(HUNT_UR_GHAST, new Hunt("twilightforest:ur_ghast", true));
+            MAP.put(HUNT_ALPHA_YETI, new Hunt("twilightforest:alpha_yeti", true));
+            MAP.put(HUNT_SNOW_QUEEN, new Hunt("twilightforest:snow_queen", true));
         }
     }
 

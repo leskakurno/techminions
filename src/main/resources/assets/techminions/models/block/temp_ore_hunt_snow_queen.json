@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "techminions:block/temp_ore_hunt_snow_queen"
+  }
+}

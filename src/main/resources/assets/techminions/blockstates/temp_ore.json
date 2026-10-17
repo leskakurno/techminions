@@ -134,6 +134,24 @@
     },
     "type=hunt_any_boss": {
       "model": "techminions:block/temp_ore_hunt_any_boss"
+    },
+    "type=hunt_lich": {
+      "model": "techminions:block/temp_ore_hunt_lich"
+    },
+    "type=hunt_minoshroom": {
+      "model": "techminions:block/temp_ore_hunt_minoshroom"
+    },
+    "type=hunt_knight_phantom": {
+      "model": "techminions:block/temp_ore_hunt_knight_phantom"
+    },
+    "type=hunt_ur_ghast": {
+      "model": "techminions:block/temp_ore_hunt_ur_ghast"
+    },
+    "type=hunt_alpha_yeti": {
+      "model": "techminions:block/temp_ore_hunt_alpha_yeti"
+    },
+    "type=hunt_snow_queen": {
+      "model": "techminions:block/temp_ore_hunt_snow_queen"
     }
   }
 }

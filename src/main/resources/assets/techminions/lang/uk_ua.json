@@ -110,5 +110,20 @@
   "type.techminions.hunt_any_mob": "Мисливець на мобів",
   "item.techminions.minion_hunt_any_mob": "Міньйон: Мисливець на мобів",
   "type.techminions.hunt_any_boss": "Мисливець на босів",
-  "item.techminions.minion_hunt_any_boss": "Міньйон: Мисливець на босів"
+  "item.techminions.minion_hunt_any_boss": "Міньйон: Мисливець на босів",
+  "type.techminions.hunt_lich": "Мисливець на Лича",
+  "item.techminions.minion_hunt_lich": "Міньйон: Мисливець на Лича",
+  "type.techminions.hunt_minoshroom": "Мисливець на Міношрума",
+  "item.techminions.minion_hunt_minoshroom": "Міньйон: Мисливець на Міношрума",
+  "type.techminions.hunt_knight_phantom": "Мисливець на Лицаря-привида",
+  "item.techminions.minion_hunt_knight_phantom": "Міньйон: Мисливець на Лицаря-привида",
+  "type.techminions.hunt_ur_ghast": "Мисливець на Ур-гаста",
+  "item.techminions.minion_hunt_ur_ghast": "Міньйон: Мисливець на Ур-гаста",
+  "type.techminions.hunt_alpha_yeti": "Мисливець на Альфа-єті",
+  "item.techminions.minion_hunt_alpha_yeti": "Міньйон: Мисливець на Альфа-єті",
+  "type.techminions.hunt_snow_queen": "Мисливець на Снігову королеву",
+  "item.techminions.minion_hunt_snow_queen": "Міньйон: Мисливець на Снігову королеву",
+  "block.techminions.minion_chest_small": "Мала скриня міньйонів",
+  "block.techminions.minion_chest_medium": "Середня скриня міньйонів",
+  "block.techminions.minion_chest_large": "Велика скриня міньйонів"
 }

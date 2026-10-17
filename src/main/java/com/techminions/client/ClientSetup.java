@@ -23,6 +23,7 @@ public class ClientSetup {
     @SubscribeEvent
     public static void registerScreens(RegisterMenuScreensEvent event) {
         event.register(ModRegistry.MINION_MENU.get(), MinionScreen::new);
+        event.register(ModRegistry.MINION_CHEST_MENU.get(), MinionChestScreen::new);
     }
 
     /** Яйцо охоты красится цветами ванильного яйца того же моба (та же текстура, что и у яйца призыва). */
