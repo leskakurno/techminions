@@ -98,5 +98,17 @@
   "message.techminions.not_enough": "Nicht genug: benötigt %s x %s",
   "item.techminions.upgrade_smelter": "Schmelz-Upgrade",
   "tooltip.techminions.upgrade.smelter": "Schmilzt Roherze automatisch zu Barren, wie in einem Ofen",
-  "gui.techminions.status": "%s"
+  "gui.techminions.status": "%s",
+  "type.techminions.iridium": "Iridium",
+  "item.techminions.minion_iridium": "Minion: Iridium",
+  "type.techminions.ruby": "Rubin",
+  "item.techminions.minion_ruby": "Minion: Rubin",
+  "type.techminions.sapphire": "Saphir",
+  "item.techminions.minion_sapphire": "Minion: Saphir",
+  "type.techminions.apatite": "Apatit",
+  "item.techminions.minion_apatite": "Minion: Apatit",
+  "type.techminions.hunt_any_mob": "Mob-Jäger",
+  "item.techminions.minion_hunt_any_mob": "Minion: Mob-Jäger",
+  "type.techminions.hunt_any_boss": "Boss-Jäger",
+  "item.techminions.minion_hunt_any_boss": "Minion: Boss-Jäger"
 }

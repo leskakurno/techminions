@@ -98,5 +98,17 @@
   "message.techminions.not_enough": "Za mało: potrzeba %s x %s",
   "item.techminions.upgrade_smelter": "Ulepszenie przetapiania",
   "tooltip.techminions.upgrade.smelter": "Automatycznie przetapia surowce na sztabki, jak w piecu",
-  "gui.techminions.status": "%s"
+  "gui.techminions.status": "%s",
+  "type.techminions.iridium": "Iryd",
+  "item.techminions.minion_iridium": "Minion: Iryd",
+  "type.techminions.ruby": "Rubin",
+  "item.techminions.minion_ruby": "Minion: Rubin",
+  "type.techminions.sapphire": "Szafir",
+  "item.techminions.minion_sapphire": "Minion: Szafir",
+  "type.techminions.apatite": "Apatyt",
+  "item.techminions.minion_apatite": "Minion: Apatyt",
+  "type.techminions.hunt_any_mob": "Łowca mobów",
+  "item.techminions.minion_hunt_any_mob": "Minion: Łowca mobów",
+  "type.techminions.hunt_any_boss": "Łowca bossów",
+  "item.techminions.minion_hunt_any_boss": "Minion: Łowca bossów"
 }

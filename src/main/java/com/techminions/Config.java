@@ -53,5 +53,40 @@ public class Config {
             .comment("Multiplier of the egg chance for bosses (boss kills are rare, so they get a higher chance).")
             .defineInRange("eggBossChanceMultiplier", 5.0, 0.0, 100.0);
 
+    private static final String DEFAULT_BOSSES = String.join(",",
+            "twilightforest:naga", "twilightforest:hydra", "twilightforest:lich", "twilightforest:minoshroom",
+            "twilightforest:knight_phantom", "twilightforest:ur_ghast", "twilightforest:alpha_yeti",
+            "twilightforest:snow_queen",
+            "mowziesmobs:ferrous_wroughtnaut", "mowziesmobs:frostmaw", "mowziesmobs:umvuthi", "mowziesmobs:sculptor",
+            "cataclysm:ender_guardian", "cataclysm:netherite_monstrosity", "cataclysm:ignis", "cataclysm:the_harbinger",
+            "cataclysm:the_leviathan", "cataclysm:scylla", "cataclysm:ancient_remnant", "cataclysm:maledictus",
+            "alexscaves:luxtructosaurus", "alexscaves:tremorzilla", "alexsmobs:void_worm",
+            "graveyard:lich", "graveyard:nightmare");
+
+    public static final ModConfigSpec.ConfigValue<String> BOSS_ENTITIES = BUILDER
+            .comment("Extra entity ids (comma-separated) that count as bosses for hunter minions and Hunt Eggs, "
+                    + "in addition to everything in the c:bosses entity tag. Unknown ids are simply ignored.")
+            .define("bossEntities", DEFAULT_BOSSES);
+
+    private static String bossRaw;
+    private static java.util.Set<String> bossSet = java.util.Set.of();
+
+    /** Ids существ-боссов из конфига (разбор кэшируется). */
+    public static synchronized java.util.Set<String> bossEntityIds() {
+        String raw = BOSS_ENTITIES.get();
+        if (!raw.equals(bossRaw)) {
+            java.util.Set<String> set = new java.util.HashSet<>();
+            for (String part : raw.split(",")) {
+                String id = part.trim();
+                if (!id.isEmpty()) {
+                    set.add(id);
+                }
+            }
+            bossSet = set;
+            bossRaw = raw;
+        }
+        return bossSet;
+    }
+
     public static final ModConfigSpec SPEC = BUILDER.build();
 }

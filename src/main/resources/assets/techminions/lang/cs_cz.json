@@ -98,5 +98,17 @@
   "message.techminions.not_enough": "Nedostatek: potřeba %s x %s",
   "item.techminions.upgrade_smelter": "Vylepšení tavení",
   "tooltip.techminions.upgrade.smelter": "Automaticky taví surovou rudu na ingoty jako pec",
-  "gui.techminions.status": "%s"
+  "gui.techminions.status": "%s",
+  "type.techminions.iridium": "Iridium",
+  "item.techminions.minion_iridium": "Mini: Iridium",
+  "type.techminions.ruby": "Rubín",
+  "item.techminions.minion_ruby": "Mini: Rubín",
+  "type.techminions.sapphire": "Safír",
+  "item.techminions.minion_sapphire": "Mini: Safír",
+  "type.techminions.apatite": "Apatit",
+  "item.techminions.minion_apatite": "Mini: Apatit",
+  "type.techminions.hunt_any_mob": "Lovec mobů",
+  "item.techminions.minion_hunt_any_mob": "Mini: Lovec mobů",
+  "type.techminions.hunt_any_boss": "Lovec bossů",
+  "item.techminions.minion_hunt_any_boss": "Mini: Lovec bossů"
 }

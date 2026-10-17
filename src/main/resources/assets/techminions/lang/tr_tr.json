@@ -98,5 +98,17 @@
   "message.techminions.not_enough": "Yetersiz: %s x %s gerekli",
   "item.techminions.upgrade_smelter": "Eritme Geliştirmesi",
   "tooltip.techminions.upgrade.smelter": "Ham cevherleri fırındaki gibi otomatik olarak külçeye eritir",
-  "gui.techminions.status": "%s"
+  "gui.techminions.status": "%s",
+  "type.techminions.iridium": "İridyum",
+  "item.techminions.minion_iridium": "Minyon: İridyum",
+  "type.techminions.ruby": "Yakut",
+  "item.techminions.minion_ruby": "Minyon: Yakut",
+  "type.techminions.sapphire": "Safir",
+  "item.techminions.minion_sapphire": "Minyon: Safir",
+  "type.techminions.apatite": "Apatit",
+  "item.techminions.minion_apatite": "Minyon: Apatit",
+  "type.techminions.hunt_any_mob": "Yaratık avcısı",
+  "item.techminions.minion_hunt_any_mob": "Minyon: Yaratık avcısı",
+  "type.techminions.hunt_any_boss": "Boss avcısı",
+  "item.techminions.minion_hunt_any_boss": "Minyon: Boss avcısı"
 }

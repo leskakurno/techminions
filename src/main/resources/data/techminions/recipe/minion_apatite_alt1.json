@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "K": {
+      "item": "techminions:core_basic"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "P": {
+      "item": "minecraft:iron_pickaxe"
+    },
+    "R": {
+      "tag": "c:gems/apatite"
+    }
+  },
+  "pattern": [
+    "RRR",
+    "RKR",
+    "IPI"
+  ],
+  "result": {
+    "id": "techminions:minion_apatite",
+    "count": 1
+  },
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:gems/apatite"
+      }
+    }
+  ]
+}

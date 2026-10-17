@@ -159,7 +159,7 @@ public class ModRegistry {
                         output.accept(CORE_REINFORCED.get());
                         output.accept(CORE_ELITE.get());
                         for (MinionType type : MinionType.values()) {
-                            if (type.isHunter() && type.isAvailable()) {
+                            if (type.getHuntEntity().isPresent()) {
                                 output.accept(HuntEggItem.create(type.getHuntEntity().get()));
                             }
                         }

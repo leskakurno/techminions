@@ -131,5 +131,17 @@
   "gui.techminions.storage": "Storage",
   "message.techminions.need_floor": "Needs a solid floor and free space",
   "message.techminions.max_level": "Max level reached",
-  "message.techminions.not_enough": "Not enough: need %s x %s"
+  "message.techminions.not_enough": "Not enough: need %s x %s",
+  "type.techminions.iridium": "Iridium",
+  "item.techminions.minion_iridium": "Iridium Minion",
+  "type.techminions.ruby": "Ruby",
+  "item.techminions.minion_ruby": "Ruby Minion",
+  "type.techminions.sapphire": "Sapphire",
+  "item.techminions.minion_sapphire": "Sapphire Minion",
+  "type.techminions.apatite": "Apatite",
+  "item.techminions.minion_apatite": "Apatite Minion",
+  "type.techminions.hunt_any_mob": "Mob Hunter",
+  "item.techminions.minion_hunt_any_mob": "Mob Hunter Minion",
+  "type.techminions.hunt_any_boss": "Boss Hunter",
+  "item.techminions.minion_hunt_any_boss": "Boss Hunter Minion"
 }

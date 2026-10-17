@@ -98,5 +98,17 @@
   "message.techminions.not_enough": "Tidak cukup: butuh %s x %s",
   "item.techminions.upgrade_smelter": "Peningkatan Peleburan",
   "tooltip.techminions.upgrade.smelter": "Bijih mentah otomatis dilebur menjadi batangan, seperti di tungku",
-  "gui.techminions.status": "%s"
+  "gui.techminions.status": "%s",
+  "type.techminions.iridium": "Iridium",
+  "item.techminions.minion_iridium": "Minion: Iridium",
+  "type.techminions.ruby": "Rubi",
+  "item.techminions.minion_ruby": "Minion: Rubi",
+  "type.techminions.sapphire": "Safir",
+  "item.techminions.minion_sapphire": "Minion: Safir",
+  "type.techminions.apatite": "Apatit",
+  "item.techminions.minion_apatite": "Minion: Apatit",
+  "type.techminions.hunt_any_mob": "Pemburu Mob",
+  "item.techminions.minion_hunt_any_mob": "Minion: Pemburu Mob",
+  "type.techminions.hunt_any_boss": "Pemburu Boss",
+  "item.techminions.minion_hunt_any_boss": "Minion: Pemburu Boss"
 }

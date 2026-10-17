@@ -98,5 +98,17 @@
   "message.techminions.not_enough": "Niet genoeg: %s x %s nodig",
   "item.techminions.upgrade_smelter": "Smelt-upgrade",
   "tooltip.techminions.upgrade.smelter": "Smelt ruwe erts automatisch tot staven, net als een oven",
-  "gui.techminions.status": "%s"
+  "gui.techminions.status": "%s",
+  "type.techminions.iridium": "Iridium",
+  "item.techminions.minion_iridium": "Minion: Iridium",
+  "type.techminions.ruby": "Robijn",
+  "item.techminions.minion_ruby": "Minion: Robijn",
+  "type.techminions.sapphire": "Saffier",
+  "item.techminions.minion_sapphire": "Minion: Saffier",
+  "type.techminions.apatite": "Apatiet",
+  "item.techminions.minion_apatite": "Minion: Apatiet",
+  "type.techminions.hunt_any_mob": "Mobjager",
+  "item.techminions.minion_hunt_any_mob": "Minion: Mobjager",
+  "type.techminions.hunt_any_boss": "Bossjager",
+  "item.techminions.minion_hunt_any_boss": "Minion: Bossjager"
 }

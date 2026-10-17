@@ -131,5 +131,17 @@
   "gui.techminions.storage": "Хранилище",
   "message.techminions.need_floor": "Нужна твёрдая поверхность и свободное место",
   "message.techminions.max_level": "Достигнут максимальный уровень",
-  "message.techminions.not_enough": "Не хватает: нужно %s x %s"
+  "message.techminions.not_enough": "Не хватает: нужно %s x %s",
+  "type.techminions.iridium": "Иридиевый",
+  "item.techminions.minion_iridium": "Иридиевый миньон",
+  "type.techminions.ruby": "Рубиновый",
+  "item.techminions.minion_ruby": "Рубиновый миньон",
+  "type.techminions.sapphire": "Сапфировый",
+  "item.techminions.minion_sapphire": "Сапфировый миньон",
+  "type.techminions.apatite": "Апатитовый",
+  "item.techminions.minion_apatite": "Апатитовый миньон",
+  "type.techminions.hunt_any_mob": "Универсальный охотник",
+  "item.techminions.minion_hunt_any_mob": "Универсальный миньон-охотник",
+  "type.techminions.hunt_any_boss": "Охотник на боссов",
+  "item.techminions.minion_hunt_any_boss": "Миньон-охотник на боссов"
 }

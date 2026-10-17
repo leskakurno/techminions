@@ -191,7 +191,7 @@ public class MinionMenu extends AbstractContainerMenu {
                 return false;
             }
             var eggType = HuntEggItem.getEntityType(stack);
-            return eggType != null && minion.getMinionType().getHuntEntity().map(t -> t == eggType).orElse(false);
+            return minion.getMinionType().acceptsEgg(eggType);
         }
 
         @Override

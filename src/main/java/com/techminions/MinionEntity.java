@@ -333,7 +333,16 @@ public class MinionEntity extends Mob {
             return false;
         }
         EntityType<?> eggType = HuntEggItem.getEntityType(egg);
-        return eggType != null && type.getHuntEntity().map(t -> t == eggType).orElse(false);
+        return type.acceptsEgg(eggType);
+    }
+
+    /** Цель охоты: у обычных охотников фиксированный моб, у универсальных - моб из вставленного яйца. */
+    private EntityType<?> huntTarget(MinionType type) {
+        if (type.isUniversalHunter()) {
+            ItemStack egg = eggs.getItem(0);
+            return egg.getItem() instanceof HuntEggItem ? HuntEggItem.getEntityType(egg) : null;
+        }
+        return type.getHuntEntity().orElse(null);
     }
 
     /** Длительность фазы охоты в тиках: «появление» моба и затем его «убийство». У боссов намного дольше. */
@@ -394,7 +403,7 @@ public class MinionEntity extends Mob {
             cooldown = 40;
             return;
         }
-        EntityType<?> target = type.getHuntEntity().orElse(null);
+        EntityType<?> target = huntTarget(type);
         if (target == null) {
             setState(MinionState.UNAVAILABLE);
             setProgress(0);

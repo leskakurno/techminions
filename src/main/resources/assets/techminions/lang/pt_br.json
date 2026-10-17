@@ -98,5 +98,17 @@
   "message.techminions.not_enough": "Insuficiente: precisa de %s x %s",
   "item.techminions.upgrade_smelter": "Melhoria de fundição",
   "tooltip.techminions.upgrade.smelter": "Funde o minério em lingotes automaticamente, como em uma fornalha",
-  "gui.techminions.status": "%s"
+  "gui.techminions.status": "%s",
+  "type.techminions.iridium": "Irídio",
+  "item.techminions.minion_iridium": "Minion: Irídio",
+  "type.techminions.ruby": "Rubi",
+  "item.techminions.minion_ruby": "Minion: Rubi",
+  "type.techminions.sapphire": "Safira",
+  "item.techminions.minion_sapphire": "Minion: Safira",
+  "type.techminions.apatite": "Apatita",
+  "item.techminions.minion_apatite": "Minion: Apatita",
+  "type.techminions.hunt_any_mob": "Caçador de mobs",
+  "item.techminions.minion_hunt_any_mob": "Minion: Caçador de mobs",
+  "type.techminions.hunt_any_boss": "Caçador de chefes",
+  "item.techminions.minion_hunt_any_boss": "Minion: Caçador de chefes"
 }

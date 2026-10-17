@@ -11,6 +11,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.neoforged.fml.ModList;
+import net.neoforged.neoforge.common.Tags;
 
 import java.util.EnumMap;
 import java.util.Locale;
@@ -39,18 +40,18 @@ public enum MinionType implements StringRepresentable {
     DIAMOND(3, 24, mods("minecraft"), "minecraft:diamond"),
     EMERALD(3, 24, mods("minecraft"), "minecraft:emerald"),
     // --- Mekanism и другие ---
-    OSMIUM(2, 64, mods("mekanism"), "mekanism:raw_osmium", "#c:raw_materials/osmium"),
-    TIN(1, 96, mods("mekanism", "thermal", "modern_industrialization"),
-            "mekanism:raw_tin", "thermal:raw_tin", "modern_industrialization:raw_tin", "#c:raw_materials/tin"),
-    LEAD(1, 96, mods("mekanism", "thermal", "immersiveengineering", "modern_industrialization"),
+    OSMIUM(2, 64, mods("mekanism", "alltheores"), "mekanism:raw_osmium", "alltheores:raw_osmium", "#c:raw_materials/osmium"),
+    TIN(1, 96, mods("mekanism", "thermal", "modern_industrialization", "alltheores"),
+            "mekanism:raw_tin", "thermal:raw_tin", "modern_industrialization:raw_tin", "alltheores:raw_tin", "#c:raw_materials/tin"),
+    LEAD(1, 96, mods("mekanism", "thermal", "immersiveengineering", "modern_industrialization", "alltheores"),
             "mekanism:raw_lead", "thermal:raw_lead", "immersiveengineering:raw_lead",
-            "modern_industrialization:raw_lead", "#c:raw_materials/lead"),
-    URANIUM(3, 16, mods("mekanism", "immersiveengineering", "modern_industrialization"),
+            "modern_industrialization:raw_lead", "alltheores:raw_lead", "#c:raw_materials/lead"),
+    URANIUM(3, 16, mods("mekanism", "immersiveengineering", "modern_industrialization", "alltheores", "oritech"),
             "mekanism:raw_uranium", "immersiveengineering:raw_uranium",
-            "modern_industrialization:raw_uranium", "#c:raw_materials/uranium"),
+            "modern_industrialization:raw_uranium", "alltheores:raw_uranium", "oritech:raw_uranium", "#c:raw_materials/uranium"),
     FLUORITE(2, 48, mods("mekanism"), "mekanism:fluorite_gem"),
     // --- Create ---
-    ZINC(1, 96, mods("create"), "create:raw_zinc", "#c:raw_materials/zinc"),
+    ZINC(1, 96, mods("create", "alltheores"), "create:raw_zinc", "alltheores:raw_zinc", "#c:raw_materials/zinc"),
     // --- Powah ---
     URANINITE(2, 40, mods("powah"), "powah:uraninite_raw"),
     // --- Draconic Evolution ---
@@ -58,18 +59,18 @@ public enum MinionType implements StringRepresentable {
     // --- Create: New Age ---
     THORIUM(3, 16, mods("create_new_age"), "create_new_age:raw_thorium", "create_new_age:thorium"),
     // --- Новые (v2.2): технические моды ---
-    SILVER(2, 64, mods("thermal", "immersiveengineering", "modern_industrialization"),
-            "thermal:raw_silver", "immersiveengineering:raw_silver", "#c:raw_materials/silver"),
-    NICKEL(2, 64, mods("thermal", "immersiveengineering", "modern_industrialization"),
-            "thermal:raw_nickel", "immersiveengineering:raw_nickel", "#c:raw_materials/nickel"),
-    ALUMINUM(1, 96, mods("immersiveengineering"),
-            "immersiveengineering:raw_aluminum", "#c:raw_materials/aluminum"),
+    SILVER(2, 64, mods("thermal", "immersiveengineering", "modern_industrialization", "alltheores"),
+            "thermal:raw_silver", "immersiveengineering:raw_silver", "alltheores:raw_silver", "#c:raw_materials/silver"),
+    NICKEL(2, 64, mods("thermal", "immersiveengineering", "modern_industrialization", "alltheores", "oritech"),
+            "thermal:raw_nickel", "immersiveengineering:raw_nickel", "alltheores:raw_nickel", "oritech:raw_nickel", "#c:raw_materials/nickel"),
+    ALUMINUM(1, 96, mods("immersiveengineering", "alltheores"),
+            "immersiveengineering:raw_aluminum", "alltheores:raw_aluminum", "#c:raw_materials/aluminum"),
     TITANIUM(3, 24, mods("modern_industrialization"),
             "modern_industrialization:raw_titanium", "#c:raw_materials/titanium"),
     TUNGSTEN(3, 24, mods("modern_industrialization"),
             "modern_industrialization:raw_tungsten", "#c:raw_materials/tungsten"),
-    PLATINUM(3, 24, mods("modern_industrialization"),
-            "modern_industrialization:raw_platinum", "#c:raw_materials/platinum"),
+    PLATINUM(3, 24, mods("modern_industrialization", "alltheores", "oritech"),
+            "modern_industrialization:raw_platinum", "alltheores:raw_platinum", "oritech:raw_platinum", "#c:raw_materials/platinum"),
     CERTUS(2, 48, mods("ae2"), "ae2:certus_quartz_crystal"),
     CINNABAR(2, 48, mods("thermal"), "thermal:cinnabar"),
     SULFUR(1, 96, mods("thermal"), "thermal:sulfur"),
@@ -86,7 +87,16 @@ public enum MinionType implements StringRepresentable {
     HUNT_ENDERMAN(2, 6, mods("minecraft")),
     HUNT_GUARDIAN(3, 1, mods("minecraft")),
     HUNT_NAGA(3, 1, mods("twilightforest")),
-    HUNT_HYDRA(3, 1, mods("twilightforest"));
+    HUNT_HYDRA(3, 1, mods("twilightforest")),
+    // --- Новые (v2.8): иридий (AllTheOres) и самоцветы Thermal / ore-модов ---
+    IRIDIUM(3, 16, mods("alltheores"), "alltheores:raw_iridium", "#c:raw_materials/iridium"),
+    RUBY(2, 48, mods("thermal"), "thermal:ruby", "#c:gems/ruby"),
+    SAPPHIRE(2, 48, mods("thermal"), "thermal:sapphire", "#c:gems/sapphire"),
+    APATITE(1, 96, mods("thermal"), "thermal:apatite", "#c:gems/apatite"),
+    // --- Новые (v2.9): универсальные охотники. Цель берётся из Яйца охоты, поэтому работают с мобами и боссами
+    //     ЛЮБЫХ модов (Twilight Forest, Mowzie's Mobs, Cataclysm, Alex's Caves/Mobs, The Graveyard и т.д.) ---
+    HUNT_ANY_MOB(2, 6, mods("minecraft")),
+    HUNT_ANY_BOSS(3, 1, mods("minecraft"));
 
     private final int tier;
     private final int upgradeBase;
@@ -118,7 +128,35 @@ public enum MinionType implements StringRepresentable {
                 return true;
             }
         }
+        // Типы, у которых есть источник-тег (#c:raw_materials/..., #c:gems/...), включаются и тогда,
+        // когда стоит любой другой мод руд (Create Ores, Ores and Metals и т.п.), чьих id мы не знаем.
+        return hasTagSource() && OreMods.anyLoaded();
+    }
+
+    private boolean hasTagSource() {
+        for (String src : sources) {
+            if (src.startsWith("#")) {
+                return true;
+            }
+        }
         return false;
+    }
+
+    /** Определяет «моды руд» по id: alltheores, createores, ores_and_metals, fore_more_ores, oritech и т.д. */
+    private static final class OreMods {
+        private static Boolean cached;
+
+        static boolean anyLoaded() {
+            if (cached == null) {
+                cached = ModList.get().getMods().stream().anyMatch(m -> {
+                    String id = m.getModId();
+                    return id.endsWith("ores") || id.contains("_ores") || id.startsWith("ores")
+                            || id.contains("oreexcavation") || id.contains("ore_excavation")
+                            || id.equals("oritech") || id.equals("elementarium");
+                });
+            }
+            return cached;
+        }
     }
 
     /** Ресурс, который добывает миньон (он же платится за прокачку). AIR, если недоступен. */
@@ -146,22 +184,24 @@ public enum MinionType implements StringRepresentable {
             MAP.put(COPPER, new String[]{"minecraft:copper_ingot"});
             MAP.put(IRON, new String[]{"minecraft:iron_ingot"});
             MAP.put(GOLD, new String[]{"minecraft:gold_ingot"});
-            MAP.put(OSMIUM, new String[]{"mekanism:ingot_osmium", "#c:ingots/osmium"});
-            MAP.put(TIN, new String[]{"mekanism:ingot_tin", "thermal:tin_ingot", "#c:ingots/tin"});
+            MAP.put(OSMIUM, new String[]{"mekanism:ingot_osmium", "alltheores:osmium_ingot", "#c:ingots/osmium"});
+            MAP.put(TIN, new String[]{"mekanism:ingot_tin", "thermal:tin_ingot", "alltheores:tin_ingot", "#c:ingots/tin"});
             MAP.put(LEAD, new String[]{"mekanism:ingot_lead", "thermal:lead_ingot",
-                    "immersiveengineering:ingot_lead", "#c:ingots/lead"});
+                    "immersiveengineering:ingot_lead", "alltheores:lead_ingot", "#c:ingots/lead"});
             MAP.put(URANIUM, new String[]{"mekanism:ingot_uranium", "immersiveengineering:ingot_uranium",
-                    "#c:ingots/uranium"});
-            MAP.put(ZINC, new String[]{"create:zinc_ingot", "#c:ingots/zinc"});
+                    "alltheores:uranium_ingot", "oritech:uranium_ingot", "#c:ingots/uranium"});
+            MAP.put(ZINC, new String[]{"create:zinc_ingot", "alltheores:zinc_ingot", "#c:ingots/zinc"});
             MAP.put(URANINITE, new String[]{"powah:uraninite"});
             MAP.put(DRACONIUM, new String[]{"draconicevolution:draconium_ingot", "#c:ingots/draconium"});
             MAP.put(THORIUM, new String[]{"create_new_age:thorium_ingot", "#c:ingots/thorium"});
-            MAP.put(SILVER, new String[]{"thermal:silver_ingot", "immersiveengineering:ingot_silver", "#c:ingots/silver"});
-            MAP.put(NICKEL, new String[]{"thermal:nickel_ingot", "immersiveengineering:ingot_nickel", "#c:ingots/nickel"});
-            MAP.put(ALUMINUM, new String[]{"immersiveengineering:ingot_aluminum", "#c:ingots/aluminum"});
+            MAP.put(SILVER, new String[]{"thermal:silver_ingot", "immersiveengineering:ingot_silver", "alltheores:silver_ingot", "#c:ingots/silver"});
+            MAP.put(NICKEL, new String[]{"thermal:nickel_ingot", "immersiveengineering:ingot_nickel", "alltheores:nickel_ingot",
+                    "oritech:nickel_ingot", "#c:ingots/nickel"});
+            MAP.put(ALUMINUM, new String[]{"immersiveengineering:ingot_aluminum", "alltheores:aluminum_ingot", "#c:ingots/aluminum"});
             MAP.put(TITANIUM, new String[]{"#c:ingots/titanium"});
             MAP.put(TUNGSTEN, new String[]{"#c:ingots/tungsten"});
-            MAP.put(PLATINUM, new String[]{"#c:ingots/platinum"});
+            MAP.put(PLATINUM, new String[]{"alltheores:platinum_ingot", "oritech:platinum_ingot", "#c:ingots/platinum"});
+            MAP.put(IRIDIUM, new String[]{"alltheores:iridium_ingot", "#c:ingots/iridium"});
             MAP.put(MINIONITE, new String[]{"minecraft:netherite_ingot"});
             MAP.put(HUNT_ZOMBIE, new String[]{"minecraft:iron_ingot"});
             MAP.put(HUNT_SKELETON, new String[]{"minecraft:iron_ingot"});
@@ -171,6 +211,8 @@ public enum MinionType implements StringRepresentable {
             MAP.put(HUNT_GUARDIAN, new String[]{"techminions:minionite_ingot"});
             MAP.put(HUNT_NAGA, new String[]{"techminions:minionite_ingot"});
             MAP.put(HUNT_HYDRA, new String[]{"techminions:minionite_ingot"});
+            MAP.put(HUNT_ANY_MOB, new String[]{"minecraft:gold_ingot"});
+            MAP.put(HUNT_ANY_BOSS, new String[]{"techminions:minionite_ingot"});
         }
     }
 
@@ -281,12 +323,41 @@ public enum MinionType implements StringRepresentable {
 
     /** Миньон-охотник: вместо платформы периодически «убивает» моба и кладёт его добычу в хранилище. */
     public boolean isHunter() {
-        return Hunts.MAP.containsKey(this);
+        return Hunts.MAP.containsKey(this) || isUniversalHunter();
     }
 
+    /** Универсальный охотник: цель задаёт вставленное Яйцо охоты (любой моб любого мода). */
+    public boolean isUniversalHunter() {
+        return this == HUNT_ANY_MOB || this == HUNT_ANY_BOSS;
+    }
+
+    /** Боссовые тайминги (долгое появление и убийство). У универсального охотника на боссов - всегда. */
     public boolean isBoss() {
         Hunt hunt = Hunts.MAP.get(this);
-        return hunt != null && hunt.boss();
+        return (hunt != null && hunt.boss()) || this == HUNT_ANY_BOSS;
+    }
+
+    /** Босс ли это существо: тег c:bosses (его ставят Twilight Forest, Cataclysm и др.) или список bossEntities в конфиге. */
+    public static boolean isBossEntity(EntityType<?> type) {
+        if (type.is(Tags.EntityTypes.BOSSES)) {
+            return true;
+        }
+        ResourceLocation id = BuiltInRegistries.ENTITY_TYPE.getKey(type);
+        return Config.bossEntityIds().contains(id.toString());
+    }
+
+    /** Подходит ли яйцо с этим существом данному охотнику. */
+    public boolean acceptsEgg(EntityType<?> egg) {
+        if (egg == null) {
+            return false;
+        }
+        if (this == HUNT_ANY_MOB) {
+            return !isBossEntity(egg);
+        }
+        if (this == HUNT_ANY_BOSS) {
+            return isBossEntity(egg);
+        }
+        return getHuntEntity().map(t -> t == egg).orElse(false);
     }
 
     /** Существо-цель охотника; пусто, если мод с этим существом не установлен. */
@@ -305,10 +376,16 @@ public enum MinionType implements StringRepresentable {
 
     public String describeSource() {
         Hunt hunt = Hunts.MAP.get(this);
+        if (isUniversalHunter()) {
+            return "universal hunter (any hunt egg)";
+        }
         return hunt != null ? "hunts " + hunt.entity() : String.valueOf(getResource());
     }
 
     public boolean isAvailable() {
+        if (isUniversalHunter()) {
+            return true;
+        }
         if (isHunter()) {
             return getHuntEntity().isPresent();
         }

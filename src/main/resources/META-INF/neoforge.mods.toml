@@ -4,7 +4,7 @@ license = "All Rights Reserved"
 
 [[mods]]
 modId = "techminions"
-version = "2.7.0"
+version = "2.9.0"
 displayName = "Tech Minions"
 authors = "pave4403, leskakurnosenko"
 logoFile = "logo.png"
@@ -18,13 +18,13 @@ MINING MINIONS
 Place a minion and it builds a temporary 5x5 ore platform one block at a time, then mines it back block by block into its own storage. Build and mine speed is the same and depends on the minion's level (I to XI). Over 30 resource types: vanilla ores, gems and materials, plus Minionite.
 
 HUNTER MINIONS
-Put a Hunt Egg into a hunter minion and it "spawns" and "kills" that mob over and over, collecting the real loot table drops - zombies, skeletons, blazes, endermen, elder guardians and even Twilight Forest bosses. Hunt Eggs drop rarely from mobs killed with the Egg Collector enchantment (swords and axes, levels I-III).
+Put a Hunt Egg into a hunter minion and it "spawns" and "kills" that mob over and over, collecting the real loot table drops - zombies, skeletons, blazes, endermen, elder guardians and Twilight Forest bosses. The universal Mob Hunter and Boss Hunter accept the egg of ANY mob or boss from any mod (Twilight Forest and its add-ons, Mowzie's Mobs, Cataclysm, Alex's Caves, Alex's Mobs, The Graveyard, boss packs and more). Hunt Eggs drop rarely from mobs killed with the Egg Collector enchantment (swords and axes, levels I-III).
 
 UPGRADES AND PROGRESSION
 Speed, Storage, Fortune, Output and Smelter upgrades (raw ores are smelted into ingots automatically). Minions and upgrades are crafted through a tiered chain of Basic, Reinforced and Elite Minion Cores. Minionite gear (armor, sword, pickaxe, axe, shovel, hoe) can be crafted from Minionite Ingots.
 
 MOD SUPPORT (ALL OPTIONAL)
-Mekanism, Create, Create: New Age, Powah, Draconic Evolution, Thermal, Immersive Engineering, Modern Industrialization, Applied Energistics 2 and Twilight Forest. Other mods are picked up automatically through common c:raw_materials tags. None of them are required.
+Mekanism (incl. Dense/Evolved/Generators/Tools), Create (incl. Ores, Rock & Stone, Ore Excavation), AllTheOres, Oritech, Immersive Engineering, Thermal, Powah, Draconic Evolution, Create: New Age, Modern Industrialization, Applied Energistics 2 and Twilight Forest. Any other ore or tech mod that registers its raw ores, ingots and gems in the common c: item tags is picked up automatically. None of them are required.
 
 Translated into 18 languages. Fully configurable (speeds, upgrade costs, hunt times, egg chances).
 

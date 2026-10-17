@@ -9,11 +9,9 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 
 /**
@@ -50,16 +48,13 @@ public final class EggDropHandler {
         if (level <= 0) {
             return;
         }
-        if (SpawnEggItem.byId(victim.getType()) == null) {
-            return; // у существа нет ванильного яйца: нет цвета для яйца охоты
-        }
         double chance = Config.EGG_CHANCE_PER_LEVEL.get() * level;
         Holder<Enchantment> looting = enchantments.get(Enchantments.LOOTING).orElse(null);
         if (looting != null) {
             int lootingLevel = EnchantmentHelper.getItemEnchantmentLevel(looting, weapon);
             chance *= 1.0 + Config.EGG_LOOTING_BONUS.get() * lootingLevel; // «Добыча» повышает шанс
         }
-        if (victim.getType().is(Tags.EntityTypes.BOSSES)) {
+        if (MinionType.isBossEntity(victim.getType())) {
             chance *= Config.EGG_BOSS_MULT.get();
         }
         if (victim.getRandom().nextDouble() < chance) {

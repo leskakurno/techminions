@@ -98,5 +98,17 @@
   "message.techminions.not_enough": "數量不足：需要 %s x %s",
   "item.techminions.upgrade_smelter": "熔煉升級",
   "tooltip.techminions.upgrade.smelter": "像熔爐一樣自動將粗礦熔煉成錠",
-  "gui.techminions.status": "%s"
+  "gui.techminions.status": "%s",
+  "type.techminions.iridium": "銥",
+  "item.techminions.minion_iridium": "銥礦工",
+  "type.techminions.ruby": "紅寶石",
+  "item.techminions.minion_ruby": "紅寶石礦工",
+  "type.techminions.sapphire": "藍寶石",
+  "item.techminions.minion_sapphire": "藍寶石礦工",
+  "type.techminions.apatite": "磷灰石",
+  "item.techminions.minion_apatite": "磷灰石礦工",
+  "type.techminions.hunt_any_mob": "怪物獵人",
+  "item.techminions.minion_hunt_any_mob": "怪物獵人礦工",
+  "type.techminions.hunt_any_boss": "首領獵人",
+  "item.techminions.minion_hunt_any_boss": "首領獵人礦工"
 }

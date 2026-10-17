@@ -98,5 +98,17 @@
   "message.techminions.not_enough": "부족: %s x %s 필요",
   "item.techminions.upgrade_smelter": "제련 업그레이드",
   "tooltip.techminions.upgrade.smelter": "화로처럼 원석을 자동으로 주괴로 제련합니다",
-  "gui.techminions.status": "%s"
+  "gui.techminions.status": "%s",
+  "type.techminions.iridium": "이리듐",
+  "item.techminions.minion_iridium": "이리듐 미니언",
+  "type.techminions.ruby": "루비",
+  "item.techminions.minion_ruby": "루비 미니언",
+  "type.techminions.sapphire": "사파이어",
+  "item.techminions.minion_sapphire": "사파이어 미니언",
+  "type.techminions.apatite": "인회석",
+  "item.techminions.minion_apatite": "인회석 미니언",
+  "type.techminions.hunt_any_mob": "몹 사냥꾼",
+  "item.techminions.minion_hunt_any_mob": "몹 사냥꾼 미니언",
+  "type.techminions.hunt_any_boss": "보스 사냥꾼",
+  "item.techminions.minion_hunt_any_boss": "보스 사냥꾼 미니언"
 }

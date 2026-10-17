@@ -98,5 +98,17 @@
   "message.techminions.not_enough": "Non basta: servono %s x %s",
   "item.techminions.upgrade_smelter": "Potenziamento fusione",
   "tooltip.techminions.upgrade.smelter": "Fonde i minerali grezzi in lingotti automaticamente, come in una fornace",
-  "gui.techminions.status": "%s"
+  "gui.techminions.status": "%s",
+  "type.techminions.iridium": "Iridio",
+  "item.techminions.minion_iridium": "Minion: Iridio",
+  "type.techminions.ruby": "Rubino",
+  "item.techminions.minion_ruby": "Minion: Rubino",
+  "type.techminions.sapphire": "Zaffiro",
+  "item.techminions.minion_sapphire": "Minion: Zaffiro",
+  "type.techminions.apatite": "Apatite",
+  "item.techminions.minion_apatite": "Minion: Apatite",
+  "type.techminions.hunt_any_mob": "Cacciatore di mob",
+  "item.techminions.minion_hunt_any_mob": "Minion: Cacciatore di mob",
+  "type.techminions.hunt_any_boss": "Cacciatore di boss",
+  "item.techminions.minion_hunt_any_boss": "Minion: Cacciatore di boss"
 }

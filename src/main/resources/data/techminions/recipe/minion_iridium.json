@@ -1,0 +1,37 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "K": {
+      "item": "techminions:core_elite"
+    },
+    "I": {
+      "item": "minecraft:gold_block"
+    },
+    "P": {
+      "item": "minecraft:diamond_pickaxe"
+    },
+    "R": {
+      "item": "alltheores:iridium_ingot"
+    }
+  },
+  "pattern": [
+    "RRR",
+    "RKR",
+    "IPI"
+  ],
+  "result": {
+    "id": "techminions:minion_iridium",
+    "count": 1
+  },
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "alltheores"
+    },
+    {
+      "type": "neoforge:item_exists",
+      "item": "alltheores:iridium_ingot"
+    }
+  ]
+}
