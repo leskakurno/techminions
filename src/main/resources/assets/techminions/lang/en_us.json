@@ -158,5 +158,10 @@
   "item.techminions.minion_hunt_snow_queen": "Snow Queen Hunter Minion",
   "block.techminions.minion_chest_small": "Small Minion Chest",
   "block.techminions.minion_chest_medium": "Medium Minion Chest",
-  "block.techminions.minion_chest_large": "Large Minion Chest"
+  "block.techminions.minion_chest_large": "Large Minion Chest",
+  "jei.techminions.hunt_egg.how": "Hunt Eggs cannot be crafted. Kill a mob yourself with a sword or axe enchanted with Egg Collector, and it may drop its own Hunt Egg. The egg does not spawn the mob: put it into the egg slot of a hunter minion.",
+  "jei.techminions.hunt_egg.chance": "Drop chance per kill of a regular mob: Egg Collector I - %s, II - %s, III - %s.",
+  "jei.techminions.hunt_egg.looting": "Looting on the same weapon raises the chance by %s per level (Looting III: x%s).",
+  "jei.techminions.hunt_egg.boss": "Bosses: the chance is multiplied by %s (Egg Collector III: %s, with Looting III: %s).",
+  "jei.techminions.egg_collector.info": "Sword or axe enchantment. A mob killed by a player with it may drop its Hunt Egg. Chance at this level: %s per kill (boss: %s). Looting on the same weapon raises it by %s per level."
 }

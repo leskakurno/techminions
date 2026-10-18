@@ -19,3 +19,17 @@ neoForge {
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
+
+repositories {
+    maven {
+        name = 'BlameJared (JEI)'
+        url = 'https://maven.blamejared.com/'
+    }
+}
+
+dependencies {
+    // JEI: только для компиляции плагина (в jar мода не входит) и для запуска в среде разработки.
+    compileOnly "mezz.jei:jei-1.21.1-common-api:19.21.2.313"
+    compileOnly "mezz.jei:jei-1.21.1-neoforge-api:19.21.2.313"
+    runtimeOnly "mezz.jei:jei-1.21.1-neoforge:19.21.2.313"
+}

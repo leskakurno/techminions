@@ -62,7 +62,6 @@ public class MinionEntity extends Mob {
     public static final int MAX_LEVEL = 11;
     public static final int STORAGE_SIZE = 15;
     public static final int UPGRADE_SLOTS = 3;
-    private static final int RADIUS = 2; // 5x5
     private static final String[] ROMAN = {"", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI"};
 
     private static final EntityDataAccessor<Integer> DATA_TYPE =
@@ -539,8 +538,9 @@ public class MinionEntity extends Mob {
         int yOff = Config.PLATFORM_Y_OFFSET.get();
         BlockPos center = blockPosition().offset(0, yOff, 0);
         List<int[]> offsets = new ArrayList<>();
-        for (int dx = -RADIUS; dx <= RADIUS; dx++) {
-            for (int dz = -RADIUS; dz <= RADIUS; dz++) {
+        final int radius = Config.PLATFORM_RADIUS.get();
+        for (int dx = -radius; dx <= radius; dx++) {
+            for (int dz = -radius; dz <= radius; dz++) {
                 if (dx == 0 && dz == 0 && yOff == 0) {
                     continue; // здесь стоит сам миньон
                 }

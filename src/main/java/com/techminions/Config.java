@@ -61,7 +61,8 @@ public class Config {
             "cataclysm:ender_guardian", "cataclysm:netherite_monstrosity", "cataclysm:ignis", "cataclysm:the_harbinger",
             "cataclysm:the_leviathan", "cataclysm:scylla", "cataclysm:ancient_remnant", "cataclysm:maledictus",
             "alexscaves:luxtructosaurus", "alexscaves:tremorzilla", "alexsmobs:void_worm",
-            "graveyard:lich", "graveyard:nightmare");
+            "graveyard:lich", "graveyard:nightmare",
+            "aether:slider", "aether:valkyrie_queen", "aether:sun_spirit");
 
     public static final ModConfigSpec.ConfigValue<String> BOSS_ENTITIES = BUILDER
             .comment("Extra entity ids (comma-separated) that count as bosses for hunter minions and Hunt Eggs, "
@@ -86,6 +87,65 @@ public class Config {
             bossRaw = raw;
         }
         return bossSet;
+    }
+
+    // ---------- v3.0: управление совместимостью и лутом охотников ----------
+    public static final ModConfigSpec.IntValue PLATFORM_RADIUS = BUILDER
+            .comment("Radius of the mining platform around a minion: 1 = 3x3, 2 = 5x5 (default), 3 = 7x7.")
+            .defineInRange("platformRadius", 2, 1, 3);
+
+    public static final ModConfigSpec.DoubleValue HUNT_BOSS_LOOT_CHANCE = BUILDER
+            .comment("Hunter minions: chance (0.0 - 1.0) that each item of a BOSS loot roll is actually kept. 1.0 = everything, lower it to make boss hunting less generous.")
+            .defineInRange("huntBossLootChance", 1.0, 0.0, 1.0);
+
+    public static final ModConfigSpec.ConfigValue<String> HUNT_LOOT_BLACKLIST = BUILDER
+            .comment("Hunter minions: item ids (comma-separated, e.g. 'twilightforest:lich_trophy') that hunters never collect. "
+                    + "Use it for progression-critical or unique items.")
+            .define("huntLootBlacklist", "");
+
+    public static final ModConfigSpec.ConfigValue<String> DISABLED_MODS = BUILDER
+            .comment("Mod ids (comma-separated, e.g. 'mekanism,thermal') whose minions are switched off. "
+                    + "A minion with several possible mods stays on while at least one of them is not listed here.")
+            .define("disabledMods", "");
+
+    public static final ModConfigSpec.ConfigValue<String> DISABLED_MINIONS = BUILDER
+            .comment("Minion types (comma-separated, e.g. 'iridium,hunt_lich') that are switched off. Names are the ones in the log at startup.")
+            .define("disabledMinions", "");
+
+    public static final ModConfigSpec.ConfigValue<String> DISABLED_BOSSES = BUILDER
+            .comment("Entity ids (comma-separated, e.g. 'twilightforest:hydra') whose Hunt Eggs are not accepted by any hunter minion.")
+            .define("disabledEntities", "");
+
+    private static final java.util.Map<String, java.util.Set<String>> CSV_CACHE = new java.util.HashMap<>();
+
+    /** Разбор списка через запятую (с кэшем по исходной строке). */
+    public static synchronized java.util.Set<String> csv(String raw) {
+        return CSV_CACHE.computeIfAbsent(raw, r -> {
+            java.util.Set<String> set = new java.util.HashSet<>();
+            for (String part : r.split(",")) {
+                String id = part.trim();
+                if (!id.isEmpty()) {
+                    set.add(id);
+                }
+            }
+            return set;
+        });
+    }
+
+    public static java.util.Set<String> disabledMods() {
+        return csv(DISABLED_MODS.get());
+    }
+
+    public static java.util.Set<String> disabledMinions() {
+        return csv(DISABLED_MINIONS.get());
+    }
+
+    public static java.util.Set<String> disabledEntities() {
+        return csv(DISABLED_BOSSES.get());
+    }
+
+    public static java.util.Set<String> huntLootBlacklist() {
+        return csv(HUNT_LOOT_BLACKLIST.get());
     }
 
     public static final ModConfigSpec SPEC = BUILDER.build();

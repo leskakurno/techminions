@@ -157,7 +157,7 @@ public enum MinionType implements StringRepresentable {
             if (cached == null) {
                 cached = ModList.get().getMods().stream().anyMatch(m -> {
                     String id = m.getModId();
-                    return id.endsWith("ores") || id.contains("_ores") || id.startsWith("ores")
+                    return id.endsWith("ores") || id.contains("mekanism") || id.contains("_ores") || id.startsWith("ores")
                             || id.contains("oreexcavation") || id.contains("ore_excavation")
                             || id.equals("oritech") || id.equals("elementarium");
                 });
@@ -370,6 +370,9 @@ public enum MinionType implements StringRepresentable {
         if (egg == null) {
             return false;
         }
+        if (Config.disabledEntities().contains(BuiltInRegistries.ENTITY_TYPE.getKey(egg).toString())) {
+            return false;
+        }
         if (this == HUNT_ANY_MOB) {
             return !isBossEntity(egg);
         }
@@ -401,7 +404,31 @@ public enum MinionType implements StringRepresentable {
         return hunt != null ? "hunts " + hunt.entity() : String.valueOf(getResource());
     }
 
+    /** Выключен ли тип в конфиге (по имени типа или потому, что все его моды отключены в disabledMods). */
+    public boolean isDisabledByConfig() {
+        if (Config.disabledMinions().contains(getSerializedName())) {
+            return true;
+        }
+        java.util.Set<String> off = Config.disabledMods();
+        if (off.isEmpty()) {
+            return false;
+        }
+        boolean anyLoaded = false;
+        for (String id : mods) {
+            if (id.equals("minecraft") || ModList.get().isLoaded(id)) {
+                anyLoaded = true;
+                if (!off.contains(id)) {
+                    return false;
+                }
+            }
+        }
+        return anyLoaded;
+    }
+
     public boolean isAvailable() {
+        if (isDisabledByConfig()) {
+            return false;
+        }
         if (isUniversalHunter()) {
             return true;
         }

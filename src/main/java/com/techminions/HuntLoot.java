@@ -51,10 +51,19 @@ public final class HuntLoot {
                     .withOptionalParameter(LootContextParams.DIRECT_ATTACKING_ENTITY, killer)
                     .withOptionalParameter(LootContextParams.LAST_DAMAGE_PLAYER, killer)
                     .create(LootContextParamSets.ENTITY);
+            java.util.Set<String> blocked = Config.huntLootBlacklist();
+            double keep = MinionType.isBossEntity(type) ? Config.HUNT_BOSS_LOOT_CHANCE.get() : 1.0;
             for (ItemStack stack : table.getRandomItems(params)) {
-                if (!stack.isEmpty()) {
-                    result.add(stack);
+                if (stack.isEmpty()) {
+                    continue;
                 }
+                if (!blocked.isEmpty() && blocked.contains(BuiltInRegistries.ITEM.getKey(stack.getItem()).toString())) {
+                    continue; // чёрный список: уникальные и прогрессионные предметы охотники не собирают
+                }
+                if (keep < 1.0 && level.random.nextDouble() >= keep) {
+                    continue;
+                }
+                result.add(stack);
             }
             entity.discard();
         } catch (Exception e) {

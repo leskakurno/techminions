@@ -158,5 +158,10 @@
   "item.techminions.minion_hunt_snow_queen": "Миньон-охотник на снежную королеву",
   "block.techminions.minion_chest_small": "Малый сундук миньонов",
   "block.techminions.minion_chest_medium": "Средний сундук миньонов",
-  "block.techminions.minion_chest_large": "Большой сундук миньонов"
+  "block.techminions.minion_chest_large": "Большой сундук миньонов",
+  "jei.techminions.hunt_egg.how": "Яйца охоты не крафтятся. Убей моба сам мечом или топором с зачарованием «Коллекционер яиц», и с него может выпасть его собственное яйцо охоты. Яйцо не призывает моба: вставь его в слот яйца миньона-охотника.",
+  "jei.techminions.hunt_egg.chance": "Шанс выпадения за убийство обычного моба: Коллекционер яиц I - %s, II - %s, III - %s.",
+  "jei.techminions.hunt_egg.looting": "«Добыча» на том же оружии повышает шанс на %s за уровень (Добыча III: x%s).",
+  "jei.techminions.hunt_egg.boss": "У боссов шанс умножается на %s (Коллекционер яиц III: %s, с Добычей III: %s).",
+  "jei.techminions.egg_collector.info": "Зачарование для меча или топора. Моб, убитый игроком с ним, может уронить своё яйцо охоты. Шанс на этом уровне: %s за убийство (босс: %s). «Добыча» на том же оружии повышает его на %s за уровень."
 }
