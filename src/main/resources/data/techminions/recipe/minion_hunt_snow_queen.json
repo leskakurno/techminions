@@ -14,12 +14,18 @@
     "M": {
       "item": "techminions:minionite_ingot"
     },
-    "T": {
-      "item": "twilightforest:snow_queen_trophy"
+    "E": {
+      "type": "neoforge:components",
+      "items": "techminions:hunt_egg",
+      "components": {
+        "minecraft:custom_data": {
+          "Entity": "twilightforest:snow_queen"
+        }
+      }
     }
   },
   "pattern": [
-    "MTM",
+    "MEM",
     "MKM",
     "IPI"
   ],
@@ -31,10 +37,6 @@
     {
       "type": "neoforge:mod_loaded",
       "modid": "twilightforest"
-    },
-    {
-      "type": "neoforge:item_exists",
-      "item": "twilightforest:snow_queen_trophy"
     }
   ]
 }

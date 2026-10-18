@@ -611,17 +611,14 @@ public class MinionEntity extends Mob {
         return remaining;
     }
 
-    /**
-     * Выгрузка добычи. Сундук миньонов (под миньоном или рядом с ним) принимает добычу сам, без улучшений.
-     * Улучшение OUTPUT по-прежнему перекладывает добычу в любой контейнер (сундук, бочка), на котором стоит миньон.
-     */
+    /** Выгрузка добычи: миньон сам складывает её в Сундук миньонов под собой или рядом с собой. */
     private void pushOutput() {
         if (storageIsEmpty()) {
             return;
         }
         BlockPos pos = blockPosition();
         BlockPos below = pos.below();
-        if (upgradeCount(UpgradeType.OUTPUT) > 0 || isMinionChest(below)) {
+        if (isMinionChest(below)) {
             pushInto(below, Direction.UP);
         }
         for (Direction dir : Direction.Plane.HORIZONTAL) {

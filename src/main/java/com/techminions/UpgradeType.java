@@ -8,7 +8,6 @@ public enum UpgradeType implements StringRepresentable {
     SPEED,
     STORAGE,
     FORTUNE,
-    OUTPUT,
     SMELTER;
 
     @Override

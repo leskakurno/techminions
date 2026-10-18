@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * Сундук миньонов (маленький / средний / большой). Миньон, стоящий на нём (или рядом),
- * сам складывает в него добычу - улучшение «Output» для этого не нужно.
+ * сам складывает в него добычу.
  */
 public class MinionChestBlock extends Block implements EntityBlock {
     public static final MapCodec<MinionChestBlock> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(

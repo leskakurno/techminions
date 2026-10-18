@@ -11,13 +11,22 @@
     "P": {
       "item": "techminions:minionite_sword"
     },
-    "R": {
-      "item": "twilightforest:naga_scale"
+    "M": {
+      "item": "techminions:minionite_ingot"
+    },
+    "E": {
+      "type": "neoforge:components",
+      "items": "techminions:hunt_egg",
+      "components": {
+        "minecraft:custom_data": {
+          "Entity": "twilightforest:naga"
+        }
+      }
     }
   },
   "pattern": [
-    "RRR",
-    "RKR",
+    "MEM",
+    "MKM",
     "IPI"
   ],
   "result": {
@@ -28,14 +37,6 @@
     {
       "type": "neoforge:mod_loaded",
       "modid": "twilightforest"
-    },
-    {
-      "type": "neoforge:mod_loaded",
-      "modid": "twilightforest"
-    },
-    {
-      "type": "neoforge:item_exists",
-      "item": "twilightforest:naga_scale"
     }
   ]
 }
