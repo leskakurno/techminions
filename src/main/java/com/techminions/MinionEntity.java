@@ -682,7 +682,8 @@ public class MinionEntity extends Mob {
         int cost = costForNext();
         MinionType type = getMinionType();
         Predicate<ItemStack> isCost = type::isCostItem; // слитки (любые из тега), без слитков - сам ресурс
-        int have = countIn(player.getInventory().items, isCost) + countIn(storage, isCost);
+        List<IItemHandler> chests = adjacentChestHandlers(); // сундуки миньонов под миньоном и рядом
+        int have = countIn(player.getInventory().items, isCost) + countIn(storage, isCost) + countInHandlers(chests, isCost);
         if (have < cost) {
             player.displayClientMessage(Component.translatable(
                     "message.techminions.not_enough", cost, new ItemStack(type.getCostItem()).getHoverName()), true);
@@ -691,11 +692,71 @@ public class MinionEntity extends Mob {
         int left = cost;
         left -= takeFrom(player.getInventory().items, isCost, left);
         if (left > 0) {
-            takeFrom(storage, isCost, left);
+            left -= takeFrom(storage, isCost, left);
+        }
+        if (left > 0) {
+            takeFromHandlers(chests, isCost, left);
         }
         entityData.set(DATA_LEVEL, lvl + 1);
         refreshVisuals();
         level().playSound(null, blockPosition(), SoundEvents.PLAYER_LEVELUP, SoundSource.NEUTRAL, 0.6F, 1.2F);
+    }
+
+    /** Хранилища всех Сундуков миньонов, из которых миньон берёт ресурсы на прокачку (тот же набор, что и для выгрузки). */
+    private List<IItemHandler> adjacentChestHandlers() {
+        List<IItemHandler> result = new ArrayList<>();
+        BlockPos pos = blockPosition();
+        BlockPos below = pos.below();
+        if (isMinionChest(below)) {
+            IItemHandler h = chestHandler(below, Direction.UP);
+            if (h != null) {
+                result.add(h);
+            }
+        }
+        for (Direction dir : Direction.Plane.HORIZONTAL) {
+            BlockPos side = pos.relative(dir);
+            if (isMinionChest(side)) {
+                IItemHandler h = chestHandler(side, dir.getOpposite());
+                if (h != null) {
+                    result.add(h);
+                }
+            }
+        }
+        return result;
+    }
+
+    private IItemHandler chestHandler(BlockPos pos, Direction side) {
+        return level().getCapability(Capabilities.ItemHandler.BLOCK, pos, side);
+    }
+
+    private static int countInHandlers(List<IItemHandler> handlers, Predicate<ItemStack> match) {
+        int n = 0;
+        for (IItemHandler handler : handlers) {
+            for (int i = 0; i < handler.getSlots(); i++) {
+                ItemStack s = handler.getStackInSlot(i);
+                if (!s.isEmpty() && match.test(s)) {
+                    n += s.getCount();
+                }
+            }
+        }
+        return n;
+    }
+
+    private static int takeFromHandlers(List<IItemHandler> handlers, Predicate<ItemStack> match, int amount) {
+        int taken = 0;
+        for (IItemHandler handler : handlers) {
+            for (int i = 0; i < handler.getSlots() && taken < amount; i++) {
+                ItemStack s = handler.getStackInSlot(i);
+                if (!s.isEmpty() && match.test(s)) {
+                    ItemStack got = handler.extractItem(i, amount - taken, false);
+                    taken += got.getCount();
+                }
+            }
+            if (taken >= amount) {
+                break;
+            }
+        }
+        return taken;
     }
 
     private static int countIn(List<ItemStack> list, Predicate<ItemStack> match) {
