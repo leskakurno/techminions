@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "C": {
+      "item": "minecraft:comparator"
+    },
+    "K": {
+      "item": "techminions:core_basic"
+    }
+  },
+  "pattern": [
+    "ICI",
+    "CKC",
+    "ICI"
+  ],
+  "result": {
+    "id": "techminions:tablet_upgrade_stats",
+    "count": 1
+  }
+}

@@ -6,8 +6,8 @@ public class Config {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
 
     public static final ModConfigSpec.IntValue BASE_TICKS = BUILDER
-            .comment("Ticks per mined block at minion level I (100 = 5 seconds). Higher levels and Speed Upgrades make it faster.")
-            .defineInRange("baseTicksPerBlock", 100, 20, 6000);
+            .comment("Ticks per mined block at minion level I (150 = 7.5 seconds). Higher levels and Speed Upgrades make it faster.")
+            .defineInRange("baseTicksPerBlock", 150, 20, 6000);
 
     public static final ModConfigSpec.IntValue MIN_TICKS = BUILDER
             .comment("Absolute minimum ticks per mined block (prevents lag from over-upgraded minions).")
@@ -23,19 +23,19 @@ public class Config {
 
     public static final ModConfigSpec.IntValue HUNT_MOB_SPAWN_SEC = BUILDER
             .comment("Hunter minions: seconds for a normal mob to 'spawn' (from the hunt egg) before it can be killed.")
-            .defineInRange("huntMobSpawnSeconds", 15, 1, 100000);
+            .defineInRange("huntMobSpawnSeconds", 25, 1, 100000);
 
     public static final ModConfigSpec.IntValue HUNT_MOB_KILL_SEC = BUILDER
             .comment("Hunter minions: seconds it takes to kill a normal mob.")
-            .defineInRange("huntMobKillSeconds", 15, 1, 100000);
+            .defineInRange("huntMobKillSeconds", 25, 1, 100000);
 
     public static final ModConfigSpec.IntValue HUNT_BOSS_SPAWN_MIN = BUILDER
             .comment("Hunter minions: minutes for a boss to 'spawn' (from the hunt egg).")
-            .defineInRange("huntBossSpawnMinutes", 45, 1, 100000);
+            .defineInRange("huntBossSpawnMinutes", 60, 1, 100000);
 
     public static final ModConfigSpec.IntValue HUNT_BOSS_KILL_MIN = BUILDER
             .comment("Hunter minions: minutes it takes to kill a boss.")
-            .defineInRange("huntBossKillMinutes", 15, 1, 100000);
+            .defineInRange("huntBossKillMinutes", 20, 1, 100000);
 
     public static final ModConfigSpec.BooleanValue HUNT_SCALE = BUILDER
             .comment("If true, minion level and Speed Upgrades shorten the hunt times above (like mining). Default false = exact times.")
@@ -146,6 +146,35 @@ public class Config {
 
     public static java.util.Set<String> huntLootBlacklist() {
         return csv(HUNT_LOOT_BLACKLIST.get());
+    }
+
+    // ---------- v3.2: механизмы, планшет ----------
+    private static final String DEFAULT_MACHINES = String.join(",",
+            "minecraft:furnace", "minecraft:blast_furnace", "minecraft:smoker", "minecraft:brewing_stand",
+            "mekanism", "mekanismgenerators", "thermal", "immersiveengineering", "create", "oritech", "powah",
+            "draconicevolution", "create_new_age", "modern_industrialization", "ae2", "enderio",
+            "industrialforegoing", "pneumaticcraft");
+
+    public static final ModConfigSpec.ConfigValue<String> MACHINE_BLOCKS = BUILDER
+            .comment("Machines a minion with the Machine Feed / Machine Collect upgrades may work with. "
+                    + "Entries are mod ids (all blocks of that mod) or exact block ids (required for minecraft: blocks). "
+                    + "Chests, barrels, hoppers, drawers, pipes and other storage / transport blocks are always ignored.")
+            .define("machineBlocks", DEFAULT_MACHINES);
+
+    public static final ModConfigSpec.IntValue MACHINE_IO_TICKS = BUILDER
+            .comment("How often (in ticks) a minion exchanges items with adjacent machines.")
+            .defineInRange("machineIoTicks", 20, 5, 1200);
+
+    public static final ModConfigSpec.IntValue MACHINE_IO_ITEMS = BUILDER
+            .comment("Maximum items moved per machine per exchange.")
+            .defineInRange("machineIoItems", 16, 1, 256);
+
+    public static final ModConfigSpec.IntValue REGISTRY_TICKS = BUILDER
+            .comment("How often (in ticks) a minion reports its status to the Minions tab / Tablet.")
+            .defineInRange("statusReportTicks", 100, 20, 1200);
+
+    public static java.util.Set<String> machineBlocks() {
+        return csv(MACHINE_BLOCKS.get());
     }
 
     public static final ModConfigSpec SPEC = BUILDER.build();

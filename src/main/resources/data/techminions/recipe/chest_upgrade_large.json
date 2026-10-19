@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "G": {
+      "item": "minecraft:gold_ingot"
+    },
+    "K": {
+      "item": "techminions:core_reinforced"
+    }
+  },
+  "pattern": [
+    "DGD",
+    "GKG",
+    "DGD"
+  ],
+  "result": {
+    "id": "techminions:chest_upgrade_large",
+    "count": 1
+  }
+}

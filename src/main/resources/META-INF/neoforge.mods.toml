@@ -4,7 +4,7 @@ license = "All Rights Reserved"
 
 [[mods]]
 modId = "techminions"
-version = "3.1.0"
+version = "3.3.0"
 displayName = "Tech Minions"
 authors = "pave4403, leskakurnosenko"
 logoFile = "logo.png"
@@ -21,10 +21,13 @@ HUNTER MINIONS
 Put a Hunt Egg into a hunter minion and it "spawns" and "kills" that mob over and over, collecting the real loot table drops - zombies, skeletons, blazes, endermen, elder guardians and all Twilight Forest bosses (Naga, Hydra, Lich, Minoshroom, Knight Phantom, Ur-Ghast, Alpha Yeti, Snow Queen). The universal Mob Hunter and Boss Hunter accept the egg of ANY mob or boss from any mod (Twilight Forest and its add-ons, Mowzie's Mobs, Cataclysm, Alex's Caves, Alex's Mobs, The Graveyard, boss packs and more). Hunt Eggs drop rarely from mobs killed with the Egg Collector enchantment (swords and axes, levels I-III).
 
 MINION CHESTS
-Small (27 slots), Medium (54) and Large (108) Minion Chests are crafted separately - no upgrade chain. A minion standing on a Minion Chest (or next to one) stores its loot there automatically.
+Small (9 slots), Medium (18) and Large (36) Minion Chests are crafted separately - no upgrade chain, and they take a long time to break. A minion standing on a Minion Chest (or next to one) stores its loot there automatically and can spend the chest's resources on its own level-ups. Only Minion Chests are used: vanilla chests, barrels and chests from other mods are ignored.
 
 UPGRADES AND PROGRESSION
-Speed, Storage, Fortune and Smelter upgrades (raw ores are smelted into ingots automatically). Minions and upgrades are crafted through a tiered chain of Basic, Reinforced and Elite Minion Cores. Minionite gear (armor, sword, pickaxe, axe, shovel, hoe) can be crafted from Minionite Ingots.
+6 upgrade slots. Speed, Storage, Fortune and Smelter upgrades (raw ores are smelted into ingots automatically), plus Machine Feed / Machine Collect (the minion loads adjacent machines from supported mods and takes their products) and Redstone Control (a redstone signal pauses the minion). Minions and upgrades are crafted through a tiered chain of Basic, Reinforced and Elite Minion Cores. Minionite gear (armor, sword, pickaxe, axe, shovel, hoe) can be crafted from Minionite Ingots.
+
+MINIONS TAB AND TABLET
+A "Minions" tab in your inventory shows which of your minions are working and which are not. The Minion Tablet links to your minions and shows what they produced from anywhere - view only, items can never be taken out. Tablet upgrades: more links, dimensional link, statistics. The very expensive Elite Tablet takes a Remote Access upgrade that lets you take items out of linked minions from afar. Small Minion Chests can be upgraded to Medium and then Large without losing items. Machine support is fully optional: no other mod is required. Includes a set of advancements.
 
 MOD SUPPORT (ALL OPTIONAL)
 Mekanism (incl. Dense/Evolved/Generators/Tools), Create (incl. Ores, Rock & Stone, Ore Excavation), AllTheOres, Oritech, Immersive Engineering, Thermal, Powah, Draconic Evolution, Create: New Age, Modern Industrialization, Applied Energistics 2 and Twilight Forest. Any other ore or tech mod that registers its raw ores, ingots and gems in the common c: item tags is picked up automatically. None of them are required.

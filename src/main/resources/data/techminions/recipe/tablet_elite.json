@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "M": {
+      "item": "techminions:minionite_ingot"
+    },
+    "N": {
+      "item": "minecraft:nether_star"
+    },
+    "E": {
+      "item": "techminions:core_elite"
+    },
+    "T": {
+      "item": "techminions:tablet"
+    },
+    "G": {
+      "item": "minecraft:netherite_ingot"
+    }
+  },
+  "pattern": [
+    "MNM",
+    "ETE",
+    "GGG"
+  ],
+  "result": {
+    "id": "techminions:tablet_elite",
+    "count": 1
+  }
+}

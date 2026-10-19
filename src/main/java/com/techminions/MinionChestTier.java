@@ -4,9 +4,9 @@ import java.util.Locale;
 
 /** Размеры Сундука миньонов. Разные размеры - это три отдельных блока, а не улучшение одного. */
 public enum MinionChestTier {
-    SMALL(9, 3),
-    MEDIUM(9, 6),
-    LARGE(18, 6);
+    SMALL(9, 1),   //  9 ячеек
+    MEDIUM(9, 2),  // 18 ячеек
+    LARGE(9, 4);   // 36 ячеек
 
     private final int columns;
     private final int rows;

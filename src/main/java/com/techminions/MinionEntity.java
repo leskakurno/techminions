@@ -4,6 +4,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -50,6 +51,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Predicate;
 
 /**
@@ -61,7 +63,7 @@ import java.util.function.Predicate;
 public class MinionEntity extends Mob {
     public static final int MAX_LEVEL = 11;
     public static final int STORAGE_SIZE = 15;
-    public static final int UPGRADE_SLOTS = 3;
+    public static final int UPGRADE_SLOTS = 6;
     private static final String[] ROMAN = {"", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI"};
 
     private static final EntityDataAccessor<Integer> DATA_TYPE =
@@ -94,6 +96,10 @@ public class MinionEntity extends Mob {
 
     private int cooldown = 40;
     private int cooldownMax = 40;
+
+    // Кто поставил миньона (для вкладки «Миньоны» и Планшета). У старых миньонов появляется при первом открытии окна.
+    private UUID ownerId;
+    private String ownerName = "";
 
     public MinionEntity(EntityType<? extends MinionEntity> type, Level level) {
         super(type, level);
@@ -204,6 +210,74 @@ public class MinionEntity extends Mob {
         return intervalFor(getMinionType(), getMinionLevel(), upgradeCount(UpgradeType.SPEED));
     }
 
+    // ---------- Владелец и отчёт в реестр ----------
+
+    public UUID getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwner(Player player) {
+        this.ownerId = player.getUUID();
+        this.ownerName = player.getGameProfile().getName();
+        reportToRegistry();
+    }
+
+    public boolean isOwnedBy(Player player) {
+        return ownerId != null && ownerId.equals(player.getUUID());
+    }
+
+    /** Снимок для вкладки «Миньоны» и Планшета: состояние + что лежит в хранилище и в Сундуках миньонов. */
+    public void reportToRegistry() {
+        if (!(level() instanceof ServerLevel serverLevel) || !isAlive()) {
+            return;
+        }
+        MinionRegistry.Entry entry = new MinionRegistry.Entry(getUUID());
+        entry.owner = ownerId;
+        entry.ownerName = ownerName;
+        entry.dimension = serverLevel.dimension().location().toString();
+        entry.pos = blockPosition();
+        entry.type = getMinionType().ordinal();
+        entry.level = getMinionLevel();
+        entry.state = getState().ordinal();
+        entry.mined = getMined();
+        entry.lastSeen = serverLevel.getServer().overworld().getGameTime();
+
+        int used = 0;
+        int total = capacity();
+        for (int i = 0; i < storage.getContainerSize(); i++) {
+            ItemStack stack = storage.getItem(i);
+            if (!stack.isEmpty()) {
+                used++;
+                entry.addItem(BuiltInRegistries.ITEM.getKey(stack.getItem()).toString(), stack.getCount());
+            }
+        }
+        for (MinionChestBlockEntity chest : adjacentChests()) {
+            IItemHandler handler = chest.getItemHandler();
+            total += handler.getSlots();
+            for (int i = 0; i < handler.getSlots(); i++) {
+                ItemStack stack = handler.getStackInSlot(i);
+                if (!stack.isEmpty()) {
+                    used++;
+                    entry.addItem(BuiltInRegistries.ITEM.getKey(stack.getItem()).toString(), stack.getCount());
+                }
+            }
+        }
+        entry.slotsUsed = used;
+        entry.slotsTotal = total;
+        MinionRegistry.get(serverLevel.getServer()).update(entry);
+    }
+
+    /** После паузы по редстоуну возвращает обычный статус (дальше его сам обновит рабочий цикл). */
+    private void restoreStateAfterPause() {
+        if (getMinionType().isHunter()) {
+            entityData.set(DATA_STATE, (huntArmed ? (huntKilling ? MinionState.KILLING : MinionState.SPAWNING)
+                    : MinionState.NO_EGG).ordinal());
+        } else {
+            entityData.set(DATA_STATE, (placing ? MinionState.PLACING : MinionState.BREAKING).ordinal());
+        }
+        refreshName();
+    }
+
     // ---------- Внешний вид ----------
 
     public void refreshVisuals() {
@@ -264,6 +338,24 @@ public class MinionEntity extends Mob {
         }
         if (tickCount % 40 == 0) {
             pushOutput();
+        }
+        if (tickCount % Config.MACHINE_IO_TICKS.get() == 0) {
+            machineIo();
+        }
+        if (tickCount % Config.REGISTRY_TICKS.get() == 7) {
+            reportToRegistry();
+        }
+        // Улучшение «Редстоун-управление»: сигнал рядом ставит миньона на паузу.
+        if (upgradeCount(UpgradeType.REDSTONE) > 0 && level().hasNeighborSignal(blockPosition())) {
+            if (getState() != MinionState.PAUSED) {
+                setState(MinionState.PAUSED);
+                reportToRegistry();
+            }
+            return;
+        }
+        if (getState() == MinionState.PAUSED) {
+            restoreStateAfterPause();
+            reportToRegistry();
         }
         if (cooldown > 0) {
             cooldown--;
@@ -616,21 +708,33 @@ public class MinionEntity extends Mob {
         if (storageIsEmpty()) {
             return;
         }
-        BlockPos pos = blockPosition();
-        BlockPos below = pos.below();
-        if (isMinionChest(below)) {
-            pushInto(below, Direction.UP);
-        }
-        for (Direction dir : Direction.Plane.HORIZONTAL) {
-            BlockPos side = pos.relative(dir);
-            if (isMinionChest(side)) {
-                pushInto(side, dir.getOpposite());
-            }
+        for (MinionChestBlockEntity chest : adjacentChests()) {
+            pushInto(chest.getItemHandler());
         }
     }
 
     private boolean isMinionChest(BlockPos pos) {
         return level().hasChunkAt(pos) && level().getBlockState(pos).getBlock() instanceof MinionChestBlock;
+    }
+
+    /**
+     * Сундуки миньонов под миньоном и рядом с ним. Берутся напрямую как блок мода (не через универсальный доступ к
+     * инвентарям), поэтому обычные сундуки, бочки и сундуки из других модов никогда не используются.
+     */
+    private List<MinionChestBlockEntity> adjacentChests() {
+        List<MinionChestBlockEntity> result = new ArrayList<>();
+        BlockPos pos = blockPosition();
+        BlockPos below = pos.below();
+        if (isMinionChest(below) && level().getBlockEntity(below) instanceof MinionChestBlockEntity chest) {
+            result.add(chest);
+        }
+        for (Direction dir : Direction.Plane.HORIZONTAL) {
+            BlockPos side = pos.relative(dir);
+            if (isMinionChest(side) && level().getBlockEntity(side) instanceof MinionChestBlockEntity chest) {
+                result.add(chest);
+            }
+        }
+        return result;
     }
 
     private boolean storageIsEmpty() {
@@ -642,11 +746,7 @@ public class MinionEntity extends Mob {
         return true;
     }
 
-    private void pushInto(BlockPos target, Direction side) {
-        IItemHandler handler = level().getCapability(Capabilities.ItemHandler.BLOCK, target, side);
-        if (handler == null) {
-            return;
-        }
+    private void pushInto(IItemHandler handler) {
         for (int i = 0; i < storage.getContainerSize(); i++) {
             ItemStack stack = storage.getItem(i);
             if (stack.isEmpty()) {
@@ -658,6 +758,86 @@ public class MinionEntity extends Mob {
                 stack.shrink(moved);
                 storage.setChanged();
             }
+        }
+    }
+
+    // ---------- Механизмы из модов (улучшения «Подача» и «Забор») ----------
+
+    private void machineIo() {
+        boolean feed = upgradeCount(UpgradeType.MACHINE_FEED) > 0;
+        boolean collect = upgradeCount(UpgradeType.MACHINE_COLLECT) > 0;
+        if (!feed && !collect) {
+            return;
+        }
+        BlockPos pos = blockPosition();
+        for (Direction dir : Direction.values()) {
+            BlockPos target = pos.relative(dir);
+            if (!MachineLink.isSupportedMachine(level(), target)) {
+                continue;
+            }
+            IItemHandler handler = level().getCapability(Capabilities.ItemHandler.BLOCK, target, dir.getOpposite());
+            if (handler == null) {
+                continue;
+            }
+            if (collect) {
+                collectFrom(handler, feed);
+            }
+            if (feed) {
+                feedInto(handler);
+            }
+        }
+    }
+
+    /** Складывает предметы из хранилища миньона во входы машины (сколько машина принимает). */
+    private void feedInto(IItemHandler machine) {
+        int budget = Config.MACHINE_IO_ITEMS.get();
+        for (int i = 0; i < storage.getContainerSize() && budget > 0; i++) {
+            ItemStack stack = storage.getItem(i);
+            if (stack.isEmpty()) {
+                continue;
+            }
+            int amount = Math.min(budget, stack.getCount());
+            ItemStack rest = ItemHandlerHelper.insertItem(machine, stack.copyWithCount(amount), false);
+            int moved = amount - rest.getCount();
+            if (moved > 0) {
+                stack.shrink(moved);
+                budget -= moved;
+                storage.setChanged();
+            }
+        }
+    }
+
+    /**
+     * Забирает готовую продукцию машины в хранилище миньона. Если включена и «Подача», то предметы, которые
+     * машина сама принимает обратно (то есть входы), не трогаем - иначе они гонялись бы туда-сюда.
+     */
+    private void collectFrom(IItemHandler machine, boolean alsoFeeding) {
+        int budget = Config.MACHINE_IO_ITEMS.get();
+        for (int i = 0; i < machine.getSlots() && budget > 0; i++) {
+            ItemStack inSlot = machine.getStackInSlot(i);
+            if (inSlot.isEmpty()) {
+                continue;
+            }
+            if (alsoFeeding && ItemHandlerHelper.insertItem(machine, inSlot.copyWithCount(1), true).isEmpty()) {
+                continue; // это вход машины, а не результат
+            }
+            ItemStack sim = machine.extractItem(i, Math.min(budget, inSlot.getCount()), true);
+            if (sim.isEmpty()) {
+                continue;
+            }
+            int fit = sim.getCount() - insertIntoStorage(sim, true).getCount();
+            if (fit <= 0) {
+                continue;
+            }
+            ItemStack got = machine.extractItem(i, fit, false);
+            if (got.isEmpty()) {
+                continue;
+            }
+            ItemStack left = insertIntoStorage(got, false);
+            if (!left.isEmpty()) {
+                spawnAtLocation(left); // не теряем предметы
+            }
+            budget -= got.getCount();
         }
     }
 
@@ -682,7 +862,10 @@ public class MinionEntity extends Mob {
         int cost = costForNext();
         MinionType type = getMinionType();
         Predicate<ItemStack> isCost = type::isCostItem; // слитки (любые из тега), без слитков - сам ресурс
-        List<IItemHandler> chests = adjacentChestHandlers(); // сундуки миньонов под миньоном и рядом
+        List<IItemHandler> chests = new ArrayList<>();
+        for (MinionChestBlockEntity chest : adjacentChests()) { // только Сундуки миньонов, не обычные
+            chests.add(chest.getItemHandler());
+        }
         int have = countIn(player.getInventory().items, isCost) + countIn(storage, isCost) + countInHandlers(chests, isCost);
         if (have < cost) {
             player.displayClientMessage(Component.translatable(
@@ -698,35 +881,11 @@ public class MinionEntity extends Mob {
             takeFromHandlers(chests, isCost, left);
         }
         entityData.set(DATA_LEVEL, lvl + 1);
+        if (lvl + 1 >= MAX_LEVEL) {
+            ModAdvancements.award(player, "max_level");
+        }
         refreshVisuals();
         level().playSound(null, blockPosition(), SoundEvents.PLAYER_LEVELUP, SoundSource.NEUTRAL, 0.6F, 1.2F);
-    }
-
-    /** Хранилища всех Сундуков миньонов, из которых миньон берёт ресурсы на прокачку (тот же набор, что и для выгрузки). */
-    private List<IItemHandler> adjacentChestHandlers() {
-        List<IItemHandler> result = new ArrayList<>();
-        BlockPos pos = blockPosition();
-        BlockPos below = pos.below();
-        if (isMinionChest(below)) {
-            IItemHandler h = chestHandler(below, Direction.UP);
-            if (h != null) {
-                result.add(h);
-            }
-        }
-        for (Direction dir : Direction.Plane.HORIZONTAL) {
-            BlockPos side = pos.relative(dir);
-            if (isMinionChest(side)) {
-                IItemHandler h = chestHandler(side, dir.getOpposite());
-                if (h != null) {
-                    result.add(h);
-                }
-            }
-        }
-        return result;
-    }
-
-    private IItemHandler chestHandler(BlockPos pos, Direction side) {
-        return level().getCapability(Capabilities.ItemHandler.BLOCK, pos, side);
     }
 
     private static int countInHandlers(List<IItemHandler> handlers, Predicate<ItemStack> match) {
@@ -812,6 +971,35 @@ public class MinionEntity extends Mob {
         return taken;
     }
 
+    /**
+     * Удалённый забор (элитный планшет с улучшением): отдаёт игроку до amount штук предмета из хранилища миньона и
+     * затем из его Сундуков миньонов. Возвращает, сколько отдано. Проверки прав делает вызывающий код.
+     */
+    public int takeRemote(ServerPlayer player, Item item, int amount) {
+        int taken = 0;
+        for (int i = 0; i < storage.getContainerSize() && taken < amount; i++) {
+            ItemStack stack = storage.getItem(i);
+            if (!stack.isEmpty() && stack.is(item)) {
+                ItemStack part = stack.split(Math.min(stack.getCount(), amount - taken));
+                taken += part.getCount();
+                ItemHandlerHelper.giveItemToPlayer(player, part);
+            }
+        }
+        storage.setChanged();
+        for (MinionChestBlockEntity chest : adjacentChests()) {
+            IItemHandler handler = chest.getItemHandler();
+            for (int i = 0; i < handler.getSlots() && taken < amount; i++) {
+                ItemStack inSlot = handler.getStackInSlot(i);
+                if (!inSlot.isEmpty() && inSlot.is(item)) {
+                    ItemStack part = handler.extractItem(i, amount - taken, false);
+                    taken += part.getCount();
+                    ItemHandlerHelper.giveItemToPlayer(player, part);
+                }
+            }
+        }
+        return taken;
+    }
+
     // ---------- Снять миньона ----------
 
     public void pickUp(ServerPlayer player) {
@@ -845,6 +1033,14 @@ public class MinionEntity extends Mob {
             return InteractionResult.SUCCESS;
         }
         if (player instanceof ServerPlayer serverPlayer) {
+            if (ownerId == null) {
+                setOwner(player); // старый миньон без владельца: его забирает первый, кто с ним взаимодействует
+            }
+            ItemStack held = player.getItemInHand(hand);
+            if (held.getItem() instanceof TabletItem) {
+                TabletItem.linkMinion(serverPlayer, held, this); // Планшет: привязать/отвязать миньона
+                return InteractionResult.CONSUME;
+            }
             serverPlayer.openMenu(
                     new SimpleMenuProvider(
                             (id, inventory, p) -> new MinionMenu(id, inventory, this, storage, upgrades, eggs),
@@ -884,6 +1080,9 @@ public class MinionEntity extends Mob {
         if (!level().isClientSide && reason.shouldDestroy()) {
             releaseZone();
             dropContents();
+            if (level() instanceof ServerLevel serverLevel) {
+                MinionRegistry.get(serverLevel.getServer()).remove(getUUID());
+            }
         }
         super.remove(reason);
     }
@@ -927,6 +1126,10 @@ public class MinionEntity extends Mob {
         }
         tag.putLongArray("Plan", planArr);
         tag.putInt("PlateMax", getPlateMax());
+        if (ownerId != null) {
+            tag.putUUID("OwnerId", ownerId);
+            tag.putString("OwnerName", ownerName);
+        }
     }
 
     @Override
@@ -956,6 +1159,10 @@ public class MinionEntity extends Mob {
         entityData.set(DATA_PLATE, ownedBlocks.size());
         if (getMinionType().isHunter() && huntArmed) {
             entityData.set(DATA_STATE, (huntKilling ? MinionState.KILLING : MinionState.SPAWNING).ordinal());
+        }
+        if (tag.hasUUID("OwnerId")) {
+            ownerId = tag.getUUID("OwnerId");
+            ownerName = tag.getString("OwnerName");
         }
         setNoAi(true);
         refreshVisuals();

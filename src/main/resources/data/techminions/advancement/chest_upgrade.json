@@ -1,0 +1,28 @@
+{
+  "display": {
+    "icon": {
+      "id": "techminions:chest_upgrade_large"
+    },
+    "title": {
+      "translate": "advancement.techminions.chest_upgrade.title"
+    },
+    "description": {
+      "translate": "advancement.techminions.chest_upgrade.desc"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "techminions:chest",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ]
+}

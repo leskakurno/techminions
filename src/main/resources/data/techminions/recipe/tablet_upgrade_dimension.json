@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "E": {
+      "item": "minecraft:ender_pearl"
+    },
+    "K": {
+      "item": "techminions:core_reinforced"
+    }
+  },
+  "pattern": [
+    "EEE",
+    "EKE",
+    "EEE"
+  ],
+  "result": {
+    "id": "techminions:tablet_upgrade_dimension",
+    "count": 1
+  }
+}

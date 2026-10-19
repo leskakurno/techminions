@@ -43,16 +43,16 @@ public class MinionMenu extends AbstractContainerMenu {
             addSlot(new StorageSlot(storage, i, 80 + (i % 5) * 18, 94 + (i / 5) * 18));
         }
         for (int i = 0; i < MinionEntity.UPGRADE_SLOTS; i++) {
-            addSlot(new UpgradeSlot(upgrades, i, 8 + i * 18, 94));
+            addSlot(new UpgradeSlot(upgrades, i, 8 + (i % 3) * 18, 94 + (i / 3) * 18)); // 3 столбца x 2 ряда
         }
         addSlot(new EggSlot(eggs, 0, 62, 94));
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 9; col++) {
-                addSlot(new Slot(inventory, col + row * 9 + 9, 8 + col * 18, 162 + row * 18));
+                addSlot(new Slot(inventory, col + row * 9 + 9, 8 + col * 18, 180 + row * 18));
             }
         }
         for (int col = 0; col < 9; col++) {
-            addSlot(new Slot(inventory, col, 8 + col * 18, 220));
+            addSlot(new Slot(inventory, col, 8 + col * 18, 238));
         }
     }
 

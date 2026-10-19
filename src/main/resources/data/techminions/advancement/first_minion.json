@@ -1,0 +1,68 @@
+{
+  "display": {
+    "icon": {
+      "id": "techminions:minion_iron"
+    },
+    "title": {
+      "translate": "advancement.techminions.first_minion.title"
+    },
+    "description": {
+      "translate": "advancement.techminions.first_minion.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "techminions:root",
+  "criteria": {
+    "stone": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "techminions:minion_stone"
+          }
+        ]
+      }
+    },
+    "coal": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "techminions:minion_coal"
+          }
+        ]
+      }
+    },
+    "copper": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "techminions:minion_copper"
+          }
+        ]
+      }
+    },
+    "iron": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "techminions:minion_iron"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "stone",
+      "coal",
+      "copper",
+      "iron"
+    ]
+  ]
+}

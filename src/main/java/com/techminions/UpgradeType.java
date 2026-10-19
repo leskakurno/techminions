@@ -8,7 +8,10 @@ public enum UpgradeType implements StringRepresentable {
     SPEED,
     STORAGE,
     FORTUNE,
-    SMELTER;
+    SMELTER,
+    MACHINE_FEED,
+    MACHINE_COLLECT,
+    REDSTONE;
 
     @Override
     public String getSerializedName() {

@@ -18,7 +18,7 @@ public class MinionScreen extends AbstractContainerScreen<MinionMenu> {
     public MinionScreen(MinionMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
         this.imageWidth = 176;
-        this.imageHeight = 244;
+        this.imageHeight = 262;
     }
 
     @Override
@@ -29,10 +29,10 @@ public class MinionScreen extends AbstractContainerScreen<MinionMenu> {
                 .bounds(leftPos + 110, topPos + 64, 58, 16).build());
         addRenderableWidget(Button.builder(
                         Component.translatable("gui.techminions.take_all"), b -> press(1))
-                .bounds(leftPos + 8, topPos + 116, 62, 14).build());
+                .bounds(leftPos + 8, topPos + 134, 62, 14).build());
         addRenderableWidget(Button.builder(
                         Component.translatable("gui.techminions.pickup"), b -> press(2))
-                .bounds(leftPos + 8, topPos + 132, 62, 14).build());
+                .bounds(leftPos + 8, topPos + 150, 62, 14).build());
     }
 
     private void press(int id) {
@@ -94,7 +94,7 @@ public class MinionScreen extends AbstractContainerScreen<MinionMenu> {
     protected void renderLabels(GuiGraphics g, int mouseX, int mouseY) {
         MinionEntity minion = menu.getMinion();
         g.drawString(this.font, this.title, 8, 6, 0xFFFFFF, false);
-        g.drawString(this.font, this.playerInventoryTitle, 8, 152, 0xBBBBBB, false);
+        g.drawString(this.font, this.playerInventoryTitle, 8, 170, 0xBBBBBB, false);
         g.drawString(this.font, Component.translatable("gui.techminions.upgrades"), 8, 84, 0xBBBBBB, false);
         g.drawString(this.font, Component.translatable("gui.techminions.storage"), 80, 84, 0xBBBBBB, false);
         if (minion == null) {

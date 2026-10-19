@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "M": {
+      "item": "techminions:minionite_ingot"
+    },
+    "D": {
+      "item": "minecraft:diamond_block"
+    },
+    "K": {
+      "item": "techminions:core_elite"
+    },
+    "N": {
+      "item": "minecraft:nether_star"
+    }
+  },
+  "pattern": [
+    "MDM",
+    "DKD",
+    "MNM"
+  ],
+  "result": {
+    "id": "techminions:tablet_upgrade_remote",
+    "count": 1
+  }
+}

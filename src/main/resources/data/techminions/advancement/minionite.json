@@ -1,0 +1,35 @@
+{
+  "display": {
+    "icon": {
+      "id": "techminions:minionite_ingot"
+    },
+    "title": {
+      "translate": "advancement.techminions.minionite.title"
+    },
+    "description": {
+      "translate": "advancement.techminions.minionite.desc"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "techminions:root",
+  "criteria": {
+    "i": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "techminions:minionite_ingot"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "i"
+    ]
+  ]
+}

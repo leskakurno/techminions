@@ -1,0 +1,28 @@
+{
+  "display": {
+    "icon": {
+      "id": "techminions:tablet_upgrade_links"
+    },
+    "title": {
+      "translate": "advancement.techminions.tablet_linked.title"
+    },
+    "description": {
+      "translate": "advancement.techminions.tablet_linked.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "techminions:tablet",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ]
+}

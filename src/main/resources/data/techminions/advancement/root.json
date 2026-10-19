@@ -1,0 +1,35 @@
+{
+  "display": {
+    "icon": {
+      "id": "techminions:core_basic"
+    },
+    "title": {
+      "translate": "advancement.techminions.root.title"
+    },
+    "description": {
+      "translate": "advancement.techminions.root.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false,
+    "background": "minecraft:textures/gui/advancements/backgrounds/stone.png"
+  },
+  "criteria": {
+    "core": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "techminions:core_basic"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "core"
+    ]
+  ]
+}

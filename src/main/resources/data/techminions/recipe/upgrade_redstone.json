@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "L": {
+      "item": "minecraft:lever"
+    },
+    "K": {
+      "item": "techminions:core_basic"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "pattern": [
+    "RLR",
+    "IKI",
+    "RLR"
+  ],
+  "result": {
+    "id": "techminions:upgrade_redstone",
+    "count": 1
+  }
+}

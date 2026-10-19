@@ -65,19 +65,33 @@ public class ModRegistry {
     public static final DeferredBlock<MinionChestBlock> MINION_CHEST_SMALL = BLOCKS.registerBlock(
             "minion_chest_small",
             props -> new MinionChestBlock(props, MinionChestTier.SMALL),
-            BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).strength(2.5F).sound(SoundType.WOOD));
+            BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).strength(7.0F).sound(SoundType.WOOD));
     public static final DeferredBlock<MinionChestBlock> MINION_CHEST_MEDIUM = BLOCKS.registerBlock(
             "minion_chest_medium",
             props -> new MinionChestBlock(props, MinionChestTier.MEDIUM),
-            BlockBehaviour.Properties.of().mapColor(MapColor.GOLD).strength(3.0F).sound(SoundType.WOOD));
+            BlockBehaviour.Properties.of().mapColor(MapColor.GOLD).strength(10.0F).sound(SoundType.WOOD));
     public static final DeferredBlock<MinionChestBlock> MINION_CHEST_LARGE = BLOCKS.registerBlock(
             "minion_chest_large",
             props -> new MinionChestBlock(props, MinionChestTier.LARGE),
-            BlockBehaviour.Properties.of().mapColor(MapColor.DIAMOND).strength(4.0F).sound(SoundType.WOOD));
+            BlockBehaviour.Properties.of().mapColor(MapColor.DIAMOND).strength(13.0F).sound(SoundType.WOOD));
 
     public static final DeferredItem<BlockItem> MINION_CHEST_SMALL_ITEM = ITEMS.registerSimpleBlockItem(MINION_CHEST_SMALL);
     public static final DeferredItem<BlockItem> MINION_CHEST_MEDIUM_ITEM = ITEMS.registerSimpleBlockItem(MINION_CHEST_MEDIUM);
     public static final DeferredItem<BlockItem> MINION_CHEST_LARGE_ITEM = ITEMS.registerSimpleBlockItem(MINION_CHEST_LARGE);
+
+    /** Улучшения сундука: маленький -> средний -> большой (ПКМ по сундуку, содержимое сохраняется). */
+    public static final DeferredHolder<Item, ChestUpgradeItem> CHEST_UPGRADE_MEDIUM = ITEMS.register("chest_upgrade_medium",
+            () -> new ChestUpgradeItem(new Item.Properties().stacksTo(16), MinionChestTier.MEDIUM));
+    public static final DeferredHolder<Item, ChestUpgradeItem> CHEST_UPGRADE_LARGE = ITEMS.register("chest_upgrade_large",
+            () -> new ChestUpgradeItem(new Item.Properties().stacksTo(16), MinionChestTier.LARGE));
+
+    public static MinionChestBlock chestBlock(MinionChestTier tier) {
+        return switch (tier) {
+            case SMALL -> MINION_CHEST_SMALL.get();
+            case MEDIUM -> MINION_CHEST_MEDIUM.get();
+            case LARGE -> MINION_CHEST_LARGE.get();
+        };
+    }
 
     public static final Supplier<BlockEntityType<MinionChestBlockEntity>> MINION_CHEST_BE = BLOCK_ENTITIES.register(
             "minion_chest",
@@ -100,6 +114,23 @@ public class ModRegistry {
             UPGRADE_ITEMS.put(type, ITEMS.register(
                     "upgrade_" + type.getSerializedName(),
                     () -> new UpgradeItem(new Item.Properties().stacksTo(16), type)));
+        }
+    }
+
+    // ---------- Планшет миньонов: просмотр добычи издалека (только просмотр, забрать предметы нельзя) ----------
+    public static final DeferredHolder<Item, TabletItem> TABLET = ITEMS.register("tablet",
+            () -> new TabletItem(new Item.Properties().stacksTo(1), false));
+    // Элитный планшет: очень дорогой, всё встроено, принимает улучшение удалённого доступа.
+    public static final DeferredHolder<Item, TabletItem> TABLET_ELITE = ITEMS.register("tablet_elite",
+            () -> new TabletItem(new Item.Properties().stacksTo(1).rarity(net.minecraft.world.item.Rarity.EPIC).fireResistant(), true));
+    public static final Map<TabletUpgradeItem.Kind, DeferredHolder<Item, TabletUpgradeItem>> TABLET_UPGRADES =
+            new EnumMap<>(TabletUpgradeItem.Kind.class);
+
+    static {
+        for (TabletUpgradeItem.Kind kind : TabletUpgradeItem.Kind.values()) {
+            TABLET_UPGRADES.put(kind, ITEMS.register(
+                    "tablet_upgrade_" + kind.getSerializedName(),
+                    () -> new TabletUpgradeItem(new Item.Properties().stacksTo(16), kind)));
         }
     }
 
@@ -210,6 +241,13 @@ public class ModRegistry {
                         output.accept(MINIONITE_SHOVEL.get());
                         output.accept(MINIONITE_HOE.get());
                         for (DeferredHolder<Item, UpgradeItem> holder : UPGRADE_ITEMS.values()) {
+                            output.accept(holder.get());
+                        }
+                        output.accept(CHEST_UPGRADE_MEDIUM.get());
+                        output.accept(CHEST_UPGRADE_LARGE.get());
+                        output.accept(TABLET.get());
+                        output.accept(TABLET_ELITE.get());
+                        for (DeferredHolder<Item, TabletUpgradeItem> holder : TABLET_UPGRADES.values()) {
                             output.accept(holder.get());
                         }
                     })

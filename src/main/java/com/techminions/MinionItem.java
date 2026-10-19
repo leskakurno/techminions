@@ -68,6 +68,12 @@ public class MinionItem extends Item {
         minion.setYHeadRot(yaw);
         minion.yBodyRot = yaw;
         serverLevel.addFreshEntity(minion);
+        if (player != null) {
+            minion.setOwner(player); // владелец нужен для вкладки «Миньоны» и Планшета
+            if (player instanceof net.minecraft.server.level.ServerPlayer serverPlayer) {
+                ModAdvancements.award(serverPlayer, "placed");
+            }
+        }
         level.playSound(null, pos, SoundEvents.ARMOR_STAND_PLACE, SoundSource.BLOCKS, 1.0F, 1.0F);
 
         if (player == null || !player.getAbilities().instabuild) {

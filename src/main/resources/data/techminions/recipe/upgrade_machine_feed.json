@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "H": {
+      "item": "minecraft:hopper"
+    },
+    "K": {
+      "item": "techminions:core_reinforced"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "pattern": [
+    "IHI",
+    "IKI",
+    "IRI"
+  ],
+  "result": {
+    "id": "techminions:upgrade_machine_feed",
+    "count": 1
+  }
+}

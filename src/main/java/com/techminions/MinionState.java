@@ -15,7 +15,8 @@ public enum MinionState implements StringRepresentable {
     UNAVAILABLE,
     SPAWNING,
     KILLING,
-    NO_EGG;
+    NO_EGG,
+    PAUSED;
 
     @Override
     public String getSerializedName() {

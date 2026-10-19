@@ -1,0 +1,35 @@
+{
+  "display": {
+    "icon": {
+      "id": "techminions:tablet_elite"
+    },
+    "title": {
+      "translate": "advancement.techminions.tablet_elite.title"
+    },
+    "description": {
+      "translate": "advancement.techminions.tablet_elite.desc"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "techminions:tablet_linked",
+  "criteria": {
+    "t": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "techminions:tablet_elite"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "t"
+    ]
+  ]
+}

@@ -15,13 +15,19 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /** Хранилище Сундука миньонов. Доступно и воронкам/трубам через ItemHandler. */
 public class MinionChestBlockEntity extends BlockEntity implements MenuProvider {
     private final MinionChestTier tier;
     private final ItemStackHandler items;
+    // Вещи из старых (больших) сундуков, не поместившиеся после уменьшения размера: выбрасываются, а не пропадают.
+    private final List<ItemStack> overflow = new ArrayList<>();
 
     public MinionChestBlockEntity(BlockPos pos, BlockState state) {
         super(ModRegistry.MINION_CHEST_BE.get(), pos, state);
@@ -52,11 +58,55 @@ public class MinionChestBlockEntity extends BlockEntity implements MenuProvider 
         }
     }
 
+    /** Забирает всё содержимое (нужно при улучшении сундука до следующего размера). */
+    public List<ItemStack> takeAllItems() {
+        List<ItemStack> result = new ArrayList<>();
+        for (int i = 0; i < items.getSlots(); i++) {
+            ItemStack stack = items.getStackInSlot(i);
+            if (!stack.isEmpty()) {
+                result.add(stack.copy());
+                items.setStackInSlot(i, ItemStack.EMPTY);
+            }
+        }
+        return result;
+    }
+
+    /** Выбрасывает вещи, которые не влезли после уменьшения сундука (вызывается тикером блока). */
+    public void dropOverflow(Level level, BlockPos pos) {
+        if (overflow.isEmpty()) {
+            return;
+        }
+        for (ItemStack stack : overflow) {
+            Containers.dropItemStack(level, pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5, stack);
+        }
+        overflow.clear();
+        setChanged();
+    }
+
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         if (tag.contains("Items")) {
-            items.deserializeNBT(registries, tag.getCompound("Items"));
+            // В старых сохранениях сундук мог быть больше: читаем во временный список и раскладываем по новым ячейкам.
+            ItemStackHandler old = new ItemStackHandler(1);
+            old.deserializeNBT(registries, tag.getCompound("Items"));
+            for (int i = 0; i < items.getSlots(); i++) {
+                items.setStackInSlot(i, ItemStack.EMPTY);
+            }
+            for (int i = 0; i < old.getSlots(); i++) {
+                ItemStack stack = old.getStackInSlot(i);
+                if (stack.isEmpty()) {
+                    continue;
+                }
+                if (i < items.getSlots()) {
+                    items.setStackInSlot(i, stack);
+                } else {
+                    ItemStack rest = ItemHandlerHelper.insertItem(items, stack, false);
+                    if (!rest.isEmpty()) {
+                        overflow.add(rest);
+                    }
+                }
+            }
         }
     }
 
