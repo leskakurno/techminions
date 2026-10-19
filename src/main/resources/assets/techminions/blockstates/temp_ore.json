@@ -152,6 +152,15 @@
     },
     "type=hunt_snow_queen": {
       "model": "techminions:block/temp_ore_hunt_snow_queen"
+    },
+    "type=lumberjack": {
+      "model": "techminions:block/temp_ore_stone"
+    },
+    "type=farmer": {
+      "model": "techminions:block/temp_ore_stone"
+    },
+    "type=fisher": {
+      "model": "techminions:block/temp_ore_stone"
     }
   }
 }

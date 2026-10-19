@@ -173,6 +173,14 @@ public class Config {
             .comment("How often (in ticks) a minion reports its status to the Minions tab / Tablet.")
             .defineInRange("statusReportTicks", 100, 20, 1200);
 
+    public static final ModConfigSpec.BooleanValue NOTIFICATIONS = BUILDER
+            .comment("Send the minion's owner a chat message when a minion stops (storage full, needs setup, no egg...).")
+            .define("notifications", true);
+
+    public static final ModConfigSpec.IntValue NOTIFY_COOLDOWN_SEC = BUILDER
+            .comment("Minimum seconds between two notifications of the same kind from the same minion.")
+            .defineInRange("notificationCooldownSeconds", 300, 10, 86400);
+
     public static java.util.Set<String> machineBlocks() {
         return csv(MACHINE_BLOCKS.get());
     }

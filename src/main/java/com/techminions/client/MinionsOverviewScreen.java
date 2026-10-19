@@ -9,6 +9,7 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /** Вкладка «Миньоны» из инвентаря: все миньоны игрока и работают они или нет. Только просмотр. */
@@ -19,8 +20,13 @@ public class MinionsOverviewScreen extends Screen {
     private static final int LIST_TOP = 36;
     private static final int LIST_HEIGHT = 120;
 
-    private List<MinionInfo> list; // null - данные ещё не пришли
+    private List<MinionInfo> all;  // null - данные ещё не пришли
+    private List<MinionInfo> list; // то, что показано (после фильтра и сортировки)
     private MinionInfo hovered;
+    private int sortMode;          // 0 - сначала проблемные, 1 - по уровню, 2 - по заполненности
+    private boolean onlyProblems;
+    private Button sortButton;
+    private Button filterButton;
     private int scroll;
 
     public MinionsOverviewScreen() {
@@ -28,8 +34,43 @@ public class MinionsOverviewScreen extends Screen {
     }
 
     public void update(MinionsPayload payload) {
-        this.list = new ArrayList<>(payload.minions());
+        this.all = new ArrayList<>(payload.minions());
+        applyView();
+    }
+
+    /** Фильтр «только проблемные» и сортировка списка. */
+    private void applyView() {
+        if (all == null) {
+            return;
+        }
+        List<MinionInfo> view = new ArrayList<>();
+        for (MinionInfo info : all) {
+            if (!onlyProblems || StatusView.kind(info) != StatusView.Kind.WORKING) {
+                view.add(info);
+            }
+        }
+        Comparator<MinionInfo> order = switch (sortMode) {
+            case 1 -> Comparator.comparingInt(MinionInfo::level).reversed();
+            case 2 -> Comparator.comparingInt((MinionInfo i) -> i.slotsUsed() * 1000 / Math.max(1, i.slotsTotal())).reversed();
+            default -> Comparator.comparingInt((MinionInfo i) -> StatusView.kind(i) == StatusView.Kind.STOPPED ? 0
+                    : StatusView.kind(i) == StatusView.Kind.UNLOADED ? 1 : 2);
+        };
+        view.sort(order);
+        this.list = view;
         this.scroll = Math.max(0, Math.min(scroll, maxScroll()));
+    }
+
+    private Component sortLabel() {
+        String key = switch (sortMode) {
+            case 1 -> "gui.techminions.sort.level";
+            case 2 -> "gui.techminions.sort.fill";
+            default -> "gui.techminions.sort.status";
+        };
+        return Component.translatable("gui.techminions.sort", Component.translatable(key));
+    }
+
+    private Component filterLabel() {
+        return Component.translatable(onlyProblems ? "gui.techminions.filter.problems" : "gui.techminions.filter.all");
     }
 
     private int left() {
@@ -50,6 +91,17 @@ public class MinionsOverviewScreen extends Screen {
 
     @Override
     protected void init() {
+        sortButton = addRenderableWidget(Button.builder(sortLabel(), b -> {
+            sortMode = (sortMode + 1) % 3;
+            b.setMessage(sortLabel());
+            applyView();
+        }).bounds(left() + W - 8 - 168, top() + 5, 100, 14).build());
+        filterButton = addRenderableWidget(Button.builder(filterLabel(), b -> {
+            onlyProblems = !onlyProblems;
+            b.setMessage(filterLabel());
+            scroll = 0;
+            applyView();
+        }).bounds(left() + W - 8 - 64, top() + 5, 64, 14).build());
         addRenderableWidget(Button.builder(Component.translatable("gui.techminions.back"), b -> onClose())
                 .bounds(left() + W / 2 - 45, top() + H - 28, 90, 20).build());
     }
@@ -85,16 +137,16 @@ public class MinionsOverviewScreen extends Screen {
             return;
         }
         if (list.isEmpty()) {
-            g.drawCenteredString(font, Component.translatable("gui.techminions.overview.empty"), x + W / 2, y + 80, 0xBBBBBB);
+            g.drawCenteredString(font, Component.translatable(all.isEmpty() ? "gui.techminions.overview.empty" : "gui.techminions.overview.filtered"), x + W / 2, y + 80, 0xBBBBBB);
             return;
         }
         int working = 0;
-        for (MinionInfo info : list) {
+        for (MinionInfo info : all) {
             if (StatusView.kind(info) == StatusView.Kind.WORKING) {
                 working++;
             }
         }
-        g.drawString(font, Component.translatable("gui.techminions.overview.summary", working, list.size()),
+        g.drawString(font, Component.translatable("gui.techminions.overview.summary", working, all.size()),
                 x + 8, y + 22, 0xBBBBBB, false);
         int shown = Math.min(visibleRows(), list.size() - scroll);
         for (int i = 0; i < shown; i++) {

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "L": {
+      "tag": "minecraft:logs"
+    },
+    "K": {
+      "item": "techminions:core_basic"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "P": {
+      "item": "minecraft:iron_axe"
+    }
+  },
+  "pattern": [
+    "LLL",
+    "LKL",
+    "IPI"
+  ],
+  "result": {
+    "id": "techminions:minion_lumberjack",
+    "count": 1
+  }
+}

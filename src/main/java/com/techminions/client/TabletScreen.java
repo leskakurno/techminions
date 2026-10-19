@@ -209,7 +209,7 @@ public class TabletScreen extends Screen {
         g.drawString(font, StatusView.text(info), dx, y + 42, StatusView.kind(info).color, false);
         g.drawString(font, Component.literal(StatusView.place(info)), dx, y + 54, 0xBBBBBB, false);
         if ((flags & MinionsPayload.FLAG_STATS) != 0) {
-            g.drawString(font, Component.translatable("gui.techminions.mined", info.mined()), dx, y + 66, 0xBBBBBB, false);
+            g.drawString(font, Component.translatable("gui.techminions.tablet.hourly", info.hourly(), info.mined()), dx, y + 66, 0xBBBBBB, false);
             int total = Math.max(1, info.slotsTotal());
             int percent = Math.min(100, info.slotsUsed() * 100 / total);
             g.drawString(font, Component.translatable("gui.techminions.tablet.fill", info.slotsUsed(), info.slotsTotal(), percent),

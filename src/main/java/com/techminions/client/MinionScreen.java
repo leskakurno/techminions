@@ -113,7 +113,7 @@ public class MinionScreen extends AbstractContainerScreen<MinionMenu> {
                 MinionEntity.roman(level), MinionEntity.roman(MinionEntity.MAX_LEVEL)), 66, 16, 0xFFFFFF, false);
         g.drawString(this.font, Component.translatable("gui.techminions.cycle", String.valueOf(seconds)),
                 66, 26, 0xFFFFFF, false);
-        if (!minion.getMinionType().isHunter()) {
+        if (!minion.getMinionType().isHunter() && !minion.getMinionType().isGatherer()) {
             g.drawString(this.font, Component.literal("[" + minion.getPlateBlocks() + "/" + minion.getPlateMax() + "]"),
                     124, 26, 0x9BE89B, false);
         }

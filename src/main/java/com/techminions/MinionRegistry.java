@@ -35,6 +35,7 @@ public class MinionRegistry extends SavedData {
         public int level = 1;
         public int state;
         public int mined;
+        public int hourly;
         public int slotsUsed;
         public int slotsTotal;
         public long lastSeen;
@@ -67,6 +68,7 @@ public class MinionRegistry extends SavedData {
             tag.putInt("Level", level);
             tag.putInt("State", state);
             tag.putInt("Mined", mined);
+            tag.putInt("Hourly", hourly);
             tag.putInt("Used", slotsUsed);
             tag.putInt("Total", slotsTotal);
             tag.putLong("Seen", lastSeen);
@@ -93,6 +95,7 @@ public class MinionRegistry extends SavedData {
             e.level = tag.getInt("Level");
             e.state = tag.getInt("State");
             e.mined = tag.getInt("Mined");
+            e.hourly = tag.getInt("Hourly");
             e.slotsUsed = tag.getInt("Used");
             e.slotsTotal = tag.getInt("Total");
             e.lastSeen = tag.getLong("Seen");

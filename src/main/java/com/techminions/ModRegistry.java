@@ -113,7 +113,7 @@ public class ModRegistry {
         for (UpgradeType type : UpgradeType.values()) {
             UPGRADE_ITEMS.put(type, ITEMS.register(
                     "upgrade_" + type.getSerializedName(),
-                    () -> new UpgradeItem(new Item.Properties().stacksTo(16), type)));
+                    () -> new UpgradeItem(new Item.Properties().stacksTo(type == UpgradeType.FILTER ? 1 : 16), type)));
         }
     }
 

@@ -9,7 +9,7 @@ import java.util.UUID;
 
 /** Данные одного миньона для окна просмотра (только чтение). */
 public record MinionInfo(UUID id, String dimension, BlockPos pos, int type, int level, int state, int ageTicks,
-                         int mined, int slotsUsed, int slotsTotal, boolean locked, List<ItemCount> items) {
+                         int mined, int hourly, int slotsUsed, int slotsTotal, boolean locked, List<ItemCount> items) {
 
     /** Предмет и количество (без компонентов - только для показа). */
     public record ItemCount(String itemId, int count) {
@@ -26,6 +26,7 @@ public record MinionInfo(UUID id, String dimension, BlockPos pos, int type, int 
         buf.writeVarInt(state);
         buf.writeVarInt(ageTicks);
         buf.writeVarInt(mined);
+        buf.writeVarInt(hourly);
         buf.writeVarInt(slotsUsed);
         buf.writeVarInt(slotsTotal);
         buf.writeBoolean(locked);
@@ -45,6 +46,7 @@ public record MinionInfo(UUID id, String dimension, BlockPos pos, int type, int 
         int state = buf.readVarInt();
         int age = buf.readVarInt();
         int mined = buf.readVarInt();
+        int hourly = buf.readVarInt();
         int used = buf.readVarInt();
         int total = buf.readVarInt();
         boolean locked = buf.readBoolean();
@@ -53,6 +55,6 @@ public record MinionInfo(UUID id, String dimension, BlockPos pos, int type, int 
         for (int i = 0; i < n; i++) {
             items.add(new ItemCount(buf.readUtf(), buf.readVarInt()));
         }
-        return new MinionInfo(id, dimension, pos, type, level, state, age, mined, used, total, locked, items);
+        return new MinionInfo(id, dimension, pos, type, level, state, age, mined, hourly, used, total, locked, items);
     }
 }

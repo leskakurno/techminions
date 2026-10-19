@@ -142,7 +142,7 @@ public final class ServerNetwork {
                 items.add(new MinionInfo.ItemCount(item.getKey(), item.getValue()));
             }
         }
-        return new MinionInfo(e.id, e.dimension, e.pos, e.type, e.level, e.state, age, e.mined,
+        return new MinionInfo(e.id, e.dimension, e.pos, e.type, e.level, e.state, age, e.mined, e.hourly,
                 e.slotsUsed, e.slotsTotal, locked, items);
     }
 }

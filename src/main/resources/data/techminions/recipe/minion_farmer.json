@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "S": {
+      "item": "minecraft:wheat_seeds"
+    },
+    "K": {
+      "item": "techminions:core_basic"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "P": {
+      "item": "minecraft:iron_hoe"
+    }
+  },
+  "pattern": [
+    "SSS",
+    "SKS",
+    "IPI"
+  ],
+  "result": {
+    "id": "techminions:minion_farmer",
+    "count": 1
+  }
+}

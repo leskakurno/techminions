@@ -11,7 +11,9 @@ public enum UpgradeType implements StringRepresentable {
     SMELTER,
     MACHINE_FEED,
     MACHINE_COLLECT,
-    REDSTONE;
+    REDSTONE,
+    FILTER,
+    RECYCLER;
 
     @Override
     public String getSerializedName() {

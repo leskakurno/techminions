@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "F": {
+      "item": "minecraft:cod"
+    },
+    "K": {
+      "item": "techminions:core_reinforced"
+    },
+    "I": {
+      "item": "minecraft:gold_ingot"
+    },
+    "P": {
+      "item": "minecraft:fishing_rod"
+    }
+  },
+  "pattern": [
+    "FFF",
+    "FKF",
+    "IPI"
+  ],
+  "result": {
+    "id": "techminions:minion_fisher",
+    "count": 1
+  }
+}

@@ -16,7 +16,10 @@ public enum MinionState implements StringRepresentable {
     SPAWNING,
     KILLING,
     NO_EGG,
-    PAUSED;
+    PAUSED,
+    NEEDS_WATER,
+    NEEDS_CROPS,
+    NEEDS_TREES;
 
     @Override
     public String getSerializedName() {

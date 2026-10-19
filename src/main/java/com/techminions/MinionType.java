@@ -103,7 +103,11 @@ public enum MinionType implements StringRepresentable {
     HUNT_KNIGHT_PHANTOM(3, 1, mods("twilightforest")),
     HUNT_UR_GHAST(3, 1, mods("twilightforest")),
     HUNT_ALPHA_YETI(3, 1, mods("twilightforest")),
-    HUNT_SNOW_QUEEN(3, 1, mods("twilightforest"));
+    HUNT_SNOW_QUEEN(3, 1, mods("twilightforest")),
+    // --- Новые (v3.4): собиратели. Мир не ломают: проверяют окружение (деревья / посевы / вода) и «собирают» виртуально ---
+    LUMBERJACK(1, 8, mods("minecraft")),
+    FARMER(1, 8, mods("minecraft")),
+    FISHER(2, 6, mods("minecraft"));
 
     private final int tier;
     private final int upgradeBase;
@@ -226,6 +230,9 @@ public enum MinionType implements StringRepresentable {
             MAP.put(HUNT_UR_GHAST, new String[]{"techminions:minionite_ingot"});
             MAP.put(HUNT_ALPHA_YETI, new String[]{"techminions:minionite_ingot"});
             MAP.put(HUNT_SNOW_QUEEN, new String[]{"techminions:minionite_ingot"});
+            MAP.put(LUMBERJACK, new String[]{"minecraft:iron_ingot"});
+            MAP.put(FARMER, new String[]{"minecraft:iron_ingot"});
+            MAP.put(FISHER, new String[]{"minecraft:gold_ingot"});
         }
     }
 
@@ -345,6 +352,11 @@ public enum MinionType implements StringRepresentable {
         return Hunts.MAP.containsKey(this) || isUniversalHunter();
     }
 
+    /** Собиратель (лесоруб, агроном, рыбак): без платформы, добыча зависит от окружения рядом. */
+    public boolean isGatherer() {
+        return this == LUMBERJACK || this == FARMER || this == FISHER;
+    }
+
     /** Универсальный охотник: цель задаёт вставленное Яйцо охоты (любой моб любого мода). */
     public boolean isUniversalHunter() {
         return this == HUNT_ANY_MOB || this == HUNT_ANY_BOSS;
@@ -393,6 +405,9 @@ public enum MinionType implements StringRepresentable {
 
     /** Во сколько раз шаг добычи длиннее обычного: минионит - редкий ресурс, поэтому медленный. */
     public int getTimeMultiplier() {
+        if (isGatherer()) {
+            return 2; // собиратели берут за цикл целую порцию, поэтому медленнее рудных
+        }
         return this == MINIONITE ? 4 : 1;
     }
 
@@ -429,7 +444,7 @@ public enum MinionType implements StringRepresentable {
         if (isDisabledByConfig()) {
             return false;
         }
-        if (isUniversalHunter()) {
+        if (isUniversalHunter() || isGatherer()) {
             return true;
         }
         if (isHunter()) {
