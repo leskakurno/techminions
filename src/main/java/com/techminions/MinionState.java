@@ -19,7 +19,8 @@ public enum MinionState implements StringRepresentable {
     PAUSED,
     NEEDS_WATER,
     NEEDS_CROPS,
-    NEEDS_TREES;
+    NEEDS_TREES,
+    NEEDS_SAMPLE;
 
     @Override
     public String getSerializedName() {

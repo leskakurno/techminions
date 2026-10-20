@@ -107,7 +107,9 @@ public enum MinionType implements StringRepresentable {
     // --- Новые (v3.4): собиратели. Мир не ломают: проверяют окружение (деревья / посевы / вода) и «собирают» виртуально ---
     LUMBERJACK(1, 8, mods("minecraft")),
     FARMER(1, 8, mods("minecraft")),
-    FISHER(2, 6, mods("minecraft"));
+    FISHER(2, 6, mods("minecraft")),
+    // --- Универсальный добытчик: добывает то, что вставлено в слот образца (предмет из любого мода по тегам) ---
+    UNIVERSAL_MINER(3, 6, mods("minecraft"));
 
     private final int tier;
     private final int upgradeBase;
@@ -233,6 +235,7 @@ public enum MinionType implements StringRepresentable {
             MAP.put(LUMBERJACK, new String[]{"minecraft:iron_ingot"});
             MAP.put(FARMER, new String[]{"minecraft:iron_ingot"});
             MAP.put(FISHER, new String[]{"minecraft:gold_ingot"});
+            MAP.put(UNIVERSAL_MINER, new String[]{"minecraft:gold_ingot"});
         }
     }
 
@@ -357,6 +360,11 @@ public enum MinionType implements StringRepresentable {
         return this == LUMBERJACK || this == FARMER || this == FISHER;
     }
 
+    /** Универсальный добытчик: добывает предмет-образец из слота (любой мод, допустимое задают теги в конфиге). */
+    public boolean isUniversalMiner() {
+        return this == UNIVERSAL_MINER;
+    }
+
     /** Универсальный охотник: цель задаёт вставленное Яйцо охоты (любой моб любого мода). */
     public boolean isUniversalHunter() {
         return this == HUNT_ANY_MOB || this == HUNT_ANY_BOSS;
@@ -405,7 +413,7 @@ public enum MinionType implements StringRepresentable {
 
     /** Во сколько раз шаг добычи длиннее обычного: минионит - редкий ресурс, поэтому медленный. */
     public int getTimeMultiplier() {
-        if (isGatherer()) {
+        if (isGatherer() || isUniversalMiner()) {
             return 2; // собиратели берут за цикл целую порцию, поэтому медленнее рудных
         }
         return this == MINIONITE ? 4 : 1;
@@ -444,7 +452,7 @@ public enum MinionType implements StringRepresentable {
         if (isDisabledByConfig()) {
             return false;
         }
-        if (isUniversalHunter() || isGatherer()) {
+        if (isUniversalHunter() || isGatherer() || isUniversalMiner()) {
             return true;
         }
         if (isHunter()) {

@@ -161,6 +161,9 @@
     },
     "type=fisher": {
       "model": "techminions:block/temp_ore_stone"
+    },
+    "type=universal_miner": {
+      "model": "techminions:block/temp_ore_stone"
     }
   }
 }

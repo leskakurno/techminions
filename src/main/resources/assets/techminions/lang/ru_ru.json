@@ -279,5 +279,9 @@
   "gui.techminions.filter.all": "Все",
   "gui.techminions.filter.problems": "Стоят",
   "gui.techminions.overview.filtered": "Нет миньонов под фильтр",
-  "gui.techminions.tablet.hourly": "За час: %s  (всего: %s)"
+  "gui.techminions.tablet.hourly": "За час: %s  (всего: %s)",
+  "type.techminions.universal_miner": "Универсальный добытчик",
+  "item.techminions.minion_universal_miner": "Миньон-универсальный добытчик",
+  "state.techminions.needs_sample": "Нужен образец в слоте",
+  "tooltip.techminions.universal_miner": "Вставьте в слот любое сырьё, самоцвет, пыль, культуру или бревно из любого мода: миньон будет добывать его"
 }

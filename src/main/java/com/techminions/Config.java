@@ -6,8 +6,9 @@ public class Config {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
 
     public static final ModConfigSpec.IntValue BASE_TICKS = BUILDER
-            .comment("Ticks per mined block at minion level I (150 = 7.5 seconds). Higher levels and Speed Upgrades make it faster.")
-            .defineInRange("baseTicksPerBlock", 150, 20, 6000);
+            .comment("Ticks per platform step (place one block / break one block) at minion level I. 140 = 7 seconds, like Hypixel. "
+                    + "Levels follow the Hypixel curve (7, 7, 6, 6, 5, 5, 4.5, 4.5, 4, 4, 3.5 s at 140); other values scale it.")
+            .defineInRange("baseTicksPerBlock", 140, 20, 6000);
 
     public static final ModConfigSpec.IntValue MIN_TICKS = BUILDER
             .comment("Absolute minimum ticks per mined block (prevents lag from over-upgraded minions).")
@@ -172,6 +173,14 @@ public class Config {
     public static final ModConfigSpec.IntValue REGISTRY_TICKS = BUILDER
             .comment("How often (in ticks) a minion reports its status to the Minions tab / Tablet.")
             .defineInRange("statusReportTicks", 100, 20, 1200);
+
+    public static final ModConfigSpec.ConfigValue<String> UNIVERSAL_TAGS = BUILDER
+            .comment("Item tags the Universal Miner accepts as a sample (comma separated). Works with any mod that uses these tags.")
+            .define("universalMinerTags", "c:raw_materials,c:gems,c:dusts,c:crops,minecraft:logs");
+
+    public static final ModConfigSpec.ConfigValue<String> UNIVERSAL_BLACKLIST = BUILDER
+            .comment("Items the Universal Miner must never accept (comma separated item ids).")
+            .define("universalMinerBlacklist", "minecraft:netherite_scrap,minecraft:nether_star");
 
     public static final ModConfigSpec.BooleanValue NOTIFICATIONS = BUILDER
             .comment("Send the minion's owner a chat message when a minion stops (storage full, needs setup, no egg...).")

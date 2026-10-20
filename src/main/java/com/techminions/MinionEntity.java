@@ -217,7 +217,7 @@ public class MinionEntity extends Mob {
             return;
         }
         switch (state) {
-            case FULL, NO_EGG, UNAVAILABLE, NEEDS_WATER, NEEDS_CROPS, NEEDS_TREES, WAITING -> {
+            case FULL, NO_EGG, UNAVAILABLE, NEEDS_WATER, NEEDS_CROPS, NEEDS_TREES, NEEDS_SAMPLE, WAITING -> {
             }
             default -> {
                 return;
@@ -254,8 +254,12 @@ public class MinionEntity extends Mob {
         return Math.min(STORAGE_SIZE, 2 + level + 2 * storageUpgrades);
     }
 
+    /** Кривая как на Hypixel: секунд на шаг (поставить или сломать один блок) по уровням I-XI при базе 140 тиков (7 с). */
+    private static final double[] LEVEL_SECONDS = {7, 7, 6, 6, 5, 5, 4.5, 4.5, 4, 4, 3.5};
+
     public static int intervalFor(int level, int speedUpgrades) {
-        double ticks = Config.BASE_TICKS.get() * Math.pow(0.88, level - 1) * Math.pow(0.8, speedUpgrades);
+        int index = Math.max(0, Math.min(LEVEL_SECONDS.length, level) - 1);
+        double ticks = LEVEL_SECONDS[index] * 20.0 * (Config.BASE_TICKS.get() / 140.0) * Math.pow(0.8, speedUpgrades);
         return (int) Math.max(Config.MIN_TICKS.get(), Math.round(ticks));
     }
 
@@ -478,6 +482,12 @@ public class MinionEntity extends Mob {
             stepGather(type);
             return;
         }
+        if (type.isUniversalMiner() && sampleStack().isEmpty()) {
+            setState(MinionState.NEEDS_SAMPLE); // без образца добывать нечего
+            setProgress(0);
+            cooldown = 40;
+            return;
+        }
         // Платформа полностью сломана -> начинаем новый цикл со стройки.
         if (!placing && ownedBlocks.isEmpty()) {
             placing = true;
@@ -496,8 +506,16 @@ public class MinionEntity extends Mob {
      * сырьё сразу переплавляется по обычному рецепту печки (raw_iron -> слиток железа и т.д.).
      * Если у ресурса нет рецепта плавки (уголь, алмаз...), кладётся как есть.
      */
+    private ItemStack sampleStack() {
+        ItemStack sample = eggs.getItem(0);
+        return !sample.isEmpty() && MinerSample.isValid(sample) ? sample.copyWithCount(1) : ItemStack.EMPTY;
+    }
+
     private ItemStack producedStack(MinionType type) {
-        ItemStack raw = new ItemStack(type.getResource());
+        ItemStack raw = type.isUniversalMiner() ? sampleStack() : new ItemStack(type.getResource());
+        if (raw.isEmpty()) {
+            return raw;
+        }
         if (upgradeCount(UpgradeType.SMELTER) > 0) {
             SingleRecipeInput input = new SingleRecipeInput(raw);
             Optional<RecipeHolder<SmeltingRecipe>> recipe =
@@ -807,7 +825,7 @@ public class MinionEntity extends Mob {
     /** Составляет порядок постройки 5x5: от центра к краям по кругу. Занятые клетки пропускаются. */
     private void buildPlan() {
         plan.clear();
-        int yOff = Config.PLATFORM_Y_OFFSET.get();
+        int yOff = Math.max(0, Config.PLATFORM_Y_OFFSET.get()); // платформа не уходит под миньона
         BlockPos center = blockPosition().offset(0, yOff, 0);
         List<int[]> offsets = new ArrayList<>();
         final int radius = Config.PLATFORM_RADIUS.get();
@@ -955,21 +973,49 @@ public class MinionEntity extends Mob {
             if (!MachineLink.isSupportedMachine(level(), target)) {
                 continue;
             }
-            IItemHandler handler = level().getCapability(Capabilities.ItemHandler.BLOCK, target, dir.getOpposite());
-            if (handler == null) {
-                continue;
-            }
+            List<IItemHandler> handlers = machineHandlers(target, dir.getOpposite());
             if (collect) {
-                collectFrom(handler, feed);
+                for (IItemHandler handler : handlers) {
+                    if (collectFrom(handler, feed) > 0) {
+                        break;
+                    }
+                }
             }
             if (feed) {
-                feedInto(handler);
+                for (IItemHandler handler : handlers) {
+                    if (feedInto(handler) > 0) {
+                        break; // нашли грань, которая принимает предметы
+                    }
+                }
             }
         }
     }
 
-    /** Складывает предметы из хранилища миньона во входы машины (сколько машина принимает). */
-    private void feedInto(IItemHandler machine) {
+    /**
+     * Доступ к инвентарю машины: сначала грань, обращённая к миньону, затем остальные грани. У многих машин (например,
+     * Mekanism) вход настроен только на определённые стороны, и миньон может стоять не с той стороны.
+     * Каждая грань отдаёт только свои «разрешённые» ячейки, поэтому ячейки улучшений и энергии не затрагиваются.
+     */
+    private List<IItemHandler> machineHandlers(BlockPos target, Direction facing) {
+        List<IItemHandler> result = new ArrayList<>();
+        IItemHandler first = level().getCapability(Capabilities.ItemHandler.BLOCK, target, facing);
+        if (first != null) {
+            result.add(first);
+        }
+        for (Direction side : Direction.values()) {
+            if (side == facing) {
+                continue;
+            }
+            IItemHandler handler = level().getCapability(Capabilities.ItemHandler.BLOCK, target, side);
+            if (handler != null && !result.contains(handler)) {
+                result.add(handler);
+            }
+        }
+        return result;
+    }
+
+    /** Складывает предметы из хранилища миньона во входы машины. Возвращает, сколько предметов принято. */
+    private int feedInto(IItemHandler machine) {
         int budget = Config.MACHINE_IO_ITEMS.get();
         for (int i = 0; i < storage.getContainerSize() && budget > 0; i++) {
             ItemStack stack = storage.getItem(i);
@@ -985,13 +1031,14 @@ public class MinionEntity extends Mob {
                 storage.setChanged();
             }
         }
+        return Config.MACHINE_IO_ITEMS.get() - budget;
     }
 
     /**
      * Забирает готовую продукцию машины в хранилище миньона. Если включена и «Подача», то предметы, которые
      * машина сама принимает обратно (то есть входы), не трогаем - иначе они гонялись бы туда-сюда.
      */
-    private void collectFrom(IItemHandler machine, boolean alsoFeeding) {
+    private int collectFrom(IItemHandler machine, boolean alsoFeeding) {
         int budget = Config.MACHINE_IO_ITEMS.get();
         for (int i = 0; i < machine.getSlots() && budget > 0; i++) {
             ItemStack inSlot = machine.getStackInSlot(i);
@@ -1019,6 +1066,7 @@ public class MinionEntity extends Mob {
             }
             budget -= got.getCount();
         }
+        return Config.MACHINE_IO_ITEMS.get() - budget;
     }
 
     public void takeAll(ServerPlayer player) {

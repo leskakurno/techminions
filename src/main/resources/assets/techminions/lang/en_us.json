@@ -279,5 +279,9 @@
   "gui.techminions.filter.all": "All",
   "gui.techminions.filter.problems": "Stopped",
   "gui.techminions.overview.filtered": "No minions match the filter",
-  "gui.techminions.tablet.hourly": "Last hour: %s  (total: %s)"
+  "gui.techminions.tablet.hourly": "Last hour: %s  (total: %s)",
+  "type.techminions.universal_miner": "Universal Miner",
+  "item.techminions.minion_universal_miner": "Universal Miner Minion",
+  "state.techminions.needs_sample": "Needs a sample item in the slot",
+  "tooltip.techminions.universal_miner": "Put any raw material, gem, dust, crop or log from any mod into the slot: the minion mines it"
 }

@@ -30,6 +30,7 @@ public class TabletScreen extends Screen {
     private static final int ROW = 24;
     private static final int GRID_X = 130;
     private static final int GRID_Y = 104;
+    private static final int VISIBLE_LIST = 7; // строк в списке слева: остальные прокручиваются колесом
     private static final int COLS = 9;
     private static final int ROWS = 5;
 
@@ -41,6 +42,7 @@ public class TabletScreen extends Screen {
     private int capacity;
     private int selected;
     private int itemScroll;
+    private int listScroll;
     private List<Shown> shown = new ArrayList<>();
     private Shown hoveredItem;
     private MinionInfo hoveredMinion;
@@ -138,8 +140,9 @@ public class TabletScreen extends Screen {
         if (list != null && button == 0) {
             int x = left() + LIST_X;
             int y = top() + LIST_Y;
-            for (int i = 0; i < list.size(); i++) {
-                int ry = y + i * ROW;
+            for (int row = 0; row < Math.min(VISIBLE_LIST, list.size() - listScroll); row++) {
+                int i = listScroll + row;
+                int ry = y + row * ROW;
                 if (mouseX >= x && mouseX < x + LIST_W && mouseY >= ry && mouseY < ry + ROW - 2) {
                     if (selected != i) {
                         selected = i;
@@ -154,6 +157,11 @@ public class TabletScreen extends Screen {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        if (list != null && mouseX < left() + LIST_X + LIST_W + 6) {
+            int maxList = Math.max(0, list.size() - VISIBLE_LIST);
+            listScroll = Math.max(0, Math.min(maxList, listScroll - (int) Math.signum(scrollY)));
+            return true;
+        }
         itemScroll = Math.max(0, Math.min(maxItemScroll(), itemScroll - (int) Math.signum(scrollY)));
         return true;
     }
@@ -183,10 +191,12 @@ public class TabletScreen extends Screen {
         }
 
         // Список привязанных миньонов
-        for (int i = 0; i < list.size(); i++) {
+        listScroll = Math.max(0, Math.min(Math.max(0, list.size() - VISIBLE_LIST), listScroll));
+        for (int row = 0; row < Math.min(VISIBLE_LIST, list.size() - listScroll); row++) {
+            int i = listScroll + row;
             MinionInfo info = list.get(i);
             int rx = x + LIST_X;
-            int ry = y + LIST_Y + i * ROW;
+            int ry = y + LIST_Y + row * ROW;
             g.fill(rx, ry, rx + LIST_W, ry + ROW - 2, i == selected ? 0xFF4A4D5E : 0xFF33343F);
             g.renderItem(StatusView.icon(info), rx + 3, ry + 3);
             g.drawString(font, StatusView.name(info), rx + 22, ry + 3, 0xFFFFFF, false);
@@ -195,6 +205,16 @@ public class TabletScreen extends Screen {
             if (mouseX >= rx && mouseX < rx + LIST_W && mouseY >= ry && mouseY < ry + ROW - 2) {
                 hoveredMinion = info;
             }
+        }
+
+        if (list.size() > VISIBLE_LIST) { // полоса прокрутки списка
+            int barX = x + LIST_X + LIST_W + 2;
+            int barH = VISIBLE_LIST * ROW - 2;
+            g.fill(barX, y + LIST_Y, barX + 3, y + LIST_Y + barH, 0xFF14151B);
+            int thumbH = Math.max(10, barH * VISIBLE_LIST / list.size());
+            int maxList = list.size() - VISIBLE_LIST;
+            int thumbY = y + LIST_Y + (barH - thumbH) * listScroll / Math.max(1, maxList);
+            g.fill(barX, thumbY, barX + 3, thumbY + thumbH, 0xFF8888AA);
         }
 
         // Подробности выбранного

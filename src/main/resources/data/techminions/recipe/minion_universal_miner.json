@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "E": {
+      "item": "minecraft:ender_pearl"
+    },
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "K": {
+      "item": "techminions:core_elite"
+    },
+    "I": {
+      "item": "minecraft:gold_ingot"
+    },
+    "P": {
+      "item": "minecraft:iron_pickaxe"
+    }
+  },
+  "pattern": [
+    "EDE",
+    "DKD",
+    "IPI"
+  ],
+  "result": {
+    "id": "techminions:minion_universal_miner",
+    "count": 1
+  }
+}

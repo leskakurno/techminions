@@ -106,7 +106,8 @@ public class MinionMenu extends AbstractContainerMenu {
                 if (!moveItemStackTo(stack, PLAYER_START, PLAYER_END, true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (stack.getItem() instanceof HuntEggItem) {
+            } else if (stack.getItem() instanceof HuntEggItem
+                    || (minion != null && minion.getMinionType().isUniversalMiner() && MinerSample.isValid(stack))) {
                 if (!moveItemStackTo(stack, EGG_START, EGG_START + 1, false)) {
                     return ItemStack.EMPTY;
                 }
@@ -187,6 +188,9 @@ public class MinionMenu extends AbstractContainerMenu {
 
         @Override
         public boolean mayPlace(ItemStack stack) {
+            if (minion != null && minion.getMinionType().isUniversalMiner()) {
+                return MinerSample.isValid(stack); // образец для Универсального добытчика
+            }
             if (minion == null || !(stack.getItem() instanceof HuntEggItem)) {
                 return false;
             }
@@ -201,7 +205,7 @@ public class MinionMenu extends AbstractContainerMenu {
 
         @Override
         public boolean isActive() {
-            return minion != null && minion.getMinionType().isHunter();
+            return minion != null && (minion.getMinionType().isHunter() || minion.getMinionType().isUniversalMiner());
         }
     }
 }

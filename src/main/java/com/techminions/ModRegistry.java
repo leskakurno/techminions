@@ -195,7 +195,7 @@ public class ModRegistry {
     public static final Supplier<EntityType<MinionEntity>> MINION = ENTITY_TYPES.register(
             "minion",
             () -> EntityType.Builder.of(MinionEntity::new, MobCategory.MISC)
-                    .sized(0.5F, 1.2F)
+                    .sized(0.5F, 1.45F)
                     .clientTrackingRange(8)
                     .build("minion"));
 
