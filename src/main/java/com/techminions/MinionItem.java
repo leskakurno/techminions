@@ -51,6 +51,23 @@ public class MinionItem extends Item {
             return InteractionResult.FAIL;
         }
 
+        if (player != null) {
+            java.util.List<MinionRegistry.Entry> owned = MinionRegistry.get(serverLevel.getServer()).ownedBy(player.getUUID());
+            int maxTotal = Config.MAX_MINIONS_PER_PLAYER.get();
+            if (maxTotal > 0 && owned.size() >= maxTotal) {
+                player.displayClientMessage(Component.translatable("message.techminions.limit_total", maxTotal), true);
+                return InteractionResult.FAIL;
+            }
+            int maxType = Config.MAX_MINIONS_PER_TYPE.get();
+            if (maxType > 0) {
+                long sameType = owned.stream().filter(e -> e.type == type.ordinal()).count();
+                if (sameType >= maxType) {
+                    player.displayClientMessage(Component.translatable("message.techminions.limit_type", maxType), true);
+                    return InteractionResult.FAIL;
+                }
+            }
+        }
+
         MinionEntity minion = ModRegistry.MINION.get().create(serverLevel);
         if (minion == null) {
             return InteractionResult.FAIL;

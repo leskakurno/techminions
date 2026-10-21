@@ -411,6 +411,32 @@ public enum MinionType implements StringRepresentable {
         return BuiltInRegistries.ENTITY_TYPE.getOptional(ResourceLocation.parse(hunt.entity()));
     }
 
+    // Секунд между действиями (поставить или сломать один блок) по уровням I-XI.
+    // Значения STONE, IRON, GOLD, DIAMOND (и LAPIS как алмаз), EMERALD сняты со скриншотов подсказок;
+    // кривые REDSTONE, COAL и крайние значения EMERALD / GOLD (уровни 1-2 и 5-6 / 11) - предположение по аналогии.
+    private static final double[] CURVE_STONE = {14, 14, 12, 12, 10, 10, 9, 9, 8, 8, 7};
+    private static final double[] CURVE_COAL = {15, 15, 13, 13, 12, 12, 10, 10, 9, 9, 7};
+    private static final double[] CURVE_IRON = {17, 17, 15, 15, 14, 14, 12, 12, 10, 10, 8};
+    private static final double[] CURVE_GOLD = {22, 22, 20, 20, 18, 18, 16, 16, 14, 14, 11};
+    private static final double[] CURVE_REDSTONE = {29, 29, 27, 27, 25, 25, 23, 23, 21, 21, 19};
+    private static final double[] CURVE_DIAMOND = {29, 29, 27, 27, 25, 25, 22, 22, 19, 19, 15};
+    private static final double[] CURVE_EMERALD = {28, 28, 26, 26, 24, 24, 21, 21, 18, 18, 14};
+
+    /** Секунд на одно действие миньона на данном уровне (без улучшений скорости). */
+    public double stepSeconds(int level) {
+        double[] curve = switch (this) {
+            case STONE -> CURVE_STONE;
+            case COAL -> CURVE_COAL;
+            case IRON -> CURVE_IRON;
+            case GOLD -> CURVE_GOLD;
+            case REDSTONE -> CURVE_REDSTONE;
+            case DIAMOND, LAPIS -> CURVE_DIAMOND;
+            case EMERALD -> CURVE_EMERALD;
+            default -> tier <= 1 ? CURVE_COAL : tier == 2 ? CURVE_IRON : CURVE_DIAMOND;
+        };
+        return curve[Math.max(0, Math.min(curve.length, level) - 1)];
+    }
+
     /** Во сколько раз шаг добычи длиннее обычного: минионит - редкий ресурс, поэтому медленный. */
     public int getTimeMultiplier() {
         if (isGatherer() || isUniversalMiner()) {

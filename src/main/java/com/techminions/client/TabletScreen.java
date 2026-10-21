@@ -276,10 +276,7 @@ public class TabletScreen extends Screen {
                     hoveredItem.stack().getHoverName(),
                     Component.translatable("gui.techminions.tablet.count", hoveredItem.count())), mouseX, mouseY);
         } else if (hoveredMinion != null) {
-            g.renderComponentTooltip(font, List.of(
-                    StatusView.name(hoveredMinion),
-                    StatusView.text(hoveredMinion),
-                    Component.literal(StatusView.place(hoveredMinion))), mouseX, mouseY);
+            g.renderComponentTooltip(font, StatusView.tooltip(hoveredMinion, false), mouseX, mouseY);
         }
     }
 

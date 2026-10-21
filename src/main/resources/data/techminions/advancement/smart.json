@@ -1,0 +1,46 @@
+{
+  "display": {
+    "icon": {
+      "id": "techminions:upgrade_filter"
+    },
+    "title": {
+      "translate": "advancement.techminions.smart.title"
+    },
+    "description": {
+      "translate": "advancement.techminions.smart.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "techminions:machines",
+  "criteria": {
+    "f": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "techminions:upgrade_filter"
+          }
+        ]
+      }
+    },
+    "r": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "techminions:upgrade_recycler"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "f",
+      "r"
+    ]
+  ]
+}

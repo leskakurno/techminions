@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "M": {
+      "item": "techminions:minionite_ingot"
+    },
+    "L": {
+      "item": "minecraft:ender_chest"
+    },
+    "C": {
+      "item": "techminions:minion_chest_large"
+    },
+    "K": {
+      "item": "techminions:core_elite"
+    }
+  },
+  "pattern": [
+    "MLM",
+    "CKC",
+    "MLM"
+  ],
+  "result": {
+    "id": "techminions:minion_warehouse",
+    "count": 1
+  }
+}

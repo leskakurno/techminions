@@ -1,0 +1,35 @@
+{
+  "display": {
+    "icon": {
+      "id": "techminions:minion_warehouse"
+    },
+    "title": {
+      "translate": "advancement.techminions.warehouse.title"
+    },
+    "description": {
+      "translate": "advancement.techminions.warehouse.desc"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "techminions:chest",
+  "criteria": {
+    "w": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "techminions:minion_warehouse"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "w"
+    ]
+  ]
+}

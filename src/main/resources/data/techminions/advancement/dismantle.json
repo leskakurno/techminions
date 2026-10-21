@@ -1,0 +1,35 @@
+{
+  "display": {
+    "icon": {
+      "id": "techminions:minion_station"
+    },
+    "title": {
+      "translate": "advancement.techminions.dismantle.title"
+    },
+    "description": {
+      "translate": "advancement.techminions.dismantle.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "techminions:placed",
+  "criteria": {
+    "s": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "techminions:minion_station"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "s"
+    ]
+  ]
+}

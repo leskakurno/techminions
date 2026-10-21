@@ -75,6 +75,22 @@ public class ModRegistry {
             props -> new MinionChestBlock(props, MinionChestTier.LARGE),
             BlockBehaviour.Properties.of().mapColor(MapColor.DIAMOND).strength(13.0F).sound(SoundType.WOOD));
 
+    // Центральный склад: большой ограниченный склад, миньоны отправляют сюда добычу по привязке (Ключ склада)
+    public static final DeferredBlock<MinionChestBlock> MINION_WAREHOUSE = BLOCKS.registerBlock(
+            "minion_warehouse",
+            props -> new MinionChestBlock(props, MinionChestTier.WAREHOUSE),
+            BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLACK).strength(25.0F).sound(SoundType.METAL));
+    public static final DeferredItem<BlockItem> MINION_WAREHOUSE_ITEM = ITEMS.registerSimpleBlockItem(MINION_WAREHOUSE);
+    public static final DeferredHolder<Item, WarehouseKeyItem> WAREHOUSE_KEY = ITEMS.register("warehouse_key",
+            () -> new WarehouseKeyItem(new Item.Properties().stacksTo(1)));
+
+    // Станция разборки миньонов (возврат ядра и части материалов)
+    public static final DeferredBlock<MinionStationBlock> MINION_STATION = BLOCKS.registerBlock(
+            "minion_station",
+            MinionStationBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F).sound(SoundType.METAL));
+    public static final DeferredItem<BlockItem> MINION_STATION_ITEM = ITEMS.registerSimpleBlockItem(MINION_STATION);
+
     public static final DeferredItem<BlockItem> MINION_CHEST_SMALL_ITEM = ITEMS.registerSimpleBlockItem(MINION_CHEST_SMALL);
     public static final DeferredItem<BlockItem> MINION_CHEST_MEDIUM_ITEM = ITEMS.registerSimpleBlockItem(MINION_CHEST_MEDIUM);
     public static final DeferredItem<BlockItem> MINION_CHEST_LARGE_ITEM = ITEMS.registerSimpleBlockItem(MINION_CHEST_LARGE);
@@ -90,13 +106,14 @@ public class ModRegistry {
             case SMALL -> MINION_CHEST_SMALL.get();
             case MEDIUM -> MINION_CHEST_MEDIUM.get();
             case LARGE -> MINION_CHEST_LARGE.get();
+            case WAREHOUSE -> MINION_WAREHOUSE.get();
         };
     }
 
     public static final Supplier<BlockEntityType<MinionChestBlockEntity>> MINION_CHEST_BE = BLOCK_ENTITIES.register(
             "minion_chest",
             () -> BlockEntityType.Builder.of(MinionChestBlockEntity::new,
-                    MINION_CHEST_SMALL.get(), MINION_CHEST_MEDIUM.get(), MINION_CHEST_LARGE.get()).build(null));
+                    MINION_CHEST_SMALL.get(), MINION_CHEST_MEDIUM.get(), MINION_CHEST_LARGE.get(), MINION_WAREHOUSE.get()).build(null));
 
     public static final Map<MinionType, DeferredHolder<Item, MinionItem>> MINION_ITEMS = new EnumMap<>(MinionType.class);
     public static final Map<UpgradeType, DeferredHolder<Item, UpgradeItem>> UPGRADE_ITEMS = new EnumMap<>(UpgradeType.class);
@@ -113,7 +130,7 @@ public class ModRegistry {
         for (UpgradeType type : UpgradeType.values()) {
             UPGRADE_ITEMS.put(type, ITEMS.register(
                     "upgrade_" + type.getSerializedName(),
-                    () -> new UpgradeItem(new Item.Properties().stacksTo(type == UpgradeType.FILTER ? 1 : 16), type)));
+                    () -> new UpgradeItem(new Item.Properties().stacksTo(type == UpgradeType.FILTER || type == UpgradeType.LIMITER ? 1 : 16), type)));
         }
     }
 
@@ -229,6 +246,9 @@ public class ModRegistry {
                         output.accept(MINION_CHEST_SMALL_ITEM.get());
                         output.accept(MINION_CHEST_MEDIUM_ITEM.get());
                         output.accept(MINION_CHEST_LARGE_ITEM.get());
+                        output.accept(MINION_WAREHOUSE_ITEM.get());
+                        output.accept(WAREHOUSE_KEY.get());
+                        output.accept(MINION_STATION_ITEM.get());
                         output.accept(MINIONITE_SHARD.get());
                         output.accept(MINIONITE_INGOT.get());
                         output.accept(MINIONITE_HELMET.get());

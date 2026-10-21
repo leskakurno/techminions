@@ -1,0 +1,35 @@
+{
+  "display": {
+    "icon": {
+      "id": "techminions:upgrade_limiter"
+    },
+    "title": {
+      "translate": "advancement.techminions.limiter.title"
+    },
+    "description": {
+      "translate": "advancement.techminions.limiter.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "techminions:machines",
+  "criteria": {
+    "l": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "techminions:upgrade_limiter"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "l"
+    ]
+  ]
+}

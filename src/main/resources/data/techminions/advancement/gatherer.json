@@ -1,0 +1,57 @@
+{
+  "display": {
+    "icon": {
+      "id": "techminions:minion_lumberjack"
+    },
+    "title": {
+      "translate": "advancement.techminions.gatherer.title"
+    },
+    "description": {
+      "translate": "advancement.techminions.gatherer.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "techminions:placed",
+  "criteria": {
+    "l": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "techminions:minion_lumberjack"
+          }
+        ]
+      }
+    },
+    "f": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "techminions:minion_farmer"
+          }
+        ]
+      }
+    },
+    "i": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "techminions:minion_fisher"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "l",
+      "f",
+      "i"
+    ]
+  ]
+}

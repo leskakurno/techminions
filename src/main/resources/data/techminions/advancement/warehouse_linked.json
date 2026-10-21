@@ -1,0 +1,28 @@
+{
+  "display": {
+    "icon": {
+      "id": "techminions:warehouse_key"
+    },
+    "title": {
+      "translate": "advancement.techminions.warehouse_linked.title"
+    },
+    "description": {
+      "translate": "advancement.techminions.warehouse_linked.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "techminions:warehouse",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ]
+}

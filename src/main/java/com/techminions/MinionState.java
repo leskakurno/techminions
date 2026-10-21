@@ -20,7 +20,8 @@ public enum MinionState implements StringRepresentable {
     NEEDS_WATER,
     NEEDS_CROPS,
     NEEDS_TREES,
-    NEEDS_SAMPLE;
+    NEEDS_SAMPLE,
+    LIMIT_REACHED;
 
     @Override
     public String getSerializedName() {

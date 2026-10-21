@@ -171,11 +171,7 @@ public class MinionsOverviewScreen extends Screen {
     public void render(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
         super.render(g, mouseX, mouseY, partialTick);
         if (hovered != null) {
-            g.renderComponentTooltip(font, List.of(
-                    StatusView.name(hovered),
-                    StatusView.text(hovered),
-                    Component.literal(StatusView.place(hovered)),
-                    Component.translatable("gui.techminions.mined", hovered.mined())), mouseX, mouseY);
+            g.renderComponentTooltip(font, StatusView.tooltip(hovered, true), mouseX, mouseY);
         }
     }
 

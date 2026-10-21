@@ -55,6 +55,15 @@ public class MinionChestBlock extends Block implements EntityBlock {
         return new MinionChestBlockEntity(pos, state);
     }
 
+    /** Запоминает владельца (нужно Центральному складу). */
+    @Override
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable net.minecraft.world.entity.LivingEntity placer, ItemStack stack) {
+        super.setPlacedBy(level, pos, state, placer, stack);
+        if (!level.isClientSide && placer instanceof Player player && level.getBlockEntity(pos) instanceof MinionChestBlockEntity chest) {
+            chest.setOwner(player.getUUID());
+        }
+    }
+
     /** Лёгкий тикер: только выбрасывает остатки из старых больших сундуков (обычно ничего не делает). */
     @Nullable
     @SuppressWarnings("unchecked")
@@ -71,6 +80,23 @@ public class MinionChestBlock extends Block implements EntityBlock {
     @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player,
                                               InteractionHand hand, BlockHitResult hit) {
+        if (stack.getItem() instanceof WarehouseKeyItem) {
+            if (tier != MinionChestTier.WAREHOUSE) {
+                return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            }
+            if (!level.isClientSide && level.getBlockEntity(pos) instanceof MinionChestBlockEntity warehouse) {
+                if (warehouse.getOwner() == null) {
+                    warehouse.setOwner(player.getUUID()); // старый склад без владельца достаётся первому, кто привяжет ключ
+                }
+                if (!player.getUUID().equals(warehouse.getOwner())) {
+                    player.displayClientMessage(Component.translatable("message.techminions.warehouse.not_yours"), true);
+                } else {
+                    WarehouseKeyItem.setTarget(stack, pos, level.dimension().location().toString());
+                    player.displayClientMessage(Component.translatable("message.techminions.warehouse.key_set"), true);
+                }
+            }
+            return level.isClientSide ? ItemInteractionResult.SUCCESS : ItemInteractionResult.CONSUME;
+        }
         if (!(stack.getItem() instanceof ChestUpgradeItem upgrade)) {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }

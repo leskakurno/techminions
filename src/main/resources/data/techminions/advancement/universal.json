@@ -1,0 +1,35 @@
+{
+  "display": {
+    "icon": {
+      "id": "techminions:minion_universal_miner"
+    },
+    "title": {
+      "translate": "advancement.techminions.universal.title"
+    },
+    "description": {
+      "translate": "advancement.techminions.universal.desc"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "techminions:placed",
+  "criteria": {
+    "u": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "techminions:minion_universal_miner"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "u"
+    ]
+  ]
+}

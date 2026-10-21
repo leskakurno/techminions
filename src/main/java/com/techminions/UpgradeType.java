@@ -13,7 +13,8 @@ public enum UpgradeType implements StringRepresentable {
     MACHINE_COLLECT,
     REDSTONE,
     FILTER,
-    RECYCLER;
+    RECYCLER,
+    LIMITER;
 
     @Override
     public String getSerializedName() {

@@ -107,6 +107,14 @@ public final class ServerNetwork {
             list.add(toInfo(entry, now, false, false));
         }
         PacketDistributor.sendToPlayer(player, new MinionsPayload(0, 0, 0, list));
+        ModAdvancements.award(player, "observer");
+        java.util.Set<Integer> types = new java.util.HashSet<>();
+        for (MinionRegistry.Entry entry : MinionRegistry.get(server).ownedBy(player.getUUID())) {
+            types.add(entry.type);
+        }
+        if (types.size() >= 5) {
+            ModAdvancements.award(player, "district");
+        }
     }
 
     /** Планшет: только привязанные миньоны, с содержимым хранилища (только для просмотра). */
@@ -142,7 +150,12 @@ public final class ServerNetwork {
                 items.add(new MinionInfo.ItemCount(item.getKey(), item.getValue()));
             }
         }
+        List<MinionInfo.StopEvent> history = new ArrayList<>();
+        for (int i = e.history.size() - 1; i >= 0; i--) { // сначала самые свежие
+            long[] record = e.history.get(i);
+            history.add(new MinionInfo.StopEvent((int) record[0], (int) Math.max(0, Math.min(Integer.MAX_VALUE, now - record[1]))));
+        }
         return new MinionInfo(e.id, e.dimension, e.pos, e.type, e.level, e.state, age, e.mined, e.hourly,
-                e.slotsUsed, e.slotsTotal, locked, items);
+                e.slotsUsed, e.slotsTotal, locked, items, history);
     }
 }

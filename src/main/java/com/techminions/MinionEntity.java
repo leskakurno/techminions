@@ -104,6 +104,14 @@ public class MinionEntity extends Mob {
     private UUID ownerId;
     private String ownerName = "";
 
+    // История остановок: до 8 последних записей {состояние, игровое время}.
+    private final List<long[]> stopLog = new ArrayList<>();
+    private boolean productionLineAwarded;
+
+    // Привязка к Центральному складу (Ключ склада): позиция и измерение; null - не привязан.
+    private BlockPos warehousePos;
+    private String warehouseDim = "";
+
     // Статистика: добыча по минутам за последний час (кольцевой буфер из 60 значений).
     private final int[] yieldBuckets = new int[60];
     private long bucketMinute = -1L;
@@ -170,8 +178,74 @@ public class MinionEntity extends Mob {
         if (getState() != state) {
             entityData.set(DATA_STATE, state.ordinal());
             refreshName();
+            recordStop(state);
             notifyOwner(state);
         }
+    }
+
+    // ---------- История остановок и ограничитель ----------
+
+    private static boolean isProblemState(MinionState state) {
+        return switch (state) {
+            case FULL, WAITING, NO_EGG, UNAVAILABLE, PAUSED, NEEDS_WATER, NEEDS_CROPS, NEEDS_TREES, NEEDS_SAMPLE, LIMIT_REACHED -> true;
+            default -> false;
+        };
+    }
+
+    private void recordStop(MinionState state) {
+        if (!isProblemState(state) || level().isClientSide) {
+            return;
+        }
+        stopLog.add(new long[]{state.ordinal(), level().getGameTime()});
+        while (stopLog.size() > 8) {
+            stopLog.remove(0);
+        }
+    }
+
+    /** Наименьший порог среди установленных «Ограничителей» (0 - ограничителя нет). */
+    private int limitTarget() {
+        int best = 0;
+        for (int i = 0; i < upgrades.getContainerSize(); i++) {
+            ItemStack up = upgrades.getItem(i);
+            if (up.getItem() instanceof UpgradeItem item && item.getUpgradeType() == UpgradeType.LIMITER) {
+                int target = UpgradeLimit.target(up);
+                best = best == 0 ? target : Math.min(best, target);
+            }
+        }
+        return best;
+    }
+
+    /** Достаточно ли уже добыто: считаются хранилище миньона и его Сундуки миньонов. */
+    private boolean limitReached(MinionType type) {
+        int limit = limitTarget();
+        if (limit <= 0) {
+            return false;
+        }
+        Item counted = null; // null - считаем всё подряд (охотники и собиратели добывают разное)
+        if (!type.isHunter() && !type.isGatherer()) {
+            ItemStack produced = producedStack(type);
+            if (produced.isEmpty()) {
+                return false;
+            }
+            counted = produced.getItem();
+        }
+        long total = 0;
+        for (int i = 0; i < storage.getContainerSize(); i++) {
+            ItemStack stack = storage.getItem(i);
+            if (!stack.isEmpty() && (counted == null || stack.is(counted))) {
+                total += stack.getCount();
+            }
+        }
+        for (MinionChestBlockEntity chest : adjacentChests()) {
+            IItemHandler handler = chest.getItemHandler();
+            for (int i = 0; i < handler.getSlots(); i++) {
+                ItemStack stack = handler.getStackInSlot(i);
+                if (!stack.isEmpty() && (counted == null || stack.is(counted))) {
+                    total += stack.getCount();
+                }
+            }
+        }
+        return total >= limit;
     }
 
     // ---------- Статистика и уведомления ----------
@@ -238,6 +312,8 @@ public class MinionEntity extends Mob {
                 Component.translatable("type.techminions." + getMinionType().getSerializedName()),
                 Component.translatable("state.techminions." + state.getSerializedName()),
                 p.getX() + " " + p.getY() + " " + p.getZ()).withStyle(ChatFormatting.YELLOW));
+        owner.sendSystemMessage(Component.translatable("hint.techminions." + state.getSerializedName())
+                .withStyle(ChatFormatting.GRAY));
     }
 
     private void setProgress(int value) {
@@ -254,18 +330,18 @@ public class MinionEntity extends Mob {
         return Math.min(STORAGE_SIZE, 2 + level + 2 * storageUpgrades);
     }
 
-    /** Кривая как на Hypixel: секунд на шаг (поставить или сломать один блок) по уровням I-XI при базе 140 тиков (7 с). */
-    private static final double[] LEVEL_SECONDS = {7, 7, 6, 6, 5, 5, 4.5, 4.5, 4, 4, 3.5};
-
+    /** Общая кривая (как у железа), нужна для масштабирования времён охотников: уровень I = 1.0, выше - быстрее. */
     public static int intervalFor(int level, int speedUpgrades) {
-        int index = Math.max(0, Math.min(LEVEL_SECONDS.length, level) - 1);
-        double ticks = LEVEL_SECONDS[index] * 20.0 * (Config.BASE_TICKS.get() / 140.0) * Math.pow(0.8, speedUpgrades);
-        return (int) Math.max(Config.MIN_TICKS.get(), Math.round(ticks));
+        return intervalFor(MinionType.IRON, level, speedUpgrades);
     }
 
-    /** Длительность шага с учётом типа: минионит медленнее, охотники ждут «убийство» (боссы - намного дольше). */
+    /**
+     * Время одного действия (поставить или сломать блок) в тиках, как «Время между действиями» на Hypixel:
+     * у каждого ресурса своя кривая по уровням I-XI (у камня 14 с на I и 7 с на XI). База 140 тиков в конфиге = 1.0.
+     */
     public static int intervalFor(MinionType type, int level, int speedUpgrades) {
-        return intervalFor(level, speedUpgrades) * type.getTimeMultiplier();
+        double ticks = type.stepSeconds(level) * 20.0 * (Config.BASE_TICKS.get() / 140.0) * Math.pow(0.8, speedUpgrades);
+        return (int) Math.max(Config.MIN_TICKS.get(), Math.round(ticks * type.getTimeMultiplier()));
     }
 
     public int costForNext() {
@@ -306,6 +382,31 @@ public class MinionEntity extends Mob {
         return ownerId != null && ownerId.equals(player.getUUID());
     }
 
+    /** Исследовательские задания владельца: награда выдаётся, когда он в сети (достижения идемпотентны). */
+    private void checkQuests(ServerLevel serverLevel) {
+        if (ownerId == null) {
+            return;
+        }
+        boolean mined1k = getMined() >= 1000;
+        boolean smelting = upgradeCount(UpgradeType.SMELTER) > 0;
+        if (!mined1k && !smelting) {
+            return;
+        }
+        ServerPlayer owner = serverLevel.getServer().getPlayerList().getPlayer(ownerId);
+        if (owner == null) {
+            return;
+        }
+        if (mined1k) {
+            ModAdvancements.award(owner, "thousand");
+        }
+        if (getMined() >= 10000) {
+            ModAdvancements.award(owner, "ten_thousand");
+        }
+        if (smelting) {
+            ModAdvancements.award(owner, "smelting");
+        }
+    }
+
     /** Снимок для вкладки «Миньоны» и Планшета: состояние + что лежит в хранилище и в Сундуках миньонов. */
     public void reportToRegistry() {
         if (!(level() instanceof ServerLevel serverLevel) || !isAlive()) {
@@ -321,6 +422,8 @@ public class MinionEntity extends Mob {
         entry.state = getState().ordinal();
         entry.mined = getMined();
         entry.hourly = yieldLastHour();
+        entry.history.addAll(stopLog);
+        checkQuests(serverLevel);
         entry.lastSeen = serverLevel.getServer().overworld().getGameTime();
 
         int used = 0;
@@ -474,6 +577,12 @@ public class MinionEntity extends Mob {
             cooldown = 100;
             return;
         }
+        if (limitReached(type)) {
+            setState(MinionState.LIMIT_REACHED); // ограничитель: добыто достаточно
+            setProgress(0);
+            cooldown = 40;
+            return;
+        }
         if (type.isHunter()) {
             stepHunt(type);
             return;
@@ -551,23 +660,35 @@ public class MinionEntity extends Mob {
 
     /** Длительность фазы охоты в тиках: «появление» моба и затем его «убийство». У боссов намного дольше. */
     public static int huntTicks(MinionType type, int level, int speedUpgrades, boolean killing) {
+        return huntTicks(type, level, speedUpgrades, killing, null);
+    }
+
+    /** override - правило конкретного моба из конфига (huntOverrides): заменяет базовое время появления и убийства. */
+    public static int huntTicks(MinionType type, int level, int speedUpgrades, boolean killing, Config.HuntOverride override) {
         long base;
-        if (type.isBoss()) {
+        if (override != null) {
+            base = 20L * (killing ? override.killSec() : override.spawnSec());
+        } else if (type.isBoss()) {
             base = 1200L * (killing ? Config.HUNT_BOSS_KILL_MIN.get() : Config.HUNT_BOSS_SPAWN_MIN.get());
         } else {
             base = 20L * (killing ? Config.HUNT_MOB_KILL_SEC.get() : Config.HUNT_MOB_SPAWN_SEC.get());
         }
         double scale = 1.0;
         if (Config.HUNT_SCALE.get()) {
-            scale = (double) intervalFor(level, speedUpgrades) / Config.BASE_TICKS.get();
+            scale = (double) intervalFor(level, speedUpgrades) / intervalFor(1, 0);
         }
         return (int) Math.max(20L, Math.round(base * scale));
     }
 
     private void scheduleHunt(MinionType type) {
         setProgress(0);
-        cooldownMax = huntTicks(type, getMinionLevel(), upgradeCount(UpgradeType.SPEED), huntKilling);
+        cooldownMax = huntTicks(type, getMinionLevel(), upgradeCount(UpgradeType.SPEED), huntKilling, huntOverrideFor(type));
         cooldown = cooldownMax;
+    }
+
+    private Config.HuntOverride huntOverrideFor(MinionType type) {
+        EntityType<?> target = huntTarget(type);
+        return target == null ? null : Config.huntOverride(BuiltInRegistries.ENTITY_TYPE.getKey(target).toString());
     }
 
     /**
@@ -614,8 +735,24 @@ public class MinionEntity extends Mob {
             cooldown = 100;
             return;
         }
+        Config.HuntOverride rule = Config.huntOverride(BuiltInRegistries.ENTITY_TYPE.getKey(target).toString());
+        if (rule != null && rule.reward() <= 0) { // этот моб отключён правилом из конфига
+            setState(MinionState.UNAVAILABLE);
+            setProgress(0);
+            cooldown = 100;
+            return;
+        }
         swing(InteractionHand.MAIN_HAND);
         List<ItemStack> drops = new ArrayList<>(HuntLoot.roll(serverLevel, target, position()));
+        for (int extra = 1; rule != null && extra < rule.reward(); extra++) {
+            drops.addAll(HuntLoot.roll(serverLevel, target, position())); // множитель награды
+        }
+        if (getMined() == 0 && !drops.isEmpty() && ownerId != null) {
+            ServerPlayer ownerPlayer = serverLevel.getServer().getPlayerList().getPlayer(ownerId);
+            if (ownerPlayer != null) {
+                ModAdvancements.award(ownerPlayer, "hunt_loot");
+            }
+        }
         int fortune = upgradeCount(UpgradeType.FORTUNE);
         if (fortune > 0 && random.nextFloat() < 0.3F * fortune) {
             drops.addAll(HuntLoot.roll(serverLevel, target, position())); // бонус как у добычи
@@ -909,6 +1046,61 @@ public class MinionEntity extends Mob {
         for (MinionChestBlockEntity chest : adjacentChests()) {
             pushInto(chest.getItemHandler());
         }
+        deliverToWarehouse();
+    }
+
+    private void awardProductionLine() {
+        if (productionLineAwarded || ownerId == null || !(level() instanceof ServerLevel serverLevel)) {
+            return;
+        }
+        productionLineAwarded = true;
+        ServerPlayer owner = serverLevel.getServer().getPlayerList().getPlayer(ownerId);
+        if (owner != null) {
+            ModAdvancements.award(owner, "production_line");
+        }
+    }
+
+    public void setWarehouse(BlockPos pos, String dimension) {
+        this.warehousePos = pos;
+        this.warehouseDim = dimension;
+    }
+
+    /**
+     * Отправка добычи в привязанный Центральный склад. Склад не подгружает чанки (если он не загружен - ждём),
+     * проверяются дистанция, измерение и владелец; недействительная привязка сбрасывается.
+     */
+    private void deliverToWarehouse() {
+        if (warehousePos == null || ownerId == null || storageIsEmpty() || !(level() instanceof ServerLevel serverLevel)) {
+            return;
+        }
+        if (!serverLevel.dimension().location().toString().equals(warehouseDim)) {
+            return;
+        }
+        double range = Config.WAREHOUSE_RANGE.get();
+        if (warehousePos.distSqr(blockPosition()) > range * range || !serverLevel.hasChunkAt(warehousePos)) {
+            return;
+        }
+        if (!(serverLevel.getBlockEntity(warehousePos) instanceof MinionChestBlockEntity warehouse)
+                || warehouse.getTier() != MinionChestTier.WAREHOUSE || !ownerId.equals(warehouse.getOwner())) {
+            warehousePos = null; // склад сломан или принадлежит другому: привязка недействительна
+            return;
+        }
+        int budget = Config.WAREHOUSE_ITEMS.get();
+        IItemHandler handler = warehouse.getItemHandler();
+        for (int i = 0; i < storage.getContainerSize() && budget > 0; i++) {
+            ItemStack stack = storage.getItem(i);
+            if (stack.isEmpty()) {
+                continue;
+            }
+            int amount = Math.min(budget, stack.getCount());
+            ItemStack rest = ItemHandlerHelper.insertItem(handler, stack.copyWithCount(amount), false);
+            int moved = amount - rest.getCount();
+            if (moved > 0) {
+                stack.shrink(moved);
+                budget -= moved;
+                storage.setChanged();
+            }
+        }
     }
 
     private boolean isMinionChest(BlockPos pos) {
@@ -984,6 +1176,7 @@ public class MinionEntity extends Mob {
             if (feed) {
                 for (IItemHandler handler : handlers) {
                     if (feedInto(handler) > 0) {
+                        awardProductionLine();
                         break; // нашли грань, которая принимает предметы
                     }
                 }
@@ -1269,6 +1462,10 @@ public class MinionEntity extends Mob {
                 TabletItem.linkMinion(serverPlayer, held, this); // Планшет: привязать/отвязать миньона
                 return InteractionResult.CONSUME;
             }
+            if (held.getItem() instanceof WarehouseKeyItem) {
+                WarehouseKeyItem.bindMinion(serverPlayer, held, this); // Ключ склада: привязать/отвязать склад
+                return InteractionResult.CONSUME;
+            }
             serverPlayer.openMenu(
                     new SimpleMenuProvider(
                             (id, inventory, p) -> new MinionMenu(id, inventory, this, storage, upgrades, eggs),
@@ -1354,6 +1551,16 @@ public class MinionEntity extends Mob {
         }
         tag.putLongArray("Plan", planArr);
         tag.putInt("PlateMax", getPlateMax());
+        if (warehousePos != null) {
+            tag.putLong("WarehousePos", warehousePos.asLong());
+            tag.putString("WarehouseDim", warehouseDim);
+        }
+        long[] flat = new long[stopLog.size() * 2];
+        for (int i = 0; i < stopLog.size(); i++) {
+            flat[i * 2] = stopLog.get(i)[0];
+            flat[i * 2 + 1] = stopLog.get(i)[1];
+        }
+        tag.putLongArray("StopLog", flat);
         tag.putIntArray("Buckets", yieldBuckets);
         tag.putLong("BucketMinute", bucketMinute);
         if (ownerId != null) {
@@ -1389,6 +1596,13 @@ public class MinionEntity extends Mob {
         entityData.set(DATA_PLATE, ownedBlocks.size());
         if (getMinionType().isHunter() && huntArmed) {
             entityData.set(DATA_STATE, (huntKilling ? MinionState.KILLING : MinionState.SPAWNING).ordinal());
+        }
+        warehousePos = tag.contains("WarehousePos") ? BlockPos.of(tag.getLong("WarehousePos")) : null;
+        warehouseDim = tag.getString("WarehouseDim");
+        stopLog.clear();
+        long[] flatLog = tag.getLongArray("StopLog");
+        for (int i = 0; i + 1 < flatLog.length; i += 2) {
+            stopLog.add(new long[]{flatLog[i], flatLog[i + 1]});
         }
         int[] saved = tag.getIntArray("Buckets");
         for (int i = 0; i < yieldBuckets.length; i++) {

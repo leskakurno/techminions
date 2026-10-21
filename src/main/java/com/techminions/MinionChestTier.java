@@ -6,7 +6,8 @@ import java.util.Locale;
 public enum MinionChestTier {
     SMALL(9, 1),   //  9 ячеек
     MEDIUM(9, 2),  // 18 ячеек
-    LARGE(9, 4);   // 36 ячеек
+    LARGE(9, 4),   // 36 ячеек
+    WAREHOUSE(9, 6); // Центральный склад: 54 ячейки, привязывается к миньонам ключом
 
     private final int columns;
     private final int rows;

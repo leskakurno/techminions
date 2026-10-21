@@ -28,11 +28,15 @@ public class UpgradeItem extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        if (upgradeType != UpgradeType.FILTER) {
+        if (upgradeType != UpgradeType.FILTER && upgradeType != UpgradeType.LIMITER) {
             return super.use(level, player, hand);
         }
         if (!level.isClientSide) {
-            UpgradeFilter.interact(player, hand, stack); // настройка фильтра «Умная логистика»
+            if (upgradeType == UpgradeType.FILTER) {
+                UpgradeFilter.interact(player, hand, stack); // настройка фильтра «Умная логистика»
+            } else {
+                UpgradeLimit.cycle(player, stack); // порог «Ограничителя»
+            }
         }
         return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
     }
@@ -41,6 +45,11 @@ public class UpgradeItem extends Item {
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         tooltip.add(Component.translatable("tooltip.techminions.upgrade." + upgradeType.getSerializedName())
                 .withStyle(ChatFormatting.GRAY));
+        if (upgradeType == UpgradeType.LIMITER) {
+            tooltip.add(Component.translatable("tooltip.techminions.limiter.target", UpgradeLimit.target(stack))
+                    .withStyle(ChatFormatting.AQUA));
+            tooltip.add(Component.translatable("tooltip.techminions.limiter.how").withStyle(ChatFormatting.DARK_GRAY));
+        }
         if (upgradeType == UpgradeType.FILTER) {
             boolean black = UpgradeFilter.isBlacklist(stack);
             tooltip.add(Component.translatable(black ? "tooltip.techminions.filter.black" : "tooltip.techminions.filter.white")

@@ -6,8 +6,8 @@ public class Config {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
 
     public static final ModConfigSpec.IntValue BASE_TICKS = BUILDER
-            .comment("Ticks per platform step (place one block / break one block) at minion level I. 140 = 7 seconds, like Hypixel. "
-                    + "Levels follow the Hypixel curve (7, 7, 6, 6, 5, 5, 4.5, 4.5, 4, 4, 3.5 s at 140); other values scale it.")
+            .comment("Speed scale of all minions. 140 = exactly like Hypixel: every resource has its own time between actions "
+                    + "(for example cobblestone 14 s at level I down to 7 s at level XI). Higher values make everything slower, lower faster.")
             .defineInRange("baseTicksPerBlock", 140, 20, 6000);
 
     public static final ModConfigSpec.IntValue MIN_TICKS = BUILDER
@@ -181,6 +181,64 @@ public class Config {
     public static final ModConfigSpec.ConfigValue<String> UNIVERSAL_BLACKLIST = BUILDER
             .comment("Items the Universal Miner must never accept (comma separated item ids).")
             .define("universalMinerBlacklist", "minecraft:netherite_scrap,minecraft:nether_star");
+
+    public static final ModConfigSpec.IntValue WAREHOUSE_RANGE = BUILDER
+            .comment("Maximum distance (blocks, same dimension) between a minion and its linked Central Warehouse.")
+            .defineInRange("warehouseRange", 128, 8, 1024);
+
+    public static final ModConfigSpec.IntValue WAREHOUSE_ITEMS = BUILDER
+            .comment("Maximum items a minion sends to its warehouse per delivery (every 2 seconds).")
+            .defineInRange("warehouseItemsPerDelivery", 64, 1, 1024);
+
+    public static final ModConfigSpec.DoubleValue DISMANTLE_REFUND = BUILDER
+            .comment("Share of the materials spent on levels that the Dismantle Station returns (the core is always returned).")
+            .defineInRange("dismantleRefund", 0.5, 0.0, 1.0);
+
+    public static final ModConfigSpec.ConfigValue<String> HUNT_OVERRIDES = BUILDER
+            .comment("Per-mob / per-boss hunting rules, entries separated by ';' in the form entity_id=spawnSeconds,killSeconds,rewardMultiplier. "
+                    + "Example: twilightforest:lich=1800,600,2;minecraft:zombie=10,10,1. Reward 0 disables that mob for minions.")
+            .define("huntOverrides", "");
+
+    /** Правило охоты на конкретного моба или босса из конфига. */
+    public record HuntOverride(int spawnSec, int killSec, int reward) {
+    }
+
+    private static String cachedOverridesRaw = null;
+    private static java.util.Map<String, HuntOverride> cachedOverrides = java.util.Map.of();
+
+    public static synchronized HuntOverride huntOverride(String entityId) {
+        String raw = HUNT_OVERRIDES.get();
+        if (!raw.equals(cachedOverridesRaw)) {
+            java.util.Map<String, HuntOverride> map = new java.util.HashMap<>();
+            for (String entry : raw.split(";")) {
+                String[] kv = entry.trim().split("=");
+                if (kv.length != 2) {
+                    continue;
+                }
+                String[] v = kv[1].trim().split(",");
+                if (v.length != 3) {
+                    continue;
+                }
+                try {
+                    map.put(kv[0].trim(), new HuntOverride(Math.max(1, Integer.parseInt(v[0].trim())),
+                            Math.max(1, Integer.parseInt(v[1].trim())), Math.max(0, Integer.parseInt(v[2].trim()))));
+                } catch (NumberFormatException ignored) {
+                    // неверная запись пропускается
+                }
+            }
+            cachedOverrides = map;
+            cachedOverridesRaw = raw;
+        }
+        return cachedOverrides.get(entityId);
+    }
+
+    public static final ModConfigSpec.IntValue MAX_MINIONS_PER_PLAYER = BUILDER
+            .comment("Maximum minions one player may have placed (0 = no limit). Protects servers from overload.")
+            .defineInRange("maxMinionsPerPlayer", 200, 0, 100000);
+
+    public static final ModConfigSpec.IntValue MAX_MINIONS_PER_TYPE = BUILDER
+            .comment("Maximum minions of the same type per player (0 = no limit).")
+            .defineInRange("maxMinionsPerType", 0, 0, 100000);
 
     public static final ModConfigSpec.BooleanValue NOTIFICATIONS = BUILDER
             .comment("Send the minion's owner a chat message when a minion stops (storage full, needs setup, no egg...).")

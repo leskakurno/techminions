@@ -4,7 +4,7 @@ license = "All Rights Reserved"
 
 [[mods]]
 modId = "techminions"
-version = "3.5.0"
+version = "3.7.0"
 displayName = "Tech Minions"
 authors = "pave4403, leskakurnosenko"
 logoFile = "logo.png"
@@ -28,6 +28,12 @@ UPGRADES AND PROGRESSION
 
 MINIONS TAB AND TABLET
 A "Minions" tab in your inventory shows which of your minions are working and which are not. The Minion Tablet links to your minions and shows what they produced from anywhere - view only, items can never be taken out. Tablet upgrades: more links, dimensional link, statistics. The very expensive Elite Tablet takes a Remote Access upgrade that lets you take items out of linked minions from afar. Small Minion Chests can be upgraded to Medium and then Large without losing items. Machine support is fully optional: no other mod is required. Includes a set of advancements.
+
+CONTROL
+Per-player minion limits and a config self-check at startup. Production Limiter upgrade (stops a minion once enough is stored), stop history and fix-it hints in the Minions tab and Tablet, chat notifications with hints.
+
+LOGISTICS
+Central Warehouse (54 slots) with a Warehouse Key: linked minions deliver loot to it automatically (same dimension, loaded chunks only, no chunk loading). Dismantle Station returns the core and part of the materials. Per-mob / per-boss hunting rules in the config (times, reward multiplier, disable). More research advancements.
 
 GATHERERS
 Lumberjack, Farmer and Fisher minions do not touch the world: they check that trees, crops or water are nearby and collect virtually. Smart Logistics (item filter) and Recycler upgrades, hourly production statistics on the tablet, chat notifications when a minion stops, and sorting / filtering in the Minions tab.

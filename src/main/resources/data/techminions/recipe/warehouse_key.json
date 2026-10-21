@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": {
+      "item": "minecraft:gold_ingot"
+    },
+    "K": {
+      "item": "techminions:core_basic"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "pattern": [
+    "GG ",
+    "GK ",
+    "  I"
+  ],
+  "result": {
+    "id": "techminions:warehouse_key",
+    "count": 1
+  }
+}

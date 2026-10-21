@@ -36,6 +36,7 @@ public class MinionRegistry extends SavedData {
         public int state;
         public int mined;
         public int hourly;
+        public final List<long[]> history = new ArrayList<>(); // {состояние, игровое время}
         public int slotsUsed;
         public int slotsTotal;
         public long lastSeen;
@@ -69,6 +70,12 @@ public class MinionRegistry extends SavedData {
             tag.putInt("State", state);
             tag.putInt("Mined", mined);
             tag.putInt("Hourly", hourly);
+            long[] flat = new long[history.size() * 2];
+            for (int i = 0; i < history.size(); i++) {
+                flat[i * 2] = history.get(i)[0];
+                flat[i * 2 + 1] = history.get(i)[1];
+            }
+            tag.putLongArray("Hist", flat);
             tag.putInt("Used", slotsUsed);
             tag.putInt("Total", slotsTotal);
             tag.putLong("Seen", lastSeen);
@@ -96,6 +103,10 @@ public class MinionRegistry extends SavedData {
             e.state = tag.getInt("State");
             e.mined = tag.getInt("Mined");
             e.hourly = tag.getInt("Hourly");
+            long[] flat = tag.getLongArray("Hist");
+            for (int i = 0; i + 1 < flat.length; i += 2) {
+                e.history.add(new long[]{flat[i], flat[i + 1]});
+            }
             e.slotsUsed = tag.getInt("Used");
             e.slotsTotal = tag.getInt("Total");
             e.lastSeen = tag.getLong("Seen");
