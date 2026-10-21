@@ -1556,9 +1556,9 @@ public class MinionEntity extends Mob {
             tag.putString("WarehouseDim", warehouseDim);
         }
         long[] flat = new long[stopLog.size() * 2];
-        for (int i = 0; i < stopLog.size(); i++) {
-            flat[i * 2] = stopLog.get(i)[0];
-            flat[i * 2 + 1] = stopLog.get(i)[1];
+        for (int logIndex = 0; logIndex < stopLog.size(); logIndex++) {
+            flat[logIndex * 2] = stopLog.get(logIndex)[0];
+            flat[logIndex * 2 + 1] = stopLog.get(logIndex)[1];
         }
         tag.putLongArray("StopLog", flat);
         tag.putIntArray("Buckets", yieldBuckets);
