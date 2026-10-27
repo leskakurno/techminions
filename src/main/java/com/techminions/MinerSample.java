@@ -15,6 +15,18 @@ import java.util.Set;
  * модами, которые кладут свои предметы в общие теги (c:raw_materials, c:gems, c:dusts, c:crops...).
  */
 public final class MinerSample {
+    /**
+     * Теги, которые принимаются всегда (не зависят от старого конфига игрока): сырьё, самоцветы, пыли, а также
+     * продукты дробления и обогащения разных модов (грязные пыли, комки, осколки, кристаллы, дроблёная руда).
+     * Несуществующие теги просто игнорируются.
+     */
+    private static final String[] BUILTIN_TAGS = {
+            "c:raw_materials", "c:gems", "c:dusts", "c:crops", "minecraft:logs",
+            "c:dirty_dusts", "c:clumps", "c:shards", "c:crystals", "c:crushed_raw_materials",
+            "mekanism:dirty_dusts", "mekanism:clumps", "mekanism:shards", "mekanism:crystals", "mekanism:dusts",
+            "create:crushed_raw_materials"
+    };
+
     private MinerSample() {
     }
 
@@ -27,7 +39,8 @@ public final class MinerSample {
         if (Config.csv(Config.UNIVERSAL_BLACKLIST.get()).contains(id)) {
             return false;
         }
-        Set<String> tags = Config.csv(Config.UNIVERSAL_TAGS.get());
+        Set<String> tags = new java.util.LinkedHashSet<>(java.util.Arrays.asList(BUILTIN_TAGS));
+        tags.addAll(Config.csv(Config.UNIVERSAL_TAGS.get()));
         for (String tag : tags) {
             ResourceLocation location = ResourceLocation.tryParse(tag);
             if (location == null) {

@@ -109,7 +109,22 @@ public enum MinionType implements StringRepresentable {
     FARMER(1, 8, mods("minecraft")),
     FISHER(2, 6, mods("minecraft")),
     // --- Универсальный добытчик: добывает то, что вставлено в слот образца (предмет из любого мода по тегам) ---
-    UNIVERSAL_MINER(3, 6, mods("minecraft"));
+    UNIVERSAL_MINER(3, 6, mods("minecraft")),
+    // --- Новые (v3.8): Create New Age (магнетит) и дроблёные руды Create ---
+    MAGNETITE(2, 48, mods("create_new_age"), "create_new_age:magnetite_block", "create_new_age:magnetite", "create_new_age:raw_magnetite", "#c:raw_materials/magnetite"),
+    // --- v4.0: новые ванильные миньоны (в конец списка, чтобы не сдвинуть номера старых типов) ---
+    SAND(1, 24, mods("minecraft"), "minecraft:sand"),
+    GRAVEL(1, 24, mods("minecraft"), "minecraft:gravel"),
+    CLAY(1, 28, mods("minecraft"), "minecraft:clay_ball"),
+    SNOW(1, 24, mods("minecraft"), "minecraft:snowball"),
+    CACTUS(1, 28, mods("minecraft"), "minecraft:cactus"),
+    SUGAR_CANE(1, 28, mods("minecraft"), "minecraft:sugar_cane"),
+    MUSHROOM(1, 32, mods("minecraft"), "minecraft:red_mushroom"),
+    COCOA(1, 32, mods("minecraft"), "minecraft:cocoa_beans"),
+    BERRIES(1, 32, mods("minecraft"), "minecraft:sweet_berries"),
+    MOSS(1, 32, mods("minecraft"), "minecraft:moss_block"),
+    SEA_PICKLE(2, 40, mods("minecraft"), "minecraft:sea_pickle"),
+    KELP(1, 28, mods("minecraft"), "minecraft:kelp");
 
     private final int tier;
     private final int upgradeBase;
@@ -236,6 +251,18 @@ public enum MinionType implements StringRepresentable {
             MAP.put(FARMER, new String[]{"minecraft:iron_ingot"});
             MAP.put(FISHER, new String[]{"minecraft:gold_ingot"});
             MAP.put(UNIVERSAL_MINER, new String[]{"minecraft:gold_ingot"});
+            MAP.put(SAND, new String[]{"minecraft:iron_ingot"});
+            MAP.put(GRAVEL, new String[]{"minecraft:iron_ingot"});
+            MAP.put(CLAY, new String[]{"minecraft:iron_ingot"});
+            MAP.put(SNOW, new String[]{"minecraft:iron_ingot"});
+            MAP.put(CACTUS, new String[]{"minecraft:iron_ingot"});
+            MAP.put(SUGAR_CANE, new String[]{"minecraft:iron_ingot"});
+            MAP.put(MUSHROOM, new String[]{"minecraft:iron_ingot"});
+            MAP.put(COCOA, new String[]{"minecraft:iron_ingot"});
+            MAP.put(BERRIES, new String[]{"minecraft:iron_ingot"});
+            MAP.put(MOSS, new String[]{"minecraft:iron_ingot"});
+            MAP.put(KELP, new String[]{"minecraft:iron_ingot"});
+            MAP.put(SEA_PICKLE, new String[]{"minecraft:gold_ingot"});
         }
     }
 
@@ -361,6 +388,11 @@ public enum MinionType implements StringRepresentable {
     }
 
     /** Универсальный добытчик: добывает предмет-образец из слота (любой мод, допустимое задают теги в конфиге). */
+    /** Новые типы версии 4.0 (для множителя скорости и отключения в конфиге). */
+    public boolean isNewV4() {
+        return ordinal() >= SAND.ordinal();
+    }
+
     public boolean isUniversalMiner() {
         return this == UNIVERSAL_MINER;
     }
@@ -477,6 +509,9 @@ public enum MinionType implements StringRepresentable {
     public boolean isAvailable() {
         if (isDisabledByConfig()) {
             return false;
+        }
+        if (isNewV4() && Config.csv(Config.DISABLED_NEW_MINIONS.get()).contains(getSerializedName())) {
+            return false; // отключён в конфиге сервера
         }
         if (isUniversalHunter() || isGatherer() || isUniversalMiner()) {
             return true;

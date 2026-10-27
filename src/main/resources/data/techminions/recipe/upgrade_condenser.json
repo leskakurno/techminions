@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "P": {
+      "item": "minecraft:piston"
+    },
+    "K": {
+      "item": "techminions:core_basic"
+    }
+  },
+  "pattern": [
+    "IPI",
+    "PKP",
+    "IPI"
+  ],
+  "result": {
+    "id": "techminions:upgrade_condenser",
+    "count": 1
+  }
+}

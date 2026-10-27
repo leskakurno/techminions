@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "powered=false": {
+      "model": "techminions:block/manual_switch_off"
+    },
+    "powered=true": {
+      "model": "techminions:block/manual_switch_on"
+    }
+  }
+}

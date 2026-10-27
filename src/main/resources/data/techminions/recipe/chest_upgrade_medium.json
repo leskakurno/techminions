@@ -5,17 +5,17 @@
     "G": {
       "item": "minecraft:gold_ingot"
     },
-    "I": {
-      "item": "minecraft:iron_ingot"
+    "C": {
+      "item": "minecraft:chest"
     },
     "K": {
-      "item": "techminions:core_basic"
+      "item": "techminions:core_reinforced"
     }
   },
   "pattern": [
-    "GIG",
-    "IKI",
-    "GIG"
+    "GKG",
+    "CGC",
+    "GGG"
   ],
   "result": {
     "id": "techminions:chest_upgrade_medium",

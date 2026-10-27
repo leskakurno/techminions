@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "P": {
+      "item": "techminions:minionite_panel"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "pattern": [
+    "PPP",
+    "PRP",
+    " I "
+  ],
+  "result": {
+    "id": "techminions:status_sign",
+    "count": 1
+  }
+}

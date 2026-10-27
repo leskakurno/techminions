@@ -240,6 +240,53 @@ public class Config {
             .comment("Maximum minions of the same type per player (0 = no limit).")
             .defineInRange("maxMinionsPerType", 0, 0, 100000);
 
+    // ---------- v4.0: сложность, находки, цели ----------
+    public static final ModConfigSpec.ConfigValue<String> DIFFICULTY = BUILDER
+            .comment("Economy mode for the NEW v4 mechanics only (rare finds, bonuses): CALM (x1.5 finds), STANDARD (x1.0), STRICT (x0.5). "
+                    + "Old minions and old content are never affected.")
+            .define("difficulty", "STANDARD");
+
+    public static final ModConfigSpec.DoubleValue RARE_FIND_CHANCE = BUILDER
+            .comment("Chance in percent per cycle of the most common rare find (Ancient Mechanism Crumb). Seeker's Note is half of it, Engineer's Relic a quarter.")
+            .defineInRange("rareFindChancePercent", 0.2, 0.0, 2.0);
+
+    public static final ModConfigSpec.DoubleValue NEW_MINION_SPEED = BUILDER
+            .comment("Speed multiplier for the NEW v4 minion types only (sand, gravel, clay, snow, cactus, sugar cane, mushrooms, cocoa, berries, moss, sea pickle, kelp).")
+            .defineInRange("newMinionSpeedMultiplier", 1.0, 0.25, 2.0);
+
+    public static final ModConfigSpec.ConfigValue<String> DISABLED_NEW_MINIONS = BUILDER
+            .comment("New v4 minion types that are disabled on this server (comma separated type names, e.g. sand,gravel). Existing items stay.")
+            .define("disabledNewMinions", "");
+
+    public static final ModConfigSpec.BooleanValue DAILY_GOALS = BUILDER
+            .comment("Enable the daily goal (cycles done by your minions while you are online) and the streak rewards.")
+            .define("dailyGoalsEnabled", true);
+
+    public static final ModConfigSpec.IntValue DAILY_GOAL_CYCLES = BUILDER
+            .comment("Cycles of your minions needed for the daily goal.")
+            .defineInRange("dailyGoalCycles", 200, 10, 100000);
+
+    public static final ModConfigSpec.BooleanValue FIND_NOTIFICATIONS = BUILDER
+            .comment("Tell the owner in chat when a minion finds a rare item.")
+            .define("findNotifications", true);
+
+    public static final ModConfigSpec.ConfigValue<String> HARVEST_RANGE = BUILDER
+            .comment("Harvest Festival period (real calendar, MM-DD..MM-DD): Farmer minions get +5% extra crops. Empty = never.")
+            .define("harvestFestival", "09-20..10-20");
+
+    public static final ModConfigSpec.ConfigValue<String> CALENDAR_RANGE = BUILDER
+            .comment("Seasonal Calendar upgrade period (real calendar, MM-DD..MM-DD): +3% speed. Empty = never.")
+            .define("seasonalCalendar", "12-15..01-15");
+
+    public static double difficultyFactor() {
+        String d = DIFFICULTY.get().trim().toUpperCase(java.util.Locale.ROOT);
+        return switch (d) {
+            case "CALM" -> 1.5;
+            case "STRICT" -> 0.5;
+            default -> 1.0;
+        };
+    }
+
     public static final ModConfigSpec.BooleanValue NOTIFICATIONS = BUILDER
             .comment("Send the minion's owner a chat message when a minion stops (storage full, needs setup, no egg...).")
             .define("notifications", true);

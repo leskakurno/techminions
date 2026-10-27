@@ -102,6 +102,11 @@ final class StatusView {
         if (withMined) {
             lines.add(Component.translatable("gui.techminions.mined", info.mined()));
         }
+        if (info.slotsTotal() > 0 && !info.locked()) {
+            int percent = Math.min(100, info.slotsUsed() * 100 / info.slotsTotal());
+            lines.add(Component.translatable("gui.techminions.fill", percent, info.slotsUsed(), info.slotsTotal())
+                    .withStyle(percent >= 90 ? ChatFormatting.RED : ChatFormatting.GRAY));
+        }
         Component hint = hint(info);
         if (hint != null) {
             lines.add(hint.copy().withStyle(ChatFormatting.YELLOW));

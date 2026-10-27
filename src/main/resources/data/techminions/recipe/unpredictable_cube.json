@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "Q": {
+      "item": "minecraft:quartz"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "G": {
+      "item": "minecraft:gold_nugget"
+    }
+  },
+  "pattern": [
+    "QRQ",
+    "RGR",
+    "QRQ"
+  ],
+  "result": {
+    "id": "techminions:unpredictable_cube",
+    "count": 1
+  }
+}

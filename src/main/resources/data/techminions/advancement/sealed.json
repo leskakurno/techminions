@@ -1,0 +1,28 @@
+{
+  "display": {
+    "icon": {
+      "id": "techminions:storage_seal"
+    },
+    "title": {
+      "translate": "advancement.techminions.sealed.title"
+    },
+    "description": {
+      "translate": "advancement.techminions.sealed.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "techminions:chest",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ]
+}

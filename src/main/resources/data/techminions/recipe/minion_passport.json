@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:paper"
+    },
+    {
+      "item": "minecraft:paper"
+    },
+    {
+      "item": "techminions:minionite_shard"
+    }
+  ],
+  "result": {
+    "id": "techminions:minion_passport",
+    "count": 1
+  }
+}

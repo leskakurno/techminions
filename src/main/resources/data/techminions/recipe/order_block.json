@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "P": {
+      "item": "techminions:minionite_panel"
+    },
+    "B": {
+      "item": "minecraft:barrel"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "pattern": [
+    "PPP",
+    "PBP",
+    "IPI"
+  ],
+  "result": {
+    "id": "techminions:order_block",
+    "count": 1
+  }
+}

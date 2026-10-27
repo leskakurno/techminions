@@ -1,0 +1,37 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "K": {
+      "item": "techminions:core_reinforced"
+    },
+    "I": {
+      "item": "minecraft:iron_block"
+    },
+    "P": {
+      "item": "minecraft:diamond_pickaxe"
+    },
+    "R": {
+      "item": "create_new_age:magnetite_block"
+    }
+  },
+  "pattern": [
+    "IRI",
+    "RKR",
+    "IPI"
+  ],
+  "result": {
+    "id": "techminions:minion_magnetite",
+    "count": 1
+  },
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "create_new_age"
+    },
+    {
+      "type": "neoforge:item_exists",
+      "item": "create_new_age:magnetite_block"
+    }
+  ]
+}

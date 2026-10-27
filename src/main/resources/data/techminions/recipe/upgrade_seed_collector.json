@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "S": {
+      "item": "minecraft:wheat_seeds"
+    },
+    "H": {
+      "item": "minecraft:hopper"
+    },
+    "K": {
+      "item": "techminions:core_basic"
+    }
+  },
+  "pattern": [
+    "SHS",
+    "HKH",
+    "SHS"
+  ],
+  "result": {
+    "id": "techminions:upgrade_seed_collector",
+    "count": 1
+  }
+}

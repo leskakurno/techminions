@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    {
+      "item": "minecraft:yellow_dye"
+    },
+    {
+      "item": "techminions:minionite_panel"
+    }
+  ],
+  "result": {
+    "id": "techminions:line_sign",
+    "count": 2
+  }
+}

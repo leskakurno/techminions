@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "techminions:block/warning_block"
+    }
+  }
+}

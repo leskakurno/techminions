@@ -1,0 +1,24 @@
+{
+  "values": [
+    {
+      "id": "#c:crushed_raw_materials/uraninite",
+      "required": false
+    },
+    {
+      "id": "#c:crushed_raw_materials/osmium",
+      "required": false
+    },
+    {
+      "id": "#c:crushed_raw_materials/tin",
+      "required": false
+    },
+    {
+      "id": "#c:crushed_raw_materials/lead",
+      "required": false
+    },
+    {
+      "id": "#c:crushed_raw_materials/uranium",
+      "required": false
+    }
+  ]
+}

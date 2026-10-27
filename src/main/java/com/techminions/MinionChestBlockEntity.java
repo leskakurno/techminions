@@ -28,6 +28,7 @@ public class MinionChestBlockEntity extends BlockEntity implements MenuProvider 
     private final ItemStackHandler items;
     // Вещи из старых (больших) сундуков, не поместившиеся после уменьшения размера: выбрасываются, а не пропадают.
     private final List<ItemStack> overflow = new ArrayList<>();
+    private boolean locked; // Пломба хранилища: открывать может только владелец
     private java.util.UUID owner; // кто поставил (нужно Центральному складу: привязывать миньонов может только владелец)
 
     public MinionChestBlockEntity(BlockPos pos, BlockState state) {
@@ -37,6 +38,16 @@ public class MinionChestBlockEntity extends BlockEntity implements MenuProvider 
             @Override
             protected void onContentsChanged(int slot) {
                 setChanged();
+            }
+
+            /** Ящик улучшений принимает только улучшения (и предметы-улучшения мода). */
+            @Override
+            public boolean isItemValid(int slot, ItemStack stack) {
+                if (tier == MinionChestTier.UPGRADE_CRATE) {
+                    return stack.getItem() instanceof UpgradeItem || stack.getItem() instanceof TabletUpgradeItem
+                            || stack.getItem() instanceof ChestUpgradeItem;
+                }
+                return true;
             }
         };
     }
@@ -88,6 +99,7 @@ public class MinionChestBlockEntity extends BlockEntity implements MenuProvider 
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         owner = tag.hasUUID("Owner") ? tag.getUUID("Owner") : null;
+        locked = tag.getBoolean("Locked");
         if (tag.contains("Items")) {
             // В старых сохранениях сундук мог быть больше: читаем во временный список и раскладываем по новым ячейкам.
             ItemStackHandler old = new ItemStackHandler(1);
@@ -119,6 +131,16 @@ public class MinionChestBlockEntity extends BlockEntity implements MenuProvider 
         if (owner != null) {
             tag.putUUID("Owner", owner);
         }
+        tag.putBoolean("Locked", locked);
+    }
+
+    public boolean isLocked() {
+        return locked;
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
+        setChanged();
     }
 
     public java.util.UUID getOwner() {

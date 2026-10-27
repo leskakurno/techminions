@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "techminions:block/hardened_minionite_slab"
+    },
+    "type=top": {
+      "model": "techminions:block/hardened_minionite_slab_top"
+    },
+    "type=double": {
+      "model": "techminions:block/hardened_minionite"
+    }
+  }
+}

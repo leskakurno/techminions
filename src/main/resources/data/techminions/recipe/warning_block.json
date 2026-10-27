@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "Y": {
+      "item": "minecraft:yellow_dye"
+    },
+    "K": {
+      "item": "minecraft:black_dye"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "pattern": [
+    "YKY",
+    "KIK",
+    "YKY"
+  ],
+  "result": {
+    "id": "techminions:warning_block",
+    "count": 4
+  }
+}

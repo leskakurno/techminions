@@ -1,0 +1,28 @@
+{
+  "display": {
+    "icon": {
+      "id": "techminions:shift_clock"
+    },
+    "title": {
+      "translate": "advancement.techminions.thousand_ops.title"
+    },
+    "description": {
+      "translate": "advancement.techminions.thousand_ops.desc"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "techminions:thousand",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ]
+}

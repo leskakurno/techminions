@@ -1,0 +1,37 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1.0,
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "techminions:hardened_minionite_slab",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": 2,
+              "add": false,
+              "conditions": [
+                {
+                  "condition": "minecraft:block_state_property",
+                  "block": "techminions:hardened_minionite_slab",
+                  "properties": {
+                    "type": "double"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    }
+  ],
+  "random_sequence": "techminions:blocks/hardened_minionite_slab"
+}

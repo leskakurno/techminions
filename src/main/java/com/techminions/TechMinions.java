@@ -34,6 +34,7 @@ public class TechMinions {
 
         NeoForge.EVENT_BUS.addListener(EggDropHandler::onDrops);
         NeoForge.EVENT_BUS.addListener(ConfigDiagnostics::onServerStarting);
+        NeoForge.EVENT_BUS.addListener(TechCommands::register);
         modEventBus.addListener(this::registerAttributes);
         modEventBus.addListener(this::registerCapabilities);
         modEventBus.addListener(this::registerPayloads);

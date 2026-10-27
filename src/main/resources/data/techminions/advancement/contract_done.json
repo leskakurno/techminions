@@ -1,0 +1,28 @@
+{
+  "display": {
+    "icon": {
+      "id": "techminions:order_block"
+    },
+    "title": {
+      "translate": "advancement.techminions.contract_done.title"
+    },
+    "description": {
+      "translate": "advancement.techminions.contract_done.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "techminions:placed",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ]
+}

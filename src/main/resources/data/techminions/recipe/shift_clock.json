@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "N": {
+      "item": "minecraft:gold_nugget"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "C": {
+      "item": "minecraft:clock"
+    }
+  },
+  "pattern": [
+    "NIN",
+    "ICI",
+    "NIN"
+  ],
+  "result": {
+    "id": "techminions:shift_clock",
+    "count": 1
+  }
+}

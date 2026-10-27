@@ -1,0 +1,76 @@
+{
+  "textures": {
+    "t": "techminions:block/line_sign_c",
+    "particle": "techminions:block/line_sign_c"
+  },
+  "elements": [
+    {
+      "from": [
+        1,
+        0,
+        6
+      ],
+      "to": [
+        15,
+        12,
+        10
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#t"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#t"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#t"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#t"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#t"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#t"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "display": {
+    "icon": {
+      "id": "techminions:core_bench"
+    },
+    "title": {
+      "translate": "advancement.techminions.first_constructor.title"
+    },
+    "description": {
+      "translate": "advancement.techminions.first_constructor.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "techminions:root",
+  "criteria": {
+    "i": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "techminions:core_bench"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "i"
+    ]
+  ]
+}

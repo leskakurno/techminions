@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "S": {
+      "item": "minecraft:sugar"
+    },
+    "K": {
+      "item": "techminions:core_basic"
+    }
+  },
+  "pattern": [
+    "RSR",
+    "SKS",
+    "RSR"
+  ],
+  "result": {
+    "id": "techminions:upgrade_eco_drive",
+    "count": 1
+  }
+}

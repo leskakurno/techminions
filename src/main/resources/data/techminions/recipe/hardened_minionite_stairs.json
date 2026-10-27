@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "H": {
+      "item": "techminions:hardened_minionite"
+    }
+  },
+  "pattern": [
+    "H  ",
+    "HH ",
+    "HHH"
+  ],
+  "result": {
+    "id": "techminions:hardened_minionite_stairs",
+    "count": 4
+  }
+}

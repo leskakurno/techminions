@@ -18,6 +18,7 @@ public class ClientSetup {
     @SubscribeEvent
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(ModRegistry.MINION.get(), MinionRenderer::new);
+        event.registerBlockEntityRenderer(ModRegistry.DISPLAY_BE.get(), DisplayRenderer::new);
     }
 
     @SubscribeEvent

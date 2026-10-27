@@ -5,17 +5,20 @@
     "D": {
       "item": "minecraft:diamond"
     },
-    "G": {
-      "item": "minecraft:gold_ingot"
+    "C": {
+      "item": "minecraft:chest"
+    },
+    "N": {
+      "item": "minecraft:netherite_ingot"
     },
     "K": {
-      "item": "techminions:core_reinforced"
+      "item": "techminions:core_elite"
     }
   },
   "pattern": [
-    "DGD",
-    "GKG",
-    "DGD"
+    "DKD",
+    "CNC",
+    "DDD"
   ],
   "result": {
     "id": "techminions:chest_upgrade_large",

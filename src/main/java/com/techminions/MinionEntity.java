@@ -104,6 +104,14 @@ public class MinionEntity extends Mob {
     private UUID ownerId;
     private String ownerName = "";
 
+    // v4: счётчики и временные бонусы
+    private int cycleCount;
+    private boolean cubeArmed;
+    private boolean impulsePending;
+    private int idleTicks;
+    private int calibratorBoost;
+    private boolean thousandAwarded;
+
     // История остановок: до 8 последних записей {состояние, игровое время}.
     private final List<long[]> stopLog = new ArrayList<>();
     private boolean productionLineAwarded;
@@ -341,6 +349,9 @@ public class MinionEntity extends Mob {
      */
     public static int intervalFor(MinionType type, int level, int speedUpgrades) {
         double ticks = type.stepSeconds(level) * 20.0 * (Config.BASE_TICKS.get() / 140.0) * Math.pow(0.8, speedUpgrades);
+        if (type.isNewV4()) {
+            ticks /= Config.NEW_MINION_SPEED.get(); // множитель новых миньонов из конфига
+        }
         return (int) Math.max(Config.MIN_TICKS.get(), Math.round(ticks * type.getTimeMultiplier()));
     }
 
@@ -363,7 +374,231 @@ public class MinionEntity extends Mob {
     }
 
     private int interval() {
-        return intervalFor(getMinionType(), getMinionLevel(), upgradeCount(UpgradeType.SPEED));
+        return (int) Math.max(Config.MIN_TICKS.get(),
+                Math.round(intervalFor(getMinionType(), getMinionLevel(), upgradeCount(UpgradeType.SPEED)) * speedFactor()));
+    }
+
+    /** Мелкие модификаторы скорости новых улучшений (каждое учитывается один раз). */
+    private double speedFactor() {
+        double factor = 1.0;
+        if (upgradeCount(UpgradeType.ECO_DRIVE) > 0) {
+            factor *= 0.98;
+        }
+        if (upgradeCount(UpgradeType.RESONATOR) > 0 && upgradeCount(UpgradeType.SPEED) > 0) {
+            factor *= 0.97; // резонатор работает вместе с улучшением скорости
+        }
+        if (calibratorBoost > 0) {
+            factor *= 0.99;
+        }
+        if (upgradeCount(UpgradeType.CALENDAR) > 0 && Seasonal.active(Config.CALENDAR_RANGE.get())) {
+            factor *= 0.97;
+        }
+        return factor;
+    }
+
+    public int getCycleCount() {
+        return cycleCount;
+    }
+
+    public java.util.List<long[]> getStopLog() {
+        return java.util.Collections.unmodifiableList(stopLog);
+    }
+
+    public void armCube() {
+        cubeArmed = true;
+    }
+
+    public boolean isCubeArmed() {
+        return cubeArmed;
+    }
+
+    /** Сбрасывает временные бонусы (Талон обслуживания). Уровень, ядро и UUID не трогаются. */
+    public void clearBonuses() {
+        cubeArmed = false;
+        impulsePending = false;
+        idleTicks = 0;
+        calibratorBoost = 0;
+    }
+
+    // ---------- Бонусы и находки v4 ----------
+
+    /** Вызывается после каждого успешного цикла (добыча, охота, сбор). primary - основной предмет цикла или пусто. */
+    private void afterCycle(ItemStack primary) {
+        if (!(level() instanceof ServerLevel serverLevel)) {
+            return;
+        }
+        cycleCount++;
+        if (calibratorBoost > 0) {
+            calibratorBoost--;
+        }
+        if (upgradeCount(UpgradeType.CALIBRATOR) > 0 && cycleCount % 100 == 0) {
+            calibratorBoost = 10; // каждые 100 циклов: +1% на 10 циклов
+        }
+        if (impulsePending) {
+            impulsePending = false;
+            if (!primary.isEmpty()) {
+                spill(insertIntoStorage(primary.copy(), false)); // один бонусный цикл после простоя
+            }
+        }
+        if (cubeArmed) {
+            cubeArmed = false;
+            float roll = random.nextFloat();
+            if (roll < 0.4F && !primary.isEmpty()) {
+                spill(insertIntoStorage(primary.copy(), false));
+            } else if (roll < 0.7F) {
+                net.minecraft.world.entity.ExperienceOrb.award(serverLevel, position(), 4);
+            }
+        }
+        double mult = Config.difficultyFactor();
+        // «Жила удачи»: редкий всплеск обычной добычи, повторяет обычный результат один раз
+        if (!primary.isEmpty() && upgradeCount(UpgradeType.RARITY_LIMITER) == 0 && random.nextFloat() < 0.005 * mult) {
+            spill(insertIntoStorage(primary.copy(), false));
+        }
+        if (upgradeCount(UpgradeType.RARITY_LIMITER) == 0) {
+            rollRareFinds(serverLevel, mult);
+        }
+        ServerPlayer owner = ownerId == null ? null : serverLevel.getServer().getPlayerList().getPlayer(ownerId);
+        if (owner != null) {
+            DailyGoals.onCycle(owner);
+            PlayerStats stats = PlayerStats.get(serverLevel.getServer());
+            if (stats.firstTime(owner.getUUID(), "Medal")) {
+                spill(insertIntoStorage(new ItemStack(ModRegistry.FIRST_SHIFT_MEDAL.get()), false));
+                ModAdvancements.award(owner, "first_shift");
+            }
+        }
+        if (cycleCount >= 1000 && !thousandAwarded) {
+            thousandAwarded = true;
+            ItemStack cert = new ItemStack(ModRegistry.EXPEDITION_CERTIFICATE.get());
+            cert.set(net.minecraft.core.component.DataComponents.CUSTOM_NAME,
+                    Component.translatable("item.techminions.expedition_certificate.thousand"));
+            spill(insertIntoStorage(cert, false));
+            if (owner != null) {
+                ModAdvancements.award(owner, "thousand_ops");
+            }
+        }
+    }
+
+    private void spill(ItemStack rest) {
+        if (!rest.isEmpty()) {
+            spawnAtLocation(rest); // не теряем предметы, если хранилище заполнено
+        }
+    }
+
+    /** Редкие находки: крошка механизма, записка искателя, реликвия инженера. Максимум одна за цикл. */
+    private void rollRareFinds(ServerLevel serverLevel, double mult) {
+        double base = Config.RARE_FIND_CHANCE.get() / 100.0 * mult;
+        double crumb = base + (upgradeCount(UpgradeType.LUCK_STABILIZER) > 0 ? 0.01 : 0.0); // стабилизатор: +1 п.п.
+        double note = base / 2.0;
+        double relic = base / 4.0;
+        double roll = random.nextDouble();
+        ItemStack find = ItemStack.EMPTY;
+        String key = "";
+        if (roll < relic) {
+            find = new ItemStack(ModRegistry.ENGINEER_RELIC.get());
+            key = "relic";
+        } else if (roll < relic + note) {
+            find = new ItemStack(ModRegistry.SEEKER_NOTE.get());
+            key = "note";
+        } else if (roll < relic + note + crumb) {
+            find = new ItemStack(ModRegistry.ANCIENT_CRUMB.get());
+            key = "crumb";
+        }
+        if (find.isEmpty()) {
+            return;
+        }
+        Component name = find.getHoverName();
+        spill(insertIntoStorage(find, false));
+        ServerPlayer owner = ownerId == null ? null : serverLevel.getServer().getPlayerList().getPlayer(ownerId);
+        if (owner != null) {
+            if (Config.FIND_NOTIFICATIONS.get()) {
+                owner.sendSystemMessage(Component.translatable("message.techminions.find",
+                        Component.translatable("type.techminions." + getMinionType().getSerializedName()), name)
+                        .withStyle(ChatFormatting.LIGHT_PURPLE));
+            }
+            // Архивный жетон: один раз за первую находку каждого вида
+            if (PlayerStats.get(serverLevel.getServer()).firstTime(owner.getUUID(), "Find_" + key)) {
+                ItemHandlerHelper.giveItemToPlayer(owner, new ItemStack(ModRegistry.ARCHIVE_TOKEN.get()));
+                ModAdvancements.award(owner, "rare_find");
+            }
+        }
+    }
+
+    private float fillFraction() {
+        int open = Math.max(1, capacity());
+        int used = 0;
+        for (int i = 0; i < Math.min(open, storage.getContainerSize()); i++) {
+            if (!storage.getItem(i).isEmpty()) {
+                used++;
+            }
+        }
+        return (float) used / open;
+    }
+
+    /** «Уплотнитель»: 9 самородков -> слиток (железо и золото), без прибыли. */
+    private void condense() {
+        condenseOne(Items.IRON_NUGGET, Items.IRON_INGOT);
+        condenseOne(Items.GOLD_NUGGET, Items.GOLD_INGOT);
+    }
+
+    private void condenseOne(Item nugget, Item ingot) {
+        int total = 0;
+        for (int i = 0; i < storage.getContainerSize(); i++) {
+            ItemStack stack = storage.getItem(i);
+            if (stack.is(nugget)) {
+                total += stack.getCount();
+            }
+        }
+        if (total < 9) {
+            return;
+        }
+        ItemStack result = new ItemStack(ingot);
+        if (!insertIntoStorage(result, true).isEmpty()) {
+            return;
+        }
+        int toRemove = 9;
+        for (int i = 0; i < storage.getContainerSize() && toRemove > 0; i++) {
+            ItemStack stack = storage.getItem(i);
+            if (stack.is(nugget)) {
+                int take = Math.min(stack.getCount(), toRemove);
+                stack.shrink(take);
+                toRemove -= take;
+            }
+        }
+        storage.setChanged();
+        insertIntoStorage(result, false);
+    }
+
+    /** Побочный лут охотников и собирателей: «Резервный контейнер» отбрасывает 10% дополнительных предметов. */
+    private List<ItemStack> sideLootFilter(List<ItemStack> drops) {
+        if (upgradeCount(UpgradeType.RESERVE) <= 0) {
+            return drops;
+        }
+        List<ItemStack> result = new ArrayList<>();
+        for (int i = 0; i < drops.size(); i++) {
+            if (i > 0 && random.nextFloat() < 0.10F) {
+                continue;
+            }
+            result.add(drops.get(i));
+        }
+        return result;
+    }
+
+    /** Бонусы фермера: «Сборщик семян» (+10% семян) и праздник урожая (+5% основной культуры). */
+    private void farmerBonuses(List<ItemStack> drops) {
+        if (getMinionType() != MinionType.FARMER || drops.isEmpty()) {
+            return;
+        }
+        if (upgradeCount(UpgradeType.SEED_COLLECTOR) > 0) {
+            for (ItemStack drop : new ArrayList<>(drops)) {
+                String path = BuiltInRegistries.ITEM.getKey(drop.getItem()).getPath();
+                if (path.contains("seed") && random.nextFloat() < 0.10F) {
+                    drops.add(drop.copy());
+                }
+            }
+        }
+        if (Seasonal.active(Config.HARVEST_RANGE.get()) && random.nextFloat() < 0.05F) {
+            drops.add(drops.get(0).copy());
+        }
     }
 
     // ---------- Владелец и отчёт в реестр ----------
@@ -542,6 +777,20 @@ public class MinionEntity extends Mob {
         if (tickCount % Config.REGISTRY_TICKS.get() == 7) {
             reportToRegistry();
         }
+        if (tickCount % 100 == 11 && upgradeCount(UpgradeType.CONDENSER) > 0) {
+            condense();
+        }
+        // «Импульсный накопитель»: после 10 минут простоя запасается ровно один бонусный цикл
+        if (isProblemState(getState())) {
+            if (idleTicks < 100000) {
+                idleTicks++;
+            }
+        } else {
+            if (idleTicks >= 12000 && upgradeCount(UpgradeType.IMPULSE) > 0) {
+                impulsePending = true;
+            }
+            idleTicks = 0;
+        }
         // Улучшение «Редстоун-управление»: сигнал рядом ставит миньона на паузу.
         if (upgradeCount(UpgradeType.REDSTONE) > 0 && level().hasNeighborSignal(blockPosition())) {
             if (getState() != MinionState.PAUSED) {
@@ -577,6 +826,12 @@ public class MinionEntity extends Mob {
             cooldown = 100;
             return;
         }
+        if (upgradeCount(UpgradeType.FILL_SENSOR) > 0 && fillFraction() >= 0.8F) {
+            setState(MinionState.LIMIT_REACHED); // датчик заполнения: хранилище заполнено на 80%
+            setProgress(0);
+            cooldown = 40;
+            return;
+        }
         if (limitReached(type)) {
             setState(MinionState.LIMIT_REACHED); // ограничитель: добыто достаточно
             setProgress(0);
@@ -605,7 +860,7 @@ public class MinionEntity extends Mob {
         if (placing) {
             stepPlace();
         } else {
-            stepBreak(producedStack(type));
+            stepBreak(variantOf(type, producedStack(type)));
         }
         syncPlate();
     }
@@ -615,6 +870,20 @@ public class MinionEntity extends Mob {
      * сырьё сразу переплавляется по обычному рецепту печки (raw_iron -> слиток железа и т.д.).
      * Если у ресурса нет рецепта плавки (уголь, алмаз...), кладётся как есть.
      */
+    /** Особенности новых миньонов: гравий иногда даёт кремень, грибник чередует два гриба. */
+    private ItemStack variantOf(MinionType type, ItemStack base) {
+        if (base.isEmpty()) {
+            return base;
+        }
+        if (type == MinionType.GRAVEL && random.nextFloat() < 0.10F) {
+            return new ItemStack(Items.FLINT);
+        }
+        if (type == MinionType.MUSHROOM && (cycleCount & 1) == 1) {
+            return new ItemStack(Items.BROWN_MUSHROOM);
+        }
+        return base;
+    }
+
     private ItemStack sampleStack() {
         ItemStack sample = eggs.getItem(0);
         return !sample.isEmpty() && MinerSample.isValid(sample) ? sample.copyWithCount(1) : ItemStack.EMPTY;
@@ -757,11 +1026,15 @@ public class MinionEntity extends Mob {
         if (fortune > 0 && random.nextFloat() < 0.3F * fortune) {
             drops.addAll(HuntLoot.roll(serverLevel, target, position())); // бонус как у добычи
         }
+        drops = new ArrayList<>(sideLootFilter(drops));
         for (ItemStack drop : drops) {
             ItemStack rest = insertIntoStorage(drop, false);
             if (!rest.isEmpty()) {
                 spawnAtLocation(rest); // не теряем предметы, если хранилище заполнилось посреди выдачи
             }
+        }
+        if (upgradeCount(UpgradeType.XP_EXTRACTOR) > 0 && !drops.isEmpty() && random.nextFloat() < 0.02F) {
+            net.minecraft.world.entity.ExperienceOrb.award(serverLevel, position(), 3 + random.nextInt(5));
         }
         level().playSound(null, blockPosition(), SoundEvents.PLAYER_ATTACK_STRONG, SoundSource.NEUTRAL, 0.6F, 1.0F);
         int huntItems = 0;
@@ -770,6 +1043,7 @@ public class MinionEntity extends Mob {
         }
         recordYield(huntItems);
         entityData.set(DATA_MINED, getMined() + 1);
+        afterCycle(drops.isEmpty() ? ItemStack.EMPTY : drops.get(0));
         huntKilling = false; // следующий моб «появляется» заново
         setState(MinionState.SPAWNING);
         scheduleHunt(type);
@@ -802,6 +1076,8 @@ public class MinionEntity extends Mob {
         if (fortune > 0 && !drops.isEmpty() && random.nextFloat() < 0.3F * fortune) {
             drops.add(drops.get(0).copy()); // бонус как у добычи
         }
+        farmerBonuses(drops);
+        drops = new ArrayList<>(sideLootFilter(drops));
         int items = 0;
         for (ItemStack drop : drops) {
             ItemStack rest = insertIntoStorage(drop, false);
@@ -812,6 +1088,7 @@ public class MinionEntity extends Mob {
         }
         recordYield(items);
         entityData.set(DATA_MINED, getMined() + 1);
+        afterCycle(drops.isEmpty() ? ItemStack.EMPTY : drops.get(0));
         setState(MinionState.WORKING);
         scheduleNext();
     }
@@ -913,8 +1190,12 @@ public class MinionEntity extends Mob {
         level().destroyBlock(target, false); // частицы и звук, без дропа
         ownedBlocks.remove(target);
 
-        insertIntoStorage(sample.copy(), false);
         int yielded = 1;
+        if (upgradeCount(UpgradeType.LUCK_STABILIZER) > 0 && random.nextFloat() < 0.02F) {
+            yielded = 0; // цена стабилизатора: 2% обычной добычи
+        } else {
+            insertIntoStorage(sample.copy(), false);
+        }
         int fortune = upgradeCount(UpgradeType.FORTUNE);
         if (fortune > 0 && random.nextFloat() < 0.3F * fortune) {
             insertIntoStorage(sample.copy(), false); // бонус, если есть место
@@ -928,6 +1209,7 @@ public class MinionEntity extends Mob {
         }
         recordYield(yielded);
         entityData.set(DATA_MINED, getMined() + 1);
+        afterCycle(sample);
         if (ownedBlocks.isEmpty()) {
             placing = true; // следующий шаг начнёт новую стройку
             plan.clear();
@@ -1115,12 +1397,14 @@ public class MinionEntity extends Mob {
         List<MinionChestBlockEntity> result = new ArrayList<>();
         BlockPos pos = blockPosition();
         BlockPos below = pos.below();
-        if (isMinionChest(below) && level().getBlockEntity(below) instanceof MinionChestBlockEntity chest) {
+        if (isMinionChest(below) && level().getBlockEntity(below) instanceof MinionChestBlockEntity chest
+                && chest.getTier() != MinionChestTier.UPGRADE_CRATE) {
             result.add(chest);
         }
         for (Direction dir : Direction.Plane.HORIZONTAL) {
             BlockPos side = pos.relative(dir);
-            if (isMinionChest(side) && level().getBlockEntity(side) instanceof MinionChestBlockEntity chest) {
+            if (isMinionChest(side) && level().getBlockEntity(side) instanceof MinionChestBlockEntity chest
+                    && chest.getTier() != MinionChestTier.UPGRADE_CRATE) {
                 result.add(chest);
             }
         }
@@ -1270,6 +1554,20 @@ public class MinionEntity extends Mob {
                 ItemHandlerHelper.giveItemToPlayer(player, stack);
             }
         }
+        // Кнопка «Забрать» опустошает и Сундуки миньонов рядом (под миньоном и по бокам)
+        for (MinionChestBlockEntity chest : adjacentChests()) {
+            IItemHandler handler = chest.getItemHandler();
+            for (int i = 0; i < handler.getSlots(); i++) {
+                ItemStack inSlot = handler.getStackInSlot(i);
+                if (!inSlot.isEmpty()) {
+                    ItemStack got = handler.extractItem(i, inSlot.getCount(), false);
+                    if (!got.isEmpty()) {
+                        ItemHandlerHelper.giveItemToPlayer(player, got);
+                    }
+                }
+            }
+        }
+        reportToRegistry();
     }
 
     // ---------- Прокачка ----------
@@ -1281,6 +1579,9 @@ public class MinionEntity extends Mob {
             return;
         }
         int cost = costForNext();
+        if (upgradeCount(UpgradeType.REGENERATOR) > 0) {
+            cost = Math.max(1, (int) Math.round(cost * 0.95)); // «Регенератор»: -5% к цене прокачки
+        }
         MinionType type = getMinionType();
         Predicate<ItemStack> isCost = type::isCostItem; // слитки (любые из тега), без слитков - сам ресурс
         List<IItemHandler> chests = new ArrayList<>();
@@ -1462,6 +1763,10 @@ public class MinionEntity extends Mob {
                 TabletItem.linkMinion(serverPlayer, held, this); // Планшет: привязать/отвязать миньона
                 return InteractionResult.CONSUME;
             }
+            if (held.getItem() instanceof MinionInteractable interactable) {
+                interactable.onMinion(serverPlayer, held, this); // паспорт, ящик, кубик, талон, ключ привязки, компас
+                return InteractionResult.CONSUME;
+            }
             if (held.getItem() instanceof WarehouseKeyItem) {
                 WarehouseKeyItem.bindMinion(serverPlayer, held, this); // Ключ склада: привязать/отвязать склад
                 return InteractionResult.CONSUME;
@@ -1555,6 +1860,11 @@ public class MinionEntity extends Mob {
             tag.putLong("WarehousePos", warehousePos.asLong());
             tag.putString("WarehouseDim", warehouseDim);
         }
+        tag.putInt("Cycles", cycleCount);
+        tag.putBoolean("CubeArmed", cubeArmed);
+        tag.putBoolean("ImpulsePending", impulsePending);
+        tag.putInt("CalibratorBoost", calibratorBoost);
+        tag.putBoolean("ThousandAwarded", thousandAwarded);
         long[] flat = new long[stopLog.size() * 2];
         for (int logIndex = 0; logIndex < stopLog.size(); logIndex++) {
             flat[logIndex * 2] = stopLog.get(logIndex)[0];
@@ -1599,6 +1909,11 @@ public class MinionEntity extends Mob {
         }
         warehousePos = tag.contains("WarehousePos") ? BlockPos.of(tag.getLong("WarehousePos")) : null;
         warehouseDim = tag.getString("WarehouseDim");
+        cycleCount = tag.getInt("Cycles");
+        cubeArmed = tag.getBoolean("CubeArmed");
+        impulsePending = tag.getBoolean("ImpulsePending");
+        calibratorBoost = tag.getInt("CalibratorBoost");
+        thousandAwarded = tag.getBoolean("ThousandAwarded");
         stopLog.clear();
         long[] flatLog = tag.getLongArray("StopLog");
         for (int i = 0; i + 1 < flatLog.length; i += 2) {

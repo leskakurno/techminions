@@ -7,7 +7,8 @@ public enum MinionChestTier {
     SMALL(9, 1),   //  9 ячеек
     MEDIUM(9, 2),  // 18 ячеек
     LARGE(9, 4),   // 36 ячеек
-    WAREHOUSE(9, 6); // Центральный склад: 54 ячейки, привязывается к миньонам ключом
+    WAREHOUSE(9, 6), // Центральный склад: 54 ячейки, привязывается к миньонам ключом
+    UPGRADE_CRATE(9, 1); // Ящик улучшений: 9 ячеек, принимает только улучшения
 
     private final int columns;
     private final int rows;

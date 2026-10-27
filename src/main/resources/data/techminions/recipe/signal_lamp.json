@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    {
+      "item": "techminions:lab_lamp"
+    },
+    {
+      "item": "minecraft:comparator"
+    },
+    {
+      "item": "minecraft:redstone"
+    }
+  ],
+  "result": {
+    "id": "techminions:signal_lamp",
+    "count": 1
+  }
+}

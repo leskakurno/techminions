@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "minecraft:redstone_block"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "K": {
+      "item": "techminions:core_reinforced"
+    }
+  },
+  "pattern": [
+    "BRB",
+    "RKR",
+    "BRB"
+  ],
+  "result": {
+    "id": "techminions:upgrade_impulse",
+    "count": 1
+  }
+}

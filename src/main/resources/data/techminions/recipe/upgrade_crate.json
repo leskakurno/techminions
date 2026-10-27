@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "P": {
+      "item": "techminions:minionite_panel"
+    },
+    "C": {
+      "item": "minecraft:chest"
+    }
+  },
+  "pattern": [
+    "IPI",
+    "PCP",
+    "IPI"
+  ],
+  "result": {
+    "id": "techminions:upgrade_crate",
+    "count": 1
+  }
+}

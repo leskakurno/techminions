@@ -1,0 +1,28 @@
+{
+  "display": {
+    "icon": {
+      "id": "techminions:expedition_certificate"
+    },
+    "title": {
+      "translate": "advancement.techminions.streak_week.title"
+    },
+    "description": {
+      "translate": "advancement.techminions.streak_week.desc"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "techminions:daily_goal",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ]
+}

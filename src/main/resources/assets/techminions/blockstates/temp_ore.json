@@ -164,6 +164,45 @@
     },
     "type=universal_miner": {
       "model": "techminions:block/temp_ore_stone"
+    },
+    "type=magnetite": {
+      "model": "techminions:block/temp_ore_iron"
+    },
+    "type=sand": {
+      "model": "techminions:block/temp_v4_sand"
+    },
+    "type=gravel": {
+      "model": "techminions:block/temp_v4_gravel"
+    },
+    "type=clay": {
+      "model": "techminions:block/temp_v4_clay"
+    },
+    "type=snow": {
+      "model": "techminions:block/temp_v4_snow"
+    },
+    "type=cactus": {
+      "model": "techminions:block/temp_v4_cactus"
+    },
+    "type=sugar_cane": {
+      "model": "techminions:block/temp_v4_sugar_cane"
+    },
+    "type=mushroom": {
+      "model": "techminions:block/temp_v4_mushroom"
+    },
+    "type=cocoa": {
+      "model": "techminions:block/temp_v4_cocoa"
+    },
+    "type=berries": {
+      "model": "techminions:block/temp_v4_berries"
+    },
+    "type=moss": {
+      "model": "techminions:block/temp_v4_moss"
+    },
+    "type=sea_pickle": {
+      "model": "techminions:block/temp_v4_sea_pickle"
+    },
+    "type=kelp": {
+      "model": "techminions:block/temp_v4_kelp"
     }
   }
 }

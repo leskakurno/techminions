@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": {
+      "item": "minecraft:gold_ingot"
+    },
+    "L": {
+      "item": "minecraft:lapis_lazuli"
+    },
+    "K": {
+      "item": "techminions:core_reinforced"
+    }
+  },
+  "pattern": [
+    "GLG",
+    "LKL",
+    "GLG"
+  ],
+  "result": {
+    "id": "techminions:upgrade_luck_stabilizer",
+    "count": 1
+  }
+}

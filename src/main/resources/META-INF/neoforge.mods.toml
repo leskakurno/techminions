@@ -4,7 +4,7 @@ license = "All Rights Reserved"
 
 [[mods]]
 modId = "techminions"
-version = "3.7.1"
+version = "4.0.0"
 displayName = "Tech Minions"
 authors = "pave4403, leskakurnosenko"
 logoFile = "logo.png"
@@ -28,6 +28,9 @@ UPGRADES AND PROGRESSION
 
 MINIONS TAB AND TABLET
 A "Minions" tab in your inventory shows which of your minions are working and which are not. The Minion Tablet links to your minions and shows what they produced from anywhere - view only, items can never be taken out. Tablet upgrades: more links, dimensional link, statistics. The very expensive Elite Tablet takes a Remote Access upgrade that lets you take items out of linked minions from afar. Small Minion Chests can be upgraded to Medium and then Large without losing items. Machine support is fully optional: no other mod is required. Includes a set of advancements.
+
+VERSION 4.0
+New vanilla minions (sand, gravel, clay, snow, cactus, sugar cane, mushrooms, cocoa, berries, moss, sea pickle, kelp), 13 new upgrades, decorative and technical blocks (Pedestal, Display Case, Egg Rack, Upgrade Crate, Signal Lamp, Status Sign, Manual Switch, Order Block, Line Sign, Core Bench), rare finds, daily goals and streaks, contracts, Storage Seal, Black Box, Passport, Compass, admin commands /techminions.
 
 CONTROL
 Per-player minion limits and a config self-check at startup. Production Limiter upgrade (stops a minion once enough is stored), stop history and fix-it hints in the Minions tab and Tablet, chat notifications with hints.

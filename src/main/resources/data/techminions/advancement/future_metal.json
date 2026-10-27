@@ -1,0 +1,35 @@
+{
+  "display": {
+    "icon": {
+      "id": "techminions:hardened_minionite"
+    },
+    "title": {
+      "translate": "advancement.techminions.future_metal.title"
+    },
+    "description": {
+      "translate": "advancement.techminions.future_metal.desc"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "techminions:minionite",
+  "criteria": {
+    "i": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "techminions:hardened_minionite"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "i"
+    ]
+  ]
+}

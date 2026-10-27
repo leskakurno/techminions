@@ -1,0 +1,76 @@
+{
+  "textures": {
+    "t": "techminions:block/egg_rack",
+    "particle": "techminions:block/egg_rack"
+  },
+  "elements": [
+    {
+      "from": [
+        1,
+        0,
+        1
+      ],
+      "to": [
+        15,
+        6,
+        15
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#t"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#t"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#t"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#t"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#t"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#t"
+        }
+      }
+    }
+  ]
+}

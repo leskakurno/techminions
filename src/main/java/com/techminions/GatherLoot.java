@@ -27,7 +27,8 @@ import java.util.List;
  */
 public final class GatherLoot {
     private static final Logger LOGGER = LogUtils.getLogger();
-    private static final int MIN_TREES = 3;
+    private static final int MIN_TRUNK = 3;
+    private static final int MIN_LEAVES = 6;
     private static final int MIN_CROPS = 4;
     private static final int MIN_WATER = 9;
 
@@ -52,23 +53,37 @@ public final class GatherLoot {
         }
     }
 
+    /**
+     * Лесоруб работает только рядом с настоящим деревом: вертикальный ствол от 3 брёвен подряд и листва у верхушки.
+     * Брёвна, просто выложенные на земле, не считаются.
+     */
     private static Result lumber(ServerLevel level, MinionEntity minion) {
         BlockPos c = minion.blockPosition();
-        List<BlockPos> logs = new ArrayList<>();
+        List<BlockPos> trunks = new ArrayList<>();
         for (int dx = -5; dx <= 5; dx++) {
             for (int dz = -5; dz <= 5; dz++) {
                 for (int dy = -1; dy <= 8; dy++) {
-                    BlockPos p = c.offset(dx, dy, dz);
-                    if (level.hasChunkAt(p) && level.getBlockState(p).is(BlockTags.LOGS)) {
-                        logs.add(p);
+                    BlockPos base = c.offset(dx, dy, dz);
+                    if (!level.hasChunkAt(base) || !level.getBlockState(base).is(BlockTags.LOGS)
+                            || level.getBlockState(base.below()).is(BlockTags.LOGS)) {
+                        continue; // нужен самый нижний блок ствола
+                    }
+                    int height = 0;
+                    BlockPos top = base;
+                    while (level.hasChunkAt(top) && level.getBlockState(top).is(BlockTags.LOGS) && height < 32) {
+                        height++;
+                        top = top.above();
+                    }
+                    if (height >= MIN_TRUNK && hasLeaves(level, base.above(height - 1))) {
+                        trunks.add(base);
                     }
                 }
             }
         }
-        if (logs.size() < MIN_TREES) {
+        if (trunks.isEmpty()) {
             return new Result(List.of(), MinionState.NEEDS_TREES);
         }
-        BlockPos pick = logs.get(level.random.nextInt(logs.size()));
+        BlockPos pick = trunks.get(level.random.nextInt(trunks.size()));
         Item logItem = level.getBlockState(pick).getBlock().asItem();
         List<ItemStack> drops = new ArrayList<>();
         if (logItem != Items.AIR) {
@@ -78,6 +93,22 @@ public final class GatherLoot {
             drops.add(new ItemStack(Items.STICK, 1 + level.random.nextInt(3)));
         }
         return new Result(drops, null);
+    }
+
+    /** Есть ли листва вокруг верхушки ствола (хотя бы MIN_LEAVES блоков). */
+    private static boolean hasLeaves(ServerLevel level, BlockPos top) {
+        int leaves = 0;
+        for (int dx = -3; dx <= 3; dx++) {
+            for (int dz = -3; dz <= 3; dz++) {
+                for (int dy = -2; dy <= 2; dy++) {
+                    BlockPos p = top.offset(dx, dy, dz);
+                    if (level.hasChunkAt(p) && level.getBlockState(p).is(BlockTags.LEAVES) && ++leaves >= MIN_LEAVES) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     private static Result farm(ServerLevel level, MinionEntity minion) {

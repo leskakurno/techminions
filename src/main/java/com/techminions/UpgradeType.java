@@ -14,7 +14,20 @@ public enum UpgradeType implements StringRepresentable {
     REDSTONE,
     FILTER,
     RECYCLER,
-    LIMITER;
+    LIMITER,
+    ECO_DRIVE,
+    RARITY_LIMITER,
+    RESERVE,
+    FILL_SENSOR,
+    SEED_COLLECTOR,
+    LUCK_STABILIZER,
+    CONDENSER,
+    REGENERATOR,
+    RESONATOR,
+    CALIBRATOR,
+    IMPULSE,
+    XP_EXTRACTOR,
+    CALENDAR;
 
     @Override
     public String getSerializedName() {

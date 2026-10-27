@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "L": {
+      "item": "minecraft:glowstone"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "pattern": [
+    "GLG",
+    "GRG",
+    "GLG"
+  ],
+  "result": {
+    "id": "techminions:lab_lamp",
+    "count": 2
+  }
+}

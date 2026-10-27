@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "C": {
+      "item": "minecraft:clock"
+    },
+    "K": {
+      "item": "techminions:core_basic"
+    }
+  },
+  "pattern": [
+    "IRI",
+    "CKC",
+    "IRI"
+  ],
+  "result": {
+    "id": "techminions:upgrade_calibrator",
+    "count": 1
+  }
+}

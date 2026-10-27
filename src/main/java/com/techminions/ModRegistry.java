@@ -21,6 +21,10 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
@@ -84,12 +88,124 @@ public class ModRegistry {
     public static final DeferredHolder<Item, WarehouseKeyItem> WAREHOUSE_KEY = ITEMS.register("warehouse_key",
             () -> new WarehouseKeyItem(new Item.Properties().stacksTo(1)));
 
+    // Дроблёные руды для колёс дробления Create (текстуры свои): из руд Powah и Mekanism
+    public static final DeferredItem<Item> CRUSHED_URANINITE = ITEMS.registerSimpleItem("crushed_uraninite");
+    public static final DeferredItem<Item> CRUSHED_OSMIUM = ITEMS.registerSimpleItem("crushed_osmium");
+    public static final DeferredItem<Item> CRUSHED_TIN = ITEMS.registerSimpleItem("crushed_tin");
+    public static final DeferredItem<Item> CRUSHED_LEAD = ITEMS.registerSimpleItem("crushed_lead");
+    public static final DeferredItem<Item> CRUSHED_URANIUM = ITEMS.registerSimpleItem("crushed_uranium");
+
+    // --- v4.0: ящик улучшений, пьедесталы, лампы, таблички, заказы ---
+    public static final DeferredBlock<MinionChestBlock> UPGRADE_CRATE = BLOCKS.registerBlock(
+            "upgrade_crate",
+            props -> new MinionChestBlock(props, MinionChestTier.UPGRADE_CRATE),
+            BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_CYAN).strength(5.0F).sound(SoundType.METAL));
+    public static final DeferredItem<BlockItem> UPGRADE_CRATE_ITEM = ITEMS.registerSimpleBlockItem(UPGRADE_CRATE);
+
+    public static final DeferredBlock<DisplayBlock> PEDESTAL = BLOCKS.registerBlock("pedestal",
+            props -> new DisplayBlock(props, DisplayBlock.Kind.PEDESTAL),
+            BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_CYAN).strength(4.0F).sound(SoundType.STONE).noOcclusion());
+    public static final DeferredBlock<DisplayBlock> DISPLAY_CASE = BLOCKS.registerBlock("display_case",
+            props -> new DisplayBlock(props, DisplayBlock.Kind.CASE),
+            BlockBehaviour.Properties.of().mapColor(MapColor.QUARTZ).strength(2.0F).sound(SoundType.GLASS).noOcclusion());
+    public static final DeferredBlock<DisplayBlock> EGG_RACK = BLOCKS.registerBlock("egg_rack",
+            props -> new DisplayBlock(props, DisplayBlock.Kind.RACK),
+            BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_CYAN).strength(3.0F).sound(SoundType.METAL).noOcclusion());
+    public static final DeferredItem<BlockItem> PEDESTAL_ITEM = ITEMS.registerSimpleBlockItem(PEDESTAL);
+    public static final DeferredItem<BlockItem> DISPLAY_CASE_ITEM = ITEMS.registerSimpleBlockItem(DISPLAY_CASE);
+    public static final DeferredItem<BlockItem> EGG_RACK_ITEM = ITEMS.registerSimpleBlockItem(EGG_RACK);
+
+    public static final DeferredBlock<SignalLampBlock> SIGNAL_LAMP = BLOCKS.registerBlock("signal_lamp", SignalLampBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.QUARTZ).strength(2.0F).sound(SoundType.GLASS)
+                    .lightLevel(state -> state.getValue(SignalLampBlock.STATUS) == 0 ? 0 : state.getValue(SignalLampBlock.STATUS) == 3 ? 4 : 12));
+    public static final DeferredBlock<StatusSignBlock> STATUS_SIGN = BLOCKS.registerBlock("status_sign", StatusSignBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_CYAN).strength(2.0F).sound(SoundType.METAL).noOcclusion());
+    public static final DeferredBlock<ManualSwitchBlock> MANUAL_SWITCH = BLOCKS.registerBlock("manual_switch", ManualSwitchBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_RED).strength(2.0F).sound(SoundType.METAL));
+    public static final DeferredBlock<OrderBlock> ORDER_BLOCK = BLOCKS.registerBlock("order_block", OrderBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE).strength(4.0F).sound(SoundType.METAL));
+    public static final DeferredBlock<LineSignBlock> LINE_SIGN = BLOCKS.registerBlock("line_sign", LineSignBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_YELLOW).strength(1.5F).sound(SoundType.METAL).noOcclusion());
+    public static final DeferredBlock<Block> CORE_BENCH = BLOCKS.registerBlock("core_bench",
+            props -> new net.minecraft.world.level.block.CraftingTableBlock(props),
+            BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_CYAN).strength(3.5F).sound(SoundType.METAL));
+    public static final DeferredItem<BlockItem> SIGNAL_LAMP_ITEM = ITEMS.registerSimpleBlockItem(SIGNAL_LAMP);
+    public static final DeferredItem<BlockItem> STATUS_SIGN_ITEM = ITEMS.registerSimpleBlockItem(STATUS_SIGN);
+    public static final DeferredItem<BlockItem> MANUAL_SWITCH_ITEM = ITEMS.registerSimpleBlockItem(MANUAL_SWITCH);
+    public static final DeferredItem<BlockItem> ORDER_BLOCK_ITEM = ITEMS.registerSimpleBlockItem(ORDER_BLOCK);
+    public static final DeferredItem<BlockItem> LINE_SIGN_ITEM = ITEMS.registerSimpleBlockItem(LINE_SIGN);
+    public static final DeferredItem<BlockItem> CORE_BENCH_ITEM = ITEMS.registerSimpleBlockItem(CORE_BENCH);
+
+    // Трофеи и инструменты v4
+    public static final DeferredHolder<Item, Item> ANCIENT_CRUMB = ITEMS.register("ancient_crumb",
+            () -> new ToolItems.Plain(new Item.Properties().rarity(net.minecraft.world.item.Rarity.RARE), "tooltip.techminions.ancient_crumb"));
+    public static final DeferredHolder<Item, Item> SEEKER_NOTE = ITEMS.register("seeker_note",
+            () -> new ToolItems.Plain(new Item.Properties().rarity(net.minecraft.world.item.Rarity.RARE), "tooltip.techminions.seeker_note"));
+    public static final DeferredHolder<Item, Item> ENGINEER_RELIC = ITEMS.register("engineer_relic",
+            () -> new ToolItems.Plain(new Item.Properties().rarity(net.minecraft.world.item.Rarity.EPIC), "tooltip.techminions.engineer_relic"));
+    public static final DeferredHolder<Item, Item> FIRST_SHIFT_MEDAL = ITEMS.register("first_shift_medal",
+            () -> new ToolItems.Plain(new Item.Properties().stacksTo(1), "tooltip.techminions.first_shift_medal"));
+    public static final DeferredHolder<Item, Item> ARCHIVE_TOKEN = ITEMS.register("archive_token",
+            () -> new ToolItems.Plain(new Item.Properties(), "tooltip.techminions.archive_token"));
+    public static final DeferredHolder<Item, Item> EXPEDITION_CERTIFICATE = ITEMS.register("expedition_certificate",
+            () -> new ToolItems.Plain(new Item.Properties().stacksTo(1), "tooltip.techminions.expedition_certificate"));
+    public static final DeferredHolder<Item, Item> STORAGE_SEAL = ITEMS.register("storage_seal",
+            () -> new ToolItems.Plain(new Item.Properties(), "tooltip.techminions.storage_seal"));
+    public static final DeferredHolder<Item, Item> CONTRACT_SEAL = ITEMS.register("contract_seal",
+            () -> new ToolItems.Plain(new Item.Properties(), "tooltip.techminions.contract_seal"));
+    public static final DeferredHolder<Item, Item> UNPREDICTABLE_CUBE = ITEMS.register("unpredictable_cube",
+            () -> new ToolItems.CubeItem(new Item.Properties().stacksTo(16)));
+    public static final DeferredHolder<Item, Item> SERVICE_VOUCHER = ITEMS.register("service_voucher",
+            () -> new ToolItems.VoucherItem(new Item.Properties().stacksTo(16)));
+    public static final DeferredHolder<Item, Item> MINION_PASSPORT = ITEMS.register("minion_passport",
+            () -> new ToolItems.PassportItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredHolder<Item, Item> BLACK_BOX = ITEMS.register("black_box",
+            () -> new ToolItems.BlackBoxItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredHolder<Item, Item> BINDING_KEY = ITEMS.register("binding_key",
+            () -> new ToolItems.BindingKeyItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredHolder<Item, Item> MASTER_COMPASS = ITEMS.register("master_compass",
+            () -> new ToolItems.CompassItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredHolder<Item, Item> SHIFT_CLOCK = ITEMS.register("shift_clock",
+            () -> new ToolItems.ClockItem(new Item.Properties().stacksTo(1)));
+
+    public static final Supplier<BlockEntityType<DisplayBlockEntity>> DISPLAY_BE = BLOCK_ENTITIES.register("display",
+            () -> BlockEntityType.Builder.of(DisplayBlockEntity::new, PEDESTAL.get(), DISPLAY_CASE.get(), EGG_RACK.get()).build(null));
+    public static final Supplier<BlockEntityType<StatusLinkBlockEntity>> LINK_BE = BLOCK_ENTITIES.register("status_link",
+            () -> BlockEntityType.Builder.of(StatusLinkBlockEntity::new, SIGNAL_LAMP.get(), STATUS_SIGN.get()).build(null));
+    public static final Supplier<BlockEntityType<OrderBlockEntity>> ORDER_BE = BLOCK_ENTITIES.register("order",
+            () -> BlockEntityType.Builder.of(OrderBlockEntity::new, ORDER_BLOCK.get()).build(null));
+
     // Станция разборки миньонов (возврат ядра и части материалов)
     public static final DeferredBlock<MinionStationBlock> MINION_STATION = BLOCKS.registerBlock(
             "minion_station",
             MinionStationBlock::new,
             BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F).sound(SoundType.METAL));
     public static final DeferredItem<BlockItem> MINION_STATION_ITEM = ITEMS.registerSimpleBlockItem(MINION_STATION);
+
+    // --- Декор и предметы (пакет 1) ---
+    public static final DeferredBlock<Block> MINIONITE_PANEL = BLOCKS.registerBlock("minionite_panel", Block::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_CYAN).strength(6.0F).sound(SoundType.METAL));
+    public static final DeferredBlock<Block> HARDENED_MINIONITE = BLOCKS.registerBlock("hardened_minionite", Block::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_CYAN).strength(14.0F, 40.0F).sound(SoundType.NETHERITE_BLOCK));
+    public static final DeferredBlock<StairBlock> HARDENED_MINIONITE_STAIRS = BLOCKS.registerBlock("hardened_minionite_stairs",
+            props -> new StairBlock(HARDENED_MINIONITE.get().defaultBlockState(), props),
+            BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_CYAN).strength(14.0F, 40.0F).sound(SoundType.NETHERITE_BLOCK));
+    public static final DeferredBlock<SlabBlock> HARDENED_MINIONITE_SLAB = BLOCKS.registerBlock("hardened_minionite_slab", SlabBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_CYAN).strength(14.0F, 40.0F).sound(SoundType.NETHERITE_BLOCK));
+    public static final DeferredBlock<Block> WARNING_BLOCK = BLOCKS.registerBlock("warning_block", Block::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_YELLOW).strength(4.0F).sound(SoundType.METAL));
+    public static final DeferredBlock<Block> LAB_LAMP = BLOCKS.registerBlock("lab_lamp", Block::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.QUARTZ).strength(2.0F).sound(SoundType.GLASS).lightLevel(state -> 15));
+    public static final DeferredItem<BlockItem> MINIONITE_PANEL_ITEM = ITEMS.registerSimpleBlockItem(MINIONITE_PANEL);
+    public static final DeferredItem<BlockItem> HARDENED_MINIONITE_ITEM = ITEMS.registerSimpleBlockItem(HARDENED_MINIONITE);
+    public static final DeferredItem<BlockItem> HARDENED_MINIONITE_STAIRS_ITEM = ITEMS.registerSimpleBlockItem(HARDENED_MINIONITE_STAIRS);
+    public static final DeferredItem<BlockItem> HARDENED_MINIONITE_SLAB_ITEM = ITEMS.registerSimpleBlockItem(HARDENED_MINIONITE_SLAB);
+    public static final DeferredItem<BlockItem> WARNING_BLOCK_ITEM = ITEMS.registerSimpleBlockItem(WARNING_BLOCK);
+    public static final DeferredItem<BlockItem> LAB_LAMP_ITEM = ITEMS.registerSimpleBlockItem(LAB_LAMP);
+    // Полевой паёк: сытнее хлеба, но слабее стейка
+    public static final DeferredItem<Item> FIELD_RATION = ITEMS.registerSimpleItem("field_ration",
+            new Item.Properties().food(new FoodProperties.Builder().nutrition(7).saturationModifier(0.8F).build()));
+    public static final DeferredItem<Item> EMPTY_TAG = ITEMS.registerSimpleItem("empty_tag");
 
     public static final DeferredItem<BlockItem> MINION_CHEST_SMALL_ITEM = ITEMS.registerSimpleBlockItem(MINION_CHEST_SMALL);
     public static final DeferredItem<BlockItem> MINION_CHEST_MEDIUM_ITEM = ITEMS.registerSimpleBlockItem(MINION_CHEST_MEDIUM);
@@ -107,13 +223,14 @@ public class ModRegistry {
             case MEDIUM -> MINION_CHEST_MEDIUM.get();
             case LARGE -> MINION_CHEST_LARGE.get();
             case WAREHOUSE -> MINION_WAREHOUSE.get();
+            case UPGRADE_CRATE -> UPGRADE_CRATE.get();
         };
     }
 
     public static final Supplier<BlockEntityType<MinionChestBlockEntity>> MINION_CHEST_BE = BLOCK_ENTITIES.register(
             "minion_chest",
             () -> BlockEntityType.Builder.of(MinionChestBlockEntity::new,
-                    MINION_CHEST_SMALL.get(), MINION_CHEST_MEDIUM.get(), MINION_CHEST_LARGE.get(), MINION_WAREHOUSE.get()).build(null));
+                    MINION_CHEST_SMALL.get(), MINION_CHEST_MEDIUM.get(), MINION_CHEST_LARGE.get(), MINION_WAREHOUSE.get(), UPGRADE_CRATE.get()).build(null));
 
     public static final Map<MinionType, DeferredHolder<Item, MinionItem>> MINION_ITEMS = new EnumMap<>(MinionType.class);
     public static final Map<UpgradeType, DeferredHolder<Item, UpgradeItem>> UPGRADE_ITEMS = new EnumMap<>(UpgradeType.class);
@@ -248,7 +365,45 @@ public class ModRegistry {
                         output.accept(MINION_CHEST_LARGE_ITEM.get());
                         output.accept(MINION_WAREHOUSE_ITEM.get());
                         output.accept(WAREHOUSE_KEY.get());
+                        output.accept(CRUSHED_URANINITE.get());
+                        output.accept(CRUSHED_OSMIUM.get());
+                        output.accept(CRUSHED_TIN.get());
+                        output.accept(CRUSHED_LEAD.get());
+                        output.accept(CRUSHED_URANIUM.get());
                         output.accept(MINION_STATION_ITEM.get());
+                        output.accept(MINIONITE_PANEL_ITEM.get());
+                        output.accept(HARDENED_MINIONITE_ITEM.get());
+                        output.accept(HARDENED_MINIONITE_STAIRS_ITEM.get());
+                        output.accept(HARDENED_MINIONITE_SLAB_ITEM.get());
+                        output.accept(WARNING_BLOCK_ITEM.get());
+                        output.accept(LAB_LAMP_ITEM.get());
+                        output.accept(FIELD_RATION.get());
+                        output.accept(EMPTY_TAG.get());
+                        output.accept(UPGRADE_CRATE_ITEM.get());
+                        output.accept(PEDESTAL_ITEM.get());
+                        output.accept(DISPLAY_CASE_ITEM.get());
+                        output.accept(EGG_RACK_ITEM.get());
+                        output.accept(SIGNAL_LAMP_ITEM.get());
+                        output.accept(STATUS_SIGN_ITEM.get());
+                        output.accept(MANUAL_SWITCH_ITEM.get());
+                        output.accept(ORDER_BLOCK_ITEM.get());
+                        output.accept(LINE_SIGN_ITEM.get());
+                        output.accept(CORE_BENCH_ITEM.get());
+                        output.accept(STORAGE_SEAL.get());
+                        output.accept(CONTRACT_SEAL.get());
+                        output.accept(BINDING_KEY.get());
+                        output.accept(MASTER_COMPASS.get());
+                        output.accept(SHIFT_CLOCK.get());
+                        output.accept(MINION_PASSPORT.get());
+                        output.accept(BLACK_BOX.get());
+                        output.accept(UNPREDICTABLE_CUBE.get());
+                        output.accept(SERVICE_VOUCHER.get());
+                        output.accept(ANCIENT_CRUMB.get());
+                        output.accept(SEEKER_NOTE.get());
+                        output.accept(ENGINEER_RELIC.get());
+                        output.accept(FIRST_SHIFT_MEDAL.get());
+                        output.accept(ARCHIVE_TOKEN.get());
+                        output.accept(EXPEDITION_CERTIFICATE.get());
                         output.accept(MINIONITE_SHARD.get());
                         output.accept(MINIONITE_INGOT.get());
                         output.accept(MINIONITE_HELMET.get());

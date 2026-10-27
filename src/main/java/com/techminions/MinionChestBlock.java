@@ -80,6 +80,25 @@ public class MinionChestBlock extends Block implements EntityBlock {
     @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player,
                                               InteractionHand hand, BlockHitResult hit) {
+        if (stack.is(ModRegistry.STORAGE_SEAL.get())) {
+            // Пломба хранилища: владелец запирает или отпирает контейнер (открыть его сможет только он)
+            if (!level.isClientSide && level.getBlockEntity(pos) instanceof MinionChestBlockEntity sealed) {
+                if (sealed.getOwner() == null) {
+                    sealed.setOwner(player.getUUID());
+                }
+                if (!player.getUUID().equals(sealed.getOwner())) {
+                    player.displayClientMessage(Component.translatable("message.techminions.warehouse.not_yours"), true);
+                } else {
+                    sealed.setLocked(!sealed.isLocked());
+                    player.displayClientMessage(Component.translatable(sealed.isLocked()
+                            ? "message.techminions.seal.locked" : "message.techminions.seal.unlocked"), true);
+                    if (sealed.isLocked() && player instanceof ServerPlayer serverPlayer) {
+                        ModAdvancements.award(serverPlayer, "sealed");
+                    }
+                }
+            }
+            return level.isClientSide ? ItemInteractionResult.SUCCESS : ItemInteractionResult.CONSUME;
+        }
         if (stack.getItem() instanceof WarehouseKeyItem) {
             if (tier != MinionChestTier.WAREHOUSE) {
                 return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
@@ -134,6 +153,10 @@ public class MinionChestBlock extends Block implements EntityBlock {
             return InteractionResult.SUCCESS;
         }
         if (player instanceof ServerPlayer serverPlayer && level.getBlockEntity(pos) instanceof MinionChestBlockEntity chest) {
+            if (chest.isLocked() && chest.getOwner() != null && !chest.getOwner().equals(player.getUUID())) {
+                player.displayClientMessage(Component.translatable("message.techminions.seal.denied"), true);
+                return InteractionResult.CONSUME; // запломбировано владельцем
+            }
             serverPlayer.openMenu(chest, buf -> {
                 buf.writeBlockPos(pos);
                 buf.writeVarInt(tier.ordinal());

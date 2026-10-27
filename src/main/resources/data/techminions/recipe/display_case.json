@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "P": {
+      "item": "techminions:minionite_panel"
+    }
+  },
+  "pattern": [
+    "GGG",
+    "GPG",
+    "GGG"
+  ],
+  "result": {
+    "id": "techminions:display_case",
+    "count": 1
+  }
+}

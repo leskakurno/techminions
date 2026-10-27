@@ -1,0 +1,35 @@
+{
+  "display": {
+    "icon": {
+      "id": "techminions:lab_lamp"
+    },
+    "title": {
+      "translate": "advancement.techminions.lab_light.title"
+    },
+    "description": {
+      "translate": "advancement.techminions.lab_light.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "techminions:first_constructor",
+  "criteria": {
+    "i": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "techminions:lab_lamp"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "i"
+    ]
+  ]
+}

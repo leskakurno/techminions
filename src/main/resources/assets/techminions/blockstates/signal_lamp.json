@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "status=0": {
+      "model": "techminions:block/signal_lamp_off"
+    },
+    "status=1": {
+      "model": "techminions:block/signal_lamp_green"
+    },
+    "status=2": {
+      "model": "techminions:block/signal_lamp_red"
+    },
+    "status=3": {
+      "model": "techminions:block/signal_lamp_grey"
+    }
+  }
+}

@@ -1,5 +1,23 @@
 {
   "values": [
-    "techminions:temp_ore"
+    "techminions:core_bench",
+    "techminions:display_case",
+    "techminions:egg_rack",
+    "techminions:hardened_minionite",
+    "techminions:hardened_minionite_slab",
+    "techminions:hardened_minionite_stairs",
+    "techminions:lab_lamp",
+    "techminions:line_sign",
+    "techminions:manual_switch",
+    "techminions:minion_station",
+    "techminions:minion_warehouse",
+    "techminions:minionite_panel",
+    "techminions:order_block",
+    "techminions:pedestal",
+    "techminions:signal_lamp",
+    "techminions:status_sign",
+    "techminions:temp_ore",
+    "techminions:upgrade_crate",
+    "techminions:warning_block"
   ]
 }

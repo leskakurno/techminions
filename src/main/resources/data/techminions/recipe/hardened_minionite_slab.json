@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "H": {
+      "item": "techminions:hardened_minionite"
+    }
+  },
+  "pattern": [
+    "HHH"
+  ],
+  "result": {
+    "id": "techminions:hardened_minionite_slab",
+    "count": 6
+  }
+}

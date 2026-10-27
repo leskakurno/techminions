@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "P": {
+      "item": "techminions:minionite_panel"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "pattern": [
+    "PPP",
+    "I I"
+  ],
+  "result": {
+    "id": "techminions:egg_rack",
+    "count": 1
+  }
+}

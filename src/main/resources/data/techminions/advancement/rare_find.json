@@ -1,0 +1,28 @@
+{
+  "display": {
+    "icon": {
+      "id": "techminions:ancient_crumb"
+    },
+    "title": {
+      "translate": "advancement.techminions.rare_find.title"
+    },
+    "description": {
+      "translate": "advancement.techminions.rare_find.desc"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "techminions:first_shift",
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ]
+}

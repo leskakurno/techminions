@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "ingredients": [
+    {
+      "item": "minecraft:lever"
+    },
+    {
+      "item": "techminions:minionite_panel"
+    }
+  ],
+  "result": {
+    "id": "techminions:manual_switch",
+    "count": 1
+  }
+}

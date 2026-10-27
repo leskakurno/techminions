@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": {
+      "item": "minecraft:gold_ingot"
+    },
+    "B": {
+      "item": "minecraft:glass_bottle"
+    },
+    "K": {
+      "item": "techminions:core_reinforced"
+    }
+  },
+  "pattern": [
+    "GBG",
+    "BKB",
+    "GBG"
+  ],
+  "result": {
+    "id": "techminions:upgrade_xp_extractor",
+    "count": 1
+  }
+}

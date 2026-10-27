@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "B": {
+      "item": "minecraft:note_block"
+    },
+    "K": {
+      "item": "techminions:core_reinforced"
+    }
+  },
+  "pattern": [
+    "IBI",
+    "BKB",
+    "IBI"
+  ],
+  "result": {
+    "id": "techminions:upgrade_resonator",
+    "count": 1
+  }
+}

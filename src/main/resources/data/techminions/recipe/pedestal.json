@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "B": {
+      "item": "minecraft:stone_bricks"
+    },
+    "P": {
+      "item": "techminions:minionite_panel"
+    }
+  },
+  "pattern": [
+    "BPB",
+    " B ",
+    "BBB"
+  ],
+  "result": {
+    "id": "techminions:pedestal",
+    "count": 1
+  }
+}
